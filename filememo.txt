@@ -1,0 +1,138 @@
+< file2 < file2 cat
+ouvre les deux fichiers, si erreur dans l'ouverture, la commande n'est pas executé.
+Si aucune erreur dans l'ouverture, cat est executé avec le dernier fichier ouvert en entrée standard
+(ceci en bash uniquement, en sh il execute l'un apres l'autre)
+
+< file1 cat > fileres > fileres2
+ouvre les fichiers, le cree si besoin, mais n'utilise en sortie standard que le dernier fichier ouvert en sortie standard.
+Executé avec cette sortie.
+(en gros on fait un boucle sur l'ouverture en io, et c'est le dernier utilisé qu'on redirige qui est finalement utilisé)
+
+Pipeline:
+[time [-p]] [!] command1 [ | or |& command2 ] …
+The output of each command in the pipeline is connected via a pipe to the input of the next command. 
+That is, each command reads the previous command’s output. 
+This connection is performed before any redirections specified by the command. !!!!!!
+
+
+Si $n n'existe pas :
+bash-3.2$ echo salut $n  toi
+salut toi
+bash-3.2$ echo "salut $n toi"
+salut  toi
+bash-3.2$ echo 'salut $n toi'
+salut $n toi
+
+en cas de && et || les fichier s'ouvrent a gauche mais pas a droite. Alors que dans le pipe, d'abord tous les fichiers s'ouvrent...
+bash-3.2$ < file1 grep s && < nexistepas cat
+salut
+sdsds
+bash: nexistepas: No such file or directory
+bash-3.2$ < file1 grep s || < nexistepas cat
+salut
+sdsds
+
+< file1 grep s > file2 | sleep 5 | < nexistepas cat
+bash: nexistepas: No such file or directory
+mais l'execution se fait a gauche après que les fichiers ont tenté detre ouvert, puis sleep, ...
+
+< hgjgh cat | hjk | < hkhkjhk cat
+bash: hgjgh: No such file or directory
+bash: hkhkjhk: No such file or directory
+bash: hjk: command not found
+
+ls | zkl | < hjjhk cat
+bash: zkl: command not found
+bash: hjjhk: No such file or directory
+
+< hgjgh cat | hjk | kjh | < hkhkjhk cat
+bash: hgjgh: No such file or directory
+bash: hjk: command not found
+bash: hkhkjhk: No such file or directory
+bash: kjh: command not found
+
+ < file1 cat | hjk | kjh | < hkhkjhk cat
+bash: hjk: command not found
+bash: kjh: command not found
+bash: hkhkjhk: No such file or directory
+
+Cet exemple en dit long
+
+bash-3.2$ echo toto | exit | echo tata
+tata
+bash-3.2$ 
+EXIT uniquement dans le fork. good news
+
+bash-3.2$ echo toto > toto | cat | grep a
+bash-3.2$
+
+bash-3.2$ cat | grep a
+>
+>
+attende d'entrée standart, stopé avec C^D 
+
+ cat | grep a
+salut
+salut
+toto
+comment
+tu vas
+tu vas
+bash-3.2$ 
+ici grep affiche directement. En gros, dès que ça rentre en stdin, ça sort directement. l'attente se faite en continue sur le pipe ouvert. Pipe fermé avec Control D ou Control C
+Control D, valeur de sortie 0, Control C valeur de sortie 130
+
+kjk |
+> 
+
+bash-3.2$ < | >
+bash: syntax error near unexpected token `|'
+bash-3.2$ echo toto | >
+bash: syntax error near unexpected token `newline'
+
+??WTF?? :
+bash-3.2$ cat | bash
+hello
+bash: line 1: hello: command not found
+echo toto
+toto
+exit
+echo toto
+bash-3.2$ 
+
+bash-3.2$ cd dossier/ && ls
+fileindossier
+(le && ne crée pas un nouveau fork)
+
+bash-3.2$ cd dossier/ | ls
+dossier		file1		fileres2	kjh
+Le pipe crée un fork, mais les redirections se font en interne du fork
+
+bash-3.2$ cd dossier/ && ls | ls
+fileindossier
+bash-3.2$ (cd dossier/ && ls) | ls
+dossier		file1		fileres2	kjh
+
+bash-3.2$ (cd dossier/ && ls > newfile) | ls
+dossier		file1		fileres2	kjh		strlen2.c	strlen4.o	strlen6.c	strlentext2	strlentext6
+exemple.c	file2		haha		strlen.c	strlen2.o	strlen5.c	strlen6.o	strlentext4	toto
+exemple.o	fileres		hihi		strlen.o	strlen4.c	strlen5.o	strlentext	strlentext5	zzz
+bash-3.2$ cd dossier/
+bash-3.2$ cat newfile 
+fileindossier
+newfile
+
+fork a gauche on se deplace dans le dossier on crée le fichier, on ls dans le fichier. fork a droite on est toujours
+dans le dossier courant donc ls donne la liste du dossier parent.
+
+
+
+OK
+conclusion, le souci vient du fait que les built-in ne sont pas implementé par le programme (en grosse partie)
+Si on refait "echo" par exemple, on effectue l'execution de echo en faisant un write sur STDOUT actuel en faisant les modifications sur la string 
+qu'il faut faire etc. MAIS, a la differences d'autres built-in, je ne sors pas du programme, alors que les built-in non codés, on passe
+par un execve d'un programme du coup on est obligé de faire un fork.
+La question que je me pose du coup, c'est si les built-in ne sont pas au final des programmes qu'on doit créer a part. Du genre créer un main etc
+et faire sortir le programme. Mais dans ce cas la je ne vois pas comment gerer le built-in "cd". Car si on dois executer dans tous les cas
+les built-in dans un fork a part, la variable d'environnement ne change pas pour le père. (et il ne dois pas changer d'ailleurs entre les pipes, mais cd dois
+foncitonner entre les && car pas de "fo)
