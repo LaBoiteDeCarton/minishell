@@ -1,23 +1,28 @@
-NAME = test
-S_DIR = .
+NAME = minishell
+S_DIR = srcs
 SRCS = $(foreach dir, ${S_DIR}, ${wildcard $(dir)/*.c})
 OBJS = ${SRCS:.c=.o}
 
-FLAGS = -Wall -Wextra -Werror
-
+H_DIR = includes
+LFT = lib/libft
+LIBFLAGS = -Llib/libft -lft
+FLAGS = -Wall -Wextra -Werror -I ${H_DIR}
 
 .c.o:
 	gcc ${FLAGS} -c $< -o ${<:.c=.o}
 
 ${NAME}: ${OBJS}
-	gcc ${FLAGS} ${OBJS} -o ${NAME} -lreadline
+	make -C ${LFT}
+	gcc ${FLAGS} ${LIBFLAGS} ${OBJS} -o ${NAME} -lreadline
 
 all: ${NAME}
 
 clean:
+	make clean -C ${LFT}
 	rm -f ${OBJS}
 
 fclean: clean
+	make fclean -C ${LFT}
 	rm -f ${NAME}
 
 re: fclean ${NAME}
