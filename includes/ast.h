@@ -3,6 +3,7 @@
 # include <sys/wait.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include "libft.h"
 
 char	**cenv;
 
@@ -17,13 +18,12 @@ typedef struct s_pipe			t_pipe;
 
 typedef enum s_token
 {
-	null,
-	cmd,
-	redirection,
-	instruction,
-	and,
-	or,
-	pipe
+	token_cmd, //utile? je sais plus
+	token_instruction,
+	token_and,
+	token_or,
+	token_pipe,
+	token_error
 }	t_token;
 
 struct s_ast
@@ -40,11 +40,11 @@ struct s_cmd
 
 struct s_instruction
 {
-	t_redirect	*redirect;
-	t_cmd		cmd;
+	t_list		*redirection;
+	t_cmd		*cmd;
 };
 
-// peut etre pas besoin de t_builtin a voir si plus co;plique ou plus legers
+// peut etre pas besoin de t_builtin a voir si plus complique ou plus legers
 struct s_builtin 
 {
 	char	*cmd_name;
@@ -53,7 +53,6 @@ struct s_builtin
 
 typedef enum s_redirect_type
 {
-	null,
 	in,
 	out,
 	heredoc,
@@ -69,21 +68,25 @@ struct s_redirect
 
 struct s_pipe
 {
-	t_ast	**content;
+	t_list	*content;
 };
 
 struct s_or
 {
-	t_ast	**content;
+	t_list	*content;
 };
 
 struct s_and
 {
-	t_ast	**content;
+	t_list	*content;
 };
 
+int	exec_ast(t_ast ast);
 int	exec_cmd(t_cmd node);
-int	n_redirect(t_redirect *redirections);
-void	exec_instruction(t_instruction node);
+int	exec_and(t_and node);
+int	exec_or(t_or node);
+int	n_redirect(t_list *redirections);
+int	exec_instruction(t_instruction node);
+int	exec_pipe(t_pipe node);
 
 #endif

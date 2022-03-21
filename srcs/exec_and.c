@@ -4,7 +4,7 @@ int	exec_and(t_and node)
 {
 	while (node.content)
 	{
-		if (!exec_ast(node.content))
+		if (!exec_ast(*(t_ast *)node.content))
 			return (0);
 		node.content++;
 	}

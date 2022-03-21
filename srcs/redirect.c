@@ -49,13 +49,16 @@ static int	redirect(t_redirect redirection)
 	return (0);
 }
 
-int	n_redirect(t_redirect *redirections)
+int	n_redirect(t_list *redirections)
 {
-	while (redirections->red_type)
+	t_list *ptr;
+
+	ptr = redirections;
+	while (ptr)
 	{
-		if (!redirect(*redirections))
+		if (!redirect(*(t_redirect *)ptr->content))
 			return (0);
-		redirections++;
+		ptr = ptr->next;
 	}
 	return (1);
 }

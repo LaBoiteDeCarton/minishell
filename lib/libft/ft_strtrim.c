@@ -14,7 +14,7 @@
 
 static int	isinset(char c, char const *set)
 {
-	while (*set && set)
+	while (set && *set)
 	{
 		if (*set == c)
 			return (1);

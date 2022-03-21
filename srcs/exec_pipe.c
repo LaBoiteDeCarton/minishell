@@ -1,6 +1,7 @@
 #include "ast.h"
 
-void	exec_pipe(t_pipe node)
+int	exec_pipe(t_pipe node)
 {
 	(void)node;
+	return (0);
 }

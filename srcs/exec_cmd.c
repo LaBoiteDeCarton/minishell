@@ -6,6 +6,7 @@ int	exec_cmd(t_cmd node)
 	int	status;
 
 	//check si builtin
+	// ATTENTION, si cmd_name vide, ne rien faire
 	pid_id = fork();
 	status = 1;
 	if (pid_id == -1)
