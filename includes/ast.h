@@ -46,10 +46,10 @@ struct s_instruction
 
 typedef enum s_redirect_type
 {
-	in,
-	out,
-	heredoc,
-	append
+	red_in,
+	red_out,
+	red_heredoc,
+	red_append
 }	t_redirect_type;
 
 struct s_redirect

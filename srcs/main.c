@@ -1,4 +1,5 @@
 #include "ast.h"
+#include "lexer.h"
 #include "minishell.h"
 #include <sys/wait.h>
 #include <unistd.h>
@@ -56,14 +57,24 @@ char	*ft_readline()
 	return (NULL);
 }
 
+void	free_content(void *content)
+{
+	if (((t_lxr *)content)->content)
+		free(((t_lxr *)content)->content);
+	free((t_lxr *)content);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	(void)ac;
 	(void)av;
 	cenv = env;
 	char	*commande;
+	t_list	*lst;
 
 	commande = ft_readline();
-	parse_line(commande);
+	lst = create_lexer(commande);
+	printf_lexer(lst);
+	ft_lstclear(&lst, &free_content);
 	return (0);
 }

@@ -144,3 +144,15 @@ bash-3.2$ ARG=hello | echo $ARG | cat -e
 $
 bash-3.2$ ARG=hello && echo $ARG | cat -e
 hello$
+
+
+bash-3.2$ < "file" cat
+jfhgejrhgfhjergfer
+
+bash-3.2$ echo kjhkjh "klkjj"
+kjhkjh klkjj
+bash-3.2$ echo kjhkjh   "klkjj"
+kjhkjh klkjj
+bash-3.2$ echo kjhkjh   "klk      jj"
+kjhkjh klk      jj
+bash-3.2$ 

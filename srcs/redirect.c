@@ -42,9 +42,9 @@ int	set_stdin(char *path)
 
 static int	redirect(t_redirect redirection)
 {
-	if (redirection.red_type == in)
+	if (redirection.red_type == red_in)
 		return (set_stdin(redirection.pathfile));
-	else if (redirection.red_type == out)
+	else if (redirection.red_type == red_out)
 		return (set_stdout(redirection.pathfile));
 	return (0);
 }
