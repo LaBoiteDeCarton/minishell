@@ -18,7 +18,7 @@ typedef struct s_pipe			t_pipe;
 
 typedef enum s_token
 {
-	token_cmd, //utile? je sais plus
+	token_cmd,
 	token_instruction,
 	token_and,
 	token_or,
@@ -42,13 +42,6 @@ struct s_instruction
 {
 	t_list		*redirection;
 	t_cmd		*cmd;
-};
-
-// peut etre pas besoin de t_builtin a voir si plus complique ou plus legers
-struct s_builtin 
-{
-	char	*cmd_name;
-	char	**cmd_arg;
 };
 
 typedef enum s_redirect_type
