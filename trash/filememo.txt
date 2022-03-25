@@ -156,3 +156,7 @@ kjhkjh klkjj
 bash-3.2$ echo kjhkjh   "klk      jj"
 kjhkjh klk      jj
 bash-3.2$ 
+
+bash-3.2$ exit && touch jkhkjhjkh
+exit
+There are stopped jobs.

@@ -2,6 +2,13 @@
 #include "libft.h"
 #include <stdio.h>
 
+void	free_content(void *content)
+{
+	if (((t_lxr *)content)->content)
+		free(((t_lxr *)content)->content);
+	free((t_lxr *)content);
+}
+
 void	printf_lexer(t_list	*lst)
 {
 	while (lst)
@@ -73,24 +80,13 @@ t_lxr_type	lexer_type(char *str)
 		return (word);
 }
 
-int		char_isin(char c, char *str)
-{
-	while (*str)
-	{
-		if (*str == c)
-			return (1);
-		str++;
-	}
-	return (0);
-}
-
 char	*fil_content_from_str(char *str)
 {
 	int		i;
 	char	*res;
 	
 	i = 0;
-	while (str[i] && !char_isin(str[i], " ()\"\'<>&|"))
+	while (str[i] && lexer_type(str + i) == word)
 		i++;
 	res = (char *)malloc(sizeof(char) * (i + 1));
 	ft_strlcpy(res, str, i + 1);
@@ -102,7 +98,7 @@ void	scroll_str(char **str, t_lxr_type type)
 	(*str)++;
 	if (type == word)
 	{
-		while (**str && !char_isin(**str, " ()\"\'<>&|"))
+		while (**str && lexer_type(*str) == word)
 			(*str)++;
 	}
 	else if (type == single_qt)
@@ -181,5 +177,7 @@ t_list	*create_lexer(char *str)
 
 int		lexer_is_valide(t_list	*lst)
 {
+	(void)lst;
+
 	return (1);
 }

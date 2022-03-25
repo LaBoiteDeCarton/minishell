@@ -29,5 +29,6 @@ struct s_lxr
 
 t_list	*create_lexer(char *str);
 void	printf_lexer(t_list	*lst);
+void	free_content(void *content);
 
 #endif

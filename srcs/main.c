@@ -8,60 +8,40 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-char	*ft_strtablast(char **strtab)
+static char	*ft_readline(char *prompt_msg)
 {
-	if (!strtab)
-		return (NULL);
-	while (*strtab && *(strtab + 1))
-		strtab++;
-	return (ft_strdup(*strtab));
-}
+	char	*read_buffer;
 
-char	*join_prompt(char *user, char *directory)
-{
-	char	*join;
-	int		size;
-
-	size = ft_strlen(user) + ft_strlen(directory) + ft_strlen(MSH_VERSION) + 6;
-	join = (char *)malloc(sizeof(char) * size);
-	size = ft_strlcpy(join, MSH_VERSION, ft_strlen(MSH_VERSION) + 1);
-	join[size++] = ' ';
-	size += ft_strlcpy(join + size, user, ft_strlen(user) + 1);
-	join[size++] = ' ';
-	size += ft_strlcpy(join + size, directory, ft_strlen(directory) + 1);
-	ft_strlcpy(join + size,
-		" >", 3);
-	free(directory);
-	return (join);
-}
-
-char	*get_prompt()
-{
-	char	*user;
-	char	*pwd;
-	char	**pwd_split;
-	char	*directory;
-
-	user = getenv("USER");
-	pwd = getenv("PWD");
-	pwd_split = ft_split(pwd, '/');
-	directory = ft_strtablast(pwd_split);
-	free(pwd_split);
-	return (join_prompt(user, directory));
-}
-
-char	*ft_readline()
-{
 	if (isatty(STDIN_FILENO))
-		return (readline(get_prompt()));
-	return (NULL);
+		read_buffer = readline(prompt_msg);
+	else
+		get_next_line(STDIN_FILENO, &read_buffer);
+	return (read_buffer);
 }
 
-void	free_content(void *content)
+static void	interactive_msh(void)
 {
-	if (((t_lxr *)content)->content)
-		free(((t_lxr *)content)->content);
-	free((t_lxr *)content);
+	char	*prompt_msg;
+	//char	*readline_buffer;
+
+	while (1)
+	{
+		prompt_msg = get_prompt();
+		rl_line_buffer = ft_readline(prompt_msg);
+		if (rl_line_buffer != NULL)
+			add_history(rl_line_buffer);
+		ft_system(rl_line_buffer);
+		//free(rl_line_buffer);
+	}
+}
+
+static void	passive_msh(void)
+{
+	char	*read_stdin;
+
+	read_stdin = ft_readline(NULL);
+	ft_system(read_stdin);
+	free(read_stdin);
 }
 
 int	main(int ac, char **av, char **env)
@@ -69,12 +49,11 @@ int	main(int ac, char **av, char **env)
 	(void)ac;
 	(void)av;
 	cenv = env;
-	char	*commande;
-	t_list	*lst;
 
-	commande = ft_readline();
-	lst = create_lexer(commande);
-	printf_lexer(lst);
-	ft_lstclear(&lst, &free_content);
+	init_signals();
+	if (isatty(STDIN_FILENO))
+		interactive_msh();
+	else
+		passive_msh();
 	return (0);
 }
