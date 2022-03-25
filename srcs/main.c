@@ -31,7 +31,7 @@ static void	interactive_msh(void)
 		if (rl_line_buffer != NULL)
 			add_history(rl_line_buffer);
 		ft_system(rl_line_buffer);
-		//free(rl_line_buffer);
+		free(rl_line_buffer);
 	}
 }
 

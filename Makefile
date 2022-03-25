@@ -6,7 +6,7 @@ OBJS = ${SRCS:.c=.o}
 H_DIR = includes
 LFT = lib/libft
 LIBFLAGS = -Llib/libft -lft
-FLAGS = -Wall -Wextra -Werror -I ${H_DIR} #-g -fsanitize=address
+FLAGS = -Wall -Wextra -Werror -I ${H_DIR} -g -fsanitize=address
 
 .c.o:
 	gcc ${FLAGS} -c $< -o ${<:.c=.o}

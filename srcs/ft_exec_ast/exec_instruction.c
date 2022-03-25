@@ -10,12 +10,18 @@
 	- 1 si echec dans l'ouverture d'un fichier
 	- 0 sinon
 */
+
+#include <stdio.h>
+
 int	exec_instruction(t_instruction node)
 {
-	if (node.redirection && n_redirect(node.redirection) // valeurs retour ATTENTION
-			&& node.cmd)
-		return (exec_cmd(*node.cmd));
-	else if (!node.redirection && node.cmd)
+	if (!node.redirection)
+		printf("redirection est NULL\n");
+	else
+		printf("redirection is somehow not NULL\n");
+	if (node.redirection)
+		n_redirect(node.redirection);
+	if (node.cmd)
 		return (exec_cmd(*node.cmd));
 	return (0);
 }

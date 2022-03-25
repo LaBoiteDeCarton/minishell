@@ -10,11 +10,12 @@ void	sigint_handler(int sig)
 	(void)sig;
 
 	ft_putchar_fd('\n', STDOUT_FILENO);
-	rl_on_new_line();
-	signal(SIGINT, &sigint_handler);
 }
 
 void	init_signals(void)
 {
-	signal(SIGINT, &sigint_handler);
+	// struct sigaction	sa;
+	
+	// sa.__sigaction_u.__sa_handler = &sigint_handler;
+	// sigaction(SIGINT, &sa, NULL);
 }
