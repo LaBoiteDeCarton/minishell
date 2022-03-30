@@ -1,27 +1,35 @@
 #include "ast.h"
+#include "minishell.h"
 
 /*
 	Exec instruction :
-	Si il existe des redirection et si les redirections ont reussies et si la commande existe ...
-	Si il n'existe pas de redirection et si la commande existe ...
+	Si il existe des redictions : effectue les redirections.
+		Si les redirections echoue (valeur de retour == 0) alors on termine sans executer la commande
+		la valeur du exit_status est de 1
+	Si il existe une commande : on execute la commande.
+	Sinon on met la valeur de exit_status à 0 (car l'instruction a reussie, même sans execution de commande)
 
 	Valeur retour :
-	- valeur retour de l'execution de la commande si execution effectué
-	- 1 si echec dans l'ouverture d'un fichier
-	- 0 sinon
+	- (None)
 */
 
 #include <stdio.h>
 
-int	exec_instruction(t_instruction node)
+void	exec_instruction(t_instruction node)
 {
-	if (!node.redirection)
-		printf("redirection est NULL\n");
-	else
-		printf("redirection is somehow not NULL\n");
+	int	red_success;
+	
+	red_success = 1;
 	if (node.redirection)
-		n_redirect(node.redirection);
+		red_success = n_redirect(node.redirection, node.fd);
+	if (!red_success)
+	{
+		cenv.exit_status = 1;
+		return ;
+	}
 	if (node.cmd)
-		return (exec_cmd(*node.cmd));
-	return (0);
+		exec_cmd(*node.cmd, node.fd);
+	else
+		cenv.exit_status = 0;
+	return ;
 }

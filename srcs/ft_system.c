@@ -3,6 +3,15 @@
 #include "lexer.h"
 #include "ast.h"
 
+/*	ft_system("ma commande") équivaut à system("ma commande")
+	La commande est traduite en lexer (une liste de token/content)
+	Si le lexer n'est pas valide
+		la valeur de exit_status est 258 (il n'y a aucune execution)
+	Sinon
+		le lexer est traduit en Arbre de la syntaxe abstraite (AST)
+		on lance l'execution
+*/
+
 void	ft_system(char *command)
 {
 	t_list	*lexer;
@@ -10,11 +19,13 @@ void	ft_system(char *command)
 	// system(command);
 
 	lexer = create_lexer(command);
+	//printf_lexer(lexer);
 	if (!lexer_is_valide(lexer))
 		return ; // code erreur 258
 	ast = from_lexer_to_ast(lexer);
-	//exec_ast(*ast);
-	printAST(ast, 0);
+	//printAST(ast, 0);
+	if (ast)
+		exec_ast(*ast);
 	ft_lstclear(&lexer, &free_content);
 	//free ast
 }

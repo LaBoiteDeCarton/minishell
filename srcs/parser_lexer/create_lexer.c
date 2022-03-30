@@ -86,7 +86,7 @@ char	*fil_content_from_str(char *str)
 	char	*res;
 	
 	i = 0;
-	while (str[i] && lexer_type(str + i) == word)
+	while (str[i] && str[i] != ' ' && lexer_type(str + i) == word)
 		i++;
 	res = (char *)malloc(sizeof(char) * (i + 1));
 	ft_strlcpy(res, str, i + 1);
@@ -98,7 +98,7 @@ void	scroll_str(char **str, t_lxr_type type)
 	(*str)++;
 	if (type == word)
 	{
-		while (**str && lexer_type(*str) == word)
+		while (**str && **str != ' ' && lexer_type(*str) == word)
 			(*str)++;
 	}
 	else if (type == single_qt)
@@ -116,8 +116,6 @@ void	scroll_str(char **str, t_lxr_type type)
 			(*str)++;
 	}
 	else if (type == heredoc || type == sep_and || type == sep_or || type == append)
-		(*str) += 2;
-	else
 		(*str) += 1;
 }
 
@@ -178,6 +176,6 @@ t_list	*create_lexer(char *str)
 int		lexer_is_valide(t_list	*lst)
 {
 	(void)lst;
-
+	//exit_status == 258 si KO
 	return (1);
 }

@@ -1,5 +1,5 @@
 NAME = minishell
-S_DIR = srcs srcs/ft_exec_ast srcs/parser_lexer
+S_DIR = srcs srcs/ft_exec_ast srcs/parser_lexer srcs/builtins
 SRCS = $(foreach dir, ${S_DIR}, ${wildcard $(dir)/*.c})
 OBJS = ${SRCS:.c=.o}
 

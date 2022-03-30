@@ -21,8 +21,39 @@ void	print_token(t_token token)
 		printf("INSTR\n");
 	if (token == token_cmd)
 		printf("CMD\n");
-	if (token == token_instruction)
-		printf("INSTR\n");
+}
+
+void	print_instr(t_instruction instr, int prof)
+{
+	int i;
+
+	if (!instr.cmd)
+	{
+		write_nchar('|', prof);
+		printf("CMD NULL\n");
+	}
+	if (instr.cmd)
+	{
+		write_nchar('|', prof);
+		printf("CMD : %s\n", instr.cmd->cmd_name);
+		i = 0;
+		while (instr.cmd->cmd_arg[i])
+		{
+			write_nchar('|', prof);
+			printf("%d-ieme arg : %s\n", i, instr.cmd->cmd_arg[i]);
+			i++;
+		}
+	}
+	if (!instr.redirection)
+	{
+		write_nchar('|', prof);
+		printf("NO REDIRECTIONS\n");
+	}
+	if (instr.redirection)
+	{
+		write_nchar('|', prof);
+		printf("RED PATHFILE : %s\n", ((t_redirect *)instr.redirection->content)->pathfile);
+	}
 }
 
 void	printAST(t_ast *ast, int prof)
@@ -33,10 +64,12 @@ void	printAST(t_ast *ast, int prof)
 	{
 		while (ast->content)
 		{
-			printAST((t_ast *)ast->content, prof + 1);
+			printAST((t_ast *)ast->content->content, prof + 1);
 			ast->content = ast->content->next;
 		}
 	}
+	else
+		print_instr(*(t_instruction *)(ast->content->content), prof + 1);
 }
 
 int	is_token(t_list *lst)
@@ -170,6 +203,8 @@ t_ast	*from_lexer_to_instruction(t_list *lst)
 	instruction = (t_instruction *)malloc(sizeof(t_instruction));
 	instruction->cmd = NULL;
 	instruction->redirection = NULL;
+	instruction->fd[0] = 0;
+	instruction->fd[1] = 0;
 	while (lst && ((t_lxr *)lst->content)->type != stop)
 	{
 		if (is_redirection(lst))

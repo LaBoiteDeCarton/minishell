@@ -24,7 +24,7 @@ bash-3.2$ echo 'salut $n toi'
 salut $n toi
 
 en cas de && et || les fichier s'ouvrent a gauche mais pas a droite. Alors que dans le pipe, d'abord tous les fichiers s'ouvrent...
-bash-3.2$ < file1 grep s && < nexistepas cat
+bash-3.2$ < file1 grep a && < nexistepas cat
 salut
 sdsds
 bash: nexistepas: No such file or directory
@@ -32,7 +32,7 @@ bash-3.2$ < file1 grep s || < nexistepas cat
 salut
 sdsds
 
-< file1 grep s > file2 | sleep 5 | < nexistepas cat
+< file1 grep a > file2 | sleep 5 | < nexistepas cat
 bash: nexistepas: No such file or directory
 mais l'execution se fait a gauche après que les fichiers ont tenté detre ouvert, puis sleep, ...
 
@@ -56,7 +56,7 @@ bash: hjk: command not found
 bash: kjh: command not found
 bash: hkhkjhk: No such file or directory
 
-Cet exemple en dit long
+Cet exemple en dit long (enfaite non)
 
 bash-3.2$ echo toto | exit | echo tata
 tata
@@ -160,3 +160,55 @@ bash-3.2$
 bash-3.2$ exit && touch jkhkjhjkh
 exit
 There are stopped jobs.
+
+bash-3.2$ echo 't'est
+test
+
+bash-3.2$ <jkejk <file cat
+bash: jkejk: No such file or directory
+bash-3.2$ cat jhkjhkjh
+cat: jhkjhkjh: No such file or directory
+
+Appel a exit renvoi la derniere valeur de sortie.
+
+bash-3.2$ jhjhk jhkjhk; echo $?
+bash: jhjhk: command not found
+127
+bash-3.2$ <kjhhkjhkhkjhkjh echo test; echo $?
+bash: kjhhkjhkhkjhkjh: No such file or directory
+1
+bash-3.2$ chmod 000 file
+bash-3.2$ <file cat ; echo $?
+bash: file: Permission denied
+1
+bash-3.2$ <file2 hjhkjhk >>file; echo $?
+bash: file: Permission denied
+1
+
+bash-3.2$ bash ./minishell 
+./minishell: ./minishell: cannot execute binary file
+
+bash-3.2$ &&&
+bash: syntax error near unexpected token `&&'
+bash-3.2$ echo $?
+258
+
+bash-3.2$ jhkhkj | <file2 kjkjlkj | <file3 kjlkjl
+bash: jhkhkj: command not found
+bash: file2: No such file or directory
+bash: file3: No such file or directory
+bash-3.2$ jhkhkj | <file2 kjkjlkj | <file3 kjlkjl
+bash: file2: No such file or directory
+bash: jhkhkj: command not found
+bash: file3: No such file or directory
+
+MEME COMMANDE comportement different. L'ordre depend du premier qui arrive a afficher l'erreur. Vu que le fork est effectué en interne, parfois
+l'erreur file 2 passe avant le comand not found
+
+
+The status stored by waitpid() encodes both the reason that the child process was terminated and
+ the exit code. The reason is stored in the least-significant byte (obtained by status & 0xff), 
+ and the exit code is stored in the next byte (masked by status & 0xff00 and extracted by WEXITSTATUS()).
+  When the process terminates normally, the reason is 0 and so WEXITSTATUS is just equivalent to shifting 
+  by 8 (or dividing by 256). However, if the process is killed by a signal (such as SIGSEGV), there is no 
+  exit code, and you have to use WTERMSIG to extract the signal number from the reason byte.

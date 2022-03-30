@@ -4,8 +4,6 @@
 # include <unistd.h>
 # include <stdlib.h>
 
-char	**cenv;
-
 typedef struct s_instruction	t_instruction;
 typedef struct s_cmd			t_cmd;
 typedef struct s_builtin		t_builtin;

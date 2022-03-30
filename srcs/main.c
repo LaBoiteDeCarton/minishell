@@ -19,7 +19,7 @@ static char	*ft_readline(char *prompt_msg)
 	return (read_buffer);
 }
 
-static void	interactive_msh(void)
+static void	interactive_msh()
 {
 	char	*prompt_msg;
 	//char	*readline_buffer;
@@ -28,14 +28,15 @@ static void	interactive_msh(void)
 	{
 		prompt_msg = get_prompt();
 		rl_line_buffer = ft_readline(prompt_msg);
-		if (rl_line_buffer != NULL)
+		free(prompt_msg);
+		if (rl_line_buffer != NULL && ft_strncmp(rl_line_buffer, "", 1))
 			add_history(rl_line_buffer);
 		ft_system(rl_line_buffer);
 		free(rl_line_buffer);
 	}
 }
 
-static void	passive_msh(void)
+static void	passive_msh()
 {
 	char	*read_stdin;
 
@@ -48,12 +49,14 @@ int	main(int ac, char **av, char **env)
 {
 	(void)ac;
 	(void)av;
-	cenv = env;
+	cenv.env = env;
+	cenv.exit_status = 0;
+	cenv.var = NULL;
 
 	init_signals();
 	if (isatty(STDIN_FILENO))
 		interactive_msh();
 	else
 		passive_msh();
-	return (0);
+	return (cenv.exit_status);
 }

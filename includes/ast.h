@@ -5,12 +5,9 @@
 # include <stdlib.h>
 # include "libft.h"
 
-char	**cenv;
-
 typedef struct s_ast			t_ast;
 typedef struct s_instruction	t_instruction;
 typedef struct s_cmd			t_cmd;
-typedef struct s_builtin		t_builtin;
 typedef struct s_redirect		t_redirect;
 typedef struct s_and			t_and;
 typedef struct s_or				t_or;
@@ -42,6 +39,7 @@ struct s_instruction
 {
 	t_list		*redirection;
 	t_cmd		*cmd;
+	int			fd[2];
 };
 
 typedef enum s_redirect_type
@@ -60,30 +58,15 @@ struct s_redirect
 	char			*end;
 };
 
-// struct s_pipe
-// {
-// 	t_list	*content;
-// };
-
-// struct s_or
-// {
-// 	t_list	*content;
-// };
-
-// struct s_and
-// {
-// 	t_list	*content;
-// };
-
 t_ast	*from_lexer_to_ast(t_list *lst);
 
-int	exec_ast(t_ast ast);
-int	exec_cmd(t_cmd node);
-int	exec_and(t_ast node);
-int	exec_or(t_ast node);
-int	n_redirect(t_list *redirections);
-int	exec_instruction(t_instruction node);
-int	exec_pipe(t_ast node);
+void	exec_ast(t_ast ast);
+void	exec_cmd(t_cmd node, int *fd);
+void	exec_and(t_ast node);
+void	exec_or(t_ast node);
+int		n_redirect(t_list *redirections, int *fd);
+void	exec_instruction(t_instruction node);
+void	exec_pipe(t_ast node);
 void	printAST(t_ast *ast, int prof);
 
 #endif
