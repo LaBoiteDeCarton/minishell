@@ -15,7 +15,6 @@ typedef struct s_pipe			t_pipe;
 
 typedef enum s_token
 {
-	token_cmd, //nope
 	token_instruction,
 	token_and,
 	token_or,
@@ -31,8 +30,8 @@ struct s_ast
 
 struct s_cmd
 {
-	char	*cmd_name;
-	char	**cmd_arg;
+	char		*cmd_name;
+	char		**cmd_arg;
 };
 
 struct s_instruction
@@ -55,7 +54,6 @@ struct s_redirect
 {
 	t_redirect_type	red_type;
 	char			*pathfile;
-	char			*end;
 };
 
 t_ast	*from_lexer_to_ast(t_list *lst);
@@ -68,5 +66,10 @@ int		n_redirect(t_list *redirections, int *fd);
 void	exec_instruction(t_instruction node);
 void	exec_pipe(t_ast node);
 void	printAST(t_ast *ast, int prof);
+
+int		cmd_is_var_attribution(t_cmd node);
+int		char_is_var_attribution(char *str);
+void	add_params(char **chartab);
+void	print_params();
 
 #endif

@@ -13,19 +13,7 @@ void	printf_lexer(t_list	*lst)
 {
 	while (lst)
 	{
-		if (((t_lxr *)lst->content)->type == single_qt)
-		{
-			printf("single_qt ");
-			printf("%s", ((t_lxr *)lst->content)->content);
-			printf(" single_qt\n");
-		}
-		else if (((t_lxr *)lst->content)->type == double_qt)
-		{
-			printf("double_qt ");
-			printf("%s", ((t_lxr *)lst->content)->content);
-			printf(" double_qt\n");
-		}
-		else if (((t_lxr *)lst->content)->type == scope_open)
+		if (((t_lxr *)lst->content)->type == scope_open)
 			printf("scope_open\n");
 		else if (((t_lxr *)lst->content)->type == scope_close)
 			printf("scope_close\n");
@@ -59,9 +47,9 @@ t_lxr_type	lexer_type(char *str)
 	else if (*str == ')')
 		return (scope_close);
 	else if (*str == '\"')
-		return (double_qt);
+		return (word);
 	else if (*str == '\'')
-		return (single_qt);
+		return (word);
 	else if (!ft_strncmp(str, "&&", 2))
 		return (sep_and);
 	else if (!ft_strncmp(str, "||", 2))
@@ -87,7 +75,21 @@ char	*fil_content_from_str(char *str)
 	
 	i = 0;
 	while (str[i] && str[i] != ' ' && lexer_type(str + i) == word)
+	{
+		if(str[i] == '\"')
+		{
+			i++;
+			while (str[i] && str[i] != '\"')
+				i++;
+		}
+		if(str[i] == '\'')
+		{
+			i++;
+			while (str[i] && str[i] != '\'')
+				i++;
+		}
 		i++;
+	}
 	res = (char *)malloc(sizeof(char) * (i + 1));
 	ft_strlcpy(res, str, i + 1);
 	return (res);
@@ -95,57 +97,58 @@ char	*fil_content_from_str(char *str)
 
 void	scroll_str(char **str, t_lxr_type type)
 {
-	(*str)++;
 	if (type == word)
 	{
 		while (**str && **str != ' ' && lexer_type(*str) == word)
+		{
+			if (**str == '\"')
+			{
+				(*str)++;
+				while (**str && **str != '\"')
+					(*str)++;
+			}
+			if (**str == '\'')
+			{
+				(*str)++;
+				while (**str && **str != '\'')
+					(*str)++;
+			}
 			(*str)++;
-	}
-	else if (type == single_qt)
-	{
-		while (**str && **str != '\'')
-			(*str)++;
-		if (**str)
-			(*str)++;
-	}
-	else if (type == double_qt)
-	{
-		while (**str && **str != '\"')
-			(*str)++;
-		if (**str)
-			(*str)++;
+		}
 	}
 	else if (type == heredoc || type == sep_and || type == sep_or || type == append)
-		(*str) += 1;
+		(*str) += 2;
+	else
+		(*str)++;
 }
 
-char	*fil_sqt_content_from_str(char *str)
-{
-	int		i;
-	char	*res;
+// char	*fil_sqt_content_from_str(char *str)
+// {
+// 	int		i;
+// 	char	*res;
 	
-	i = 0;
-	str++;
-	while (str[i] && str[i] != '\'')
-		i++;
-	res = (char *)malloc(sizeof(char) * (i + 1));
-	ft_strlcpy(res, str, i + 1);
-	return (res);
-}
+// 	i = 0;
+// 	str++;
+// 	while (str[i] && str[i] != '\'')
+// 		i++;
+// 	res = (char *)malloc(sizeof(char) * (i + 1));
+// 	ft_strlcpy(res, str, i + 1);
+// 	return (res);
+// }
 
-char	*fil_dqt_content_from_str(char *str)
-{
-	int		i;
-	char	*res;
+// char	*fil_dqt_content_from_str(char *str)
+// {
+// 	int		i;
+// 	char	*res;
 	
-	i = 0;
-	str++;
-	while (str[i] && str[i] != '\"')
-		i++;
-	res = (char *)malloc(sizeof(char) * (i + 1));
-	ft_strlcpy(res, str, i + 1);
-	return (res);
-}
+// 	i = 0;
+// 	str++;
+// 	while (str[i] && str[i] != '\"')
+// 		i++;
+// 	res = (char *)malloc(sizeof(char) * (i + 1));
+// 	ft_strlcpy(res, str, i + 1);
+// 	return (res);
+// }
 
 t_list	*create_lexer(char *str)
 {
@@ -159,11 +162,7 @@ t_list	*create_lexer(char *str)
 		return (NULL);
 	lxr = (t_lxr *)malloc(sizeof(t_lxr));
 	lxr->type = lexer_type(str);
-	if (lxr->type == single_qt)
-		lxr->content = fil_sqt_content_from_str(str);
-	else if (lxr->type == double_qt)
-		lxr->content = fil_dqt_content_from_str(str);
-	else if (lxr->type == word)
+	if (lxr->type == word)
 		lxr->content = fil_content_from_str(str);
 	else
 		lxr->content = NULL;

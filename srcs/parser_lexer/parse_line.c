@@ -19,8 +19,6 @@ void	print_token(t_token token)
 		printf("PIPE\n");
 	if (token == token_instruction)
 		printf("INSTR\n");
-	if (token == token_cmd)
-		printf("CMD\n");
 }
 
 void	print_instr(t_instruction instr, int prof)
@@ -118,9 +116,7 @@ int	is_redirection(t_list *lst)
 
 int	is_text(t_list *lst)
 {
-	return (((t_lxr *)lst->content)->type == single_qt
-		|| ((t_lxr *)lst->content)->type == double_qt
-		|| ((t_lxr *)lst->content)->type == word);
+	return (((t_lxr *)lst->content)->type == word);
 }
 
 t_redirect_type get_red(t_list *lst)
@@ -140,7 +136,7 @@ void	add_redirection(t_instruction *instr, t_list **lst)
 {
 	t_redirect	*redirection;
 
-	redirection = (t_redirect *)malloc(sizeof(t_redirect));
+	redirection = (t_redirect *)malloc(sizeof(t_redirect));// catcj si malloc KO
 	redirection->red_type = get_red(*lst);
 	redirection->pathfile = NULL;
 	if ((*lst)->next && is_text((*lst)->next))
@@ -152,11 +148,10 @@ void	add_redirection(t_instruction *instr, t_list **lst)
 	ft_lstadd_back(&instr->redirection, ft_lstnew(redirection));
 }
 
-char	**create_chartab(t_list *lst)
+int		get_arg_size(t_list *lst)
 {
 	int 	i;
 	t_list	*ptr;
-	char	**chartab;
 
 	ptr = lst;
 	i = 0;
@@ -165,29 +160,28 @@ char	**create_chartab(t_list *lst)
 		ptr = ptr->next;
 		i++;
 	}
-	chartab = (char **)malloc(sizeof(char *) * (i + 1));
-	chartab[i] = NULL;
-	i = 0;
-	while (lst && is_text(lst))
-	{
-		chartab[i] = ((t_lxr *)lst->content)->content;
-		i++;
-		lst = lst->next;
-	}
-	return (chartab);
+	return (i);
 }
 
 void	add_cmd(t_instruction *instr, t_list **lst)
 {
 	t_cmd	*cmd;
+	int		argsize;
+	int		i;
 
-	cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	cmd = (t_cmd *)malloc(sizeof(t_cmd)); //catch si erreur de malloc
 	cmd->cmd_name = ((t_lxr *)(*lst)->content)->content;
 	cmd->cmd_arg = NULL;
-	cmd->cmd_arg = create_chartab(*lst);
-		*lst = (*lst)->next;
+	argsize = get_arg_size(*lst);
+	cmd->cmd_arg = (char **)malloc(sizeof(char *) * (argsize + 1)); //catch si erreur de malloc
+	cmd->cmd_arg[argsize] = NULL;
+	i = 0;
 	while (*lst && is_text(*lst))
+	{
+		cmd->cmd_arg[i] = ((t_lxr *)(*lst)->content)->content;
+		i++;
 		*lst = (*lst)->next;
+	}
 	instr->cmd = cmd;
 }
 
@@ -200,7 +194,7 @@ t_ast	*from_lexer_to_instruction(t_list *lst)
 		return (NULL);
 	ast = (t_ast *)malloc(sizeof(t_ast)); //checker la reussite du malloc !!!!
 	ast->token = token_instruction;
-	instruction = (t_instruction *)malloc(sizeof(t_instruction));
+	instruction = (t_instruction *)malloc(sizeof(t_instruction)); //catch si erreur de malloc
 	instruction->cmd = NULL;
 	instruction->redirection = NULL;
 	instruction->fd[0] = 0;
@@ -249,7 +243,7 @@ t_ast	*from_lexer_to_ast(t_list *lst)
 	ptr = next_token(lst);
 	if (!ptr)
 		return (from_lexer_to_instruction(lst));
-	ret = (t_ast *)malloc(sizeof(t_ast));
+	ret = (t_ast *)malloc(sizeof(t_ast)); //catch si erreur de malloc
 	ret->token = get_token(ptr);
 	((t_lxr *)ptr->content)->type = stop;
 	ret->content = ft_lstnew(from_lexer_to_ast(lst)); //si ft_lstnew echou, leaks... attention

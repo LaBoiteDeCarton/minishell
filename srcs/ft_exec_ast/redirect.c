@@ -12,8 +12,7 @@ int	set_stdoutappend(char *path, int *fd)
 	*fd = open(path, O_WRONLY | O_CREAT | O_APPEND, 0777);
 	if (*fd == -1)
 	{
-		ft_putstr_fd("msh: ", STDERR_FILENO);
-		perror(path);
+		handle_errors(path);
 		return (0);
 	}
 	return (1);
@@ -21,11 +20,12 @@ int	set_stdoutappend(char *path, int *fd)
 
 int	set_stdout(char *path, int *fd)
 {
+	if (*fd > 0)
+		close(*fd);
 	*fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (*fd == -1)
 	{
-		ft_putstr_fd("msh: ", STDERR_FILENO);
-		perror(path);
+		handle_errors(path);
 		return (0);
 	}
 	return (1);
@@ -38,42 +38,61 @@ int	set_stdin(char *path, int *fd)
 	*fd = open(path, O_RDONLY);
 	if (*fd == -1)
 	{
-		ft_putstr_fd("msh: ", STDERR_FILENO);
-		perror(path);
+		handle_errors(path);
 		return (0);
 	}
 	return (1);
 }
 
-int	set_stdinheredoc(char *limiter, int *fd)
+int	set_stdinheredoc(char *limiter, int *fd) //ICI ON DOIT FORK POUR EVITER QUE ^D ne coupe stdin du main
 {
 	int		pipe_fd[2];
 	char	*line;
+	int		status;
+	pid_t	pid_id;
 
+	int		fd_stdin;
+	fd_stdin = dup(STDIN_FILENO);
 	if (*fd > 0)
 		close(*fd);
 	if (pipe(pipe_fd))
 	{
-		ft_putstr_fd("msh: ", STDERR_FILENO);
-		perror(limiter);
+		handle_errors(limiter);
 		return (0);
 	}
-	ft_putstr_fd("> ", STDOUT_FILENO);
-	while (get_next_line(0, &line))
+	pid_id = fork();
+	if (pid_id == -1)
 	{
-		if (line && !ft_strncmp(limiter, line, ft_strlen(limiter) + 1)) //len + 1? pour prendre en compte le NULL?
+		handle_errors(limiter);
+		return (0);
+	}
+	if (pid_id == 0)
+	{
+		close(pipe_fd[0]);
+		while (1)
 		{
+			line = ft_readline("> ");
+			if (!line)
+				break ;
+			if (line && !ft_strncmp(limiter, line, ft_strlen(limiter) + 1)) //len + 1? pour prendre en compte le NULL?
+			{
+				free(line);
+				break ;
+			}
+			ft_putstr_fd(line, pipe_fd[1]);
+			ft_putstr_fd("\n", pipe_fd[1]);
 			free(line);
-			break;
 		}
-		ft_putstr_fd(line, pipe_fd[1]);
-		ft_putstr_fd("\n", pipe_fd[1]);
-		free(line);
-		ft_putstr_fd("> ", STDOUT_FILENO);
+		close(pipe_fd[1]);
+		exit(EXIT_SUCCESS);
 	}
 	close(pipe_fd[1]);
+	waitpid(pid_id, &status, 0);
+	dup2(fd_stdin, STDIN_FILENO);
 	dup2(pipe_fd[0], *fd);
 	close(pipe_fd[0]);
+	if (WIFSIGNALED(status))
+		return (0);
 	return (1);
 }
 

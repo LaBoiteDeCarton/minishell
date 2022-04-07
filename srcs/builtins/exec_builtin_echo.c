@@ -1,23 +1,46 @@
 #include "builtins.h"
+#include "minishell.h"
+
+static int		arg_is_endloption(char *arg)
+{
+	if (!arg)
+		return (0);
+	if (!ft_strncmp(arg, "-n", 3))
+		return (1);
+	if (!ft_strncmp(arg, "-n", 2))
+	{
+		while (*(arg + 2))
+		{
+			if (*(arg + 2) != 'n')
+				return (0);
+			arg++;
+		}
+		return (1);
+	}
+	return (0);
+}
 
 void	exec_builtin_echo(t_cmd node, int *fd)
 {
 	int	endl;
+	char	*tmp;
 
 	if (fd[0] > 0)
 		close(fd[0]);
 	if (fd[1] <= 0)
-		fd[1] = dup(STDOUT_FILENO);
+		fd[1] = dup(STDOUT_FILENO); //ici catch l'erreur!!
 	(node.cmd_arg)++;
 	endl = 1;
-	if (!ft_strncmp(*(node.cmd_arg), "-n", 3))
+	while (arg_is_endloption(*(node.cmd_arg)))
 	{
 		endl = 0;
 		(node.cmd_arg)++;
 	}
 	while (*(node.cmd_arg))
 	{
-		ft_putstr_fd(*(node.cmd_arg), fd[1]);
+		tmp = expande_char(*(node.cmd_arg));
+		ft_putstr_fd(tmp, fd[1]);
+		free(tmp);
 		(node.cmd_arg)++;
 		if (*(node.cmd_arg))
 			ft_putchar_fd(' ', fd[1]);
@@ -25,4 +48,5 @@ void	exec_builtin_echo(t_cmd node, int *fd)
 	if (endl)
 		ft_putchar_fd('\n', fd[1]);
 	close(fd[1]);
+	cenv.exit_status = 0;
 }

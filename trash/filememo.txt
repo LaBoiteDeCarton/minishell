@@ -212,3 +212,144 @@ The status stored by waitpid() encodes both the reason that the child process wa
   When the process terminates normally, the reason is 0 and so WEXITSTATUS is just equivalent to shifting 
   by 8 (or dividing by 256). However, if the process is killed by a signal (such as SIGSEGV), there is no 
   exit code, and you have to use WTERMSIG to extract the signal number from the reason byte.
+
+
+bash-3.2$ /file/kjlkj/jkljl
+bash: /file/kjlkj/jkljl: No such file or directory
+
+bash-3.2$ ARG=4
+bash-3.2$ echo $ARG
+4
+bash-3.2$ ARG2="ici $ARG"
+bash-3.2$ echo $ARG2
+ici 4
+bash-3.2$ ARG=5
+bash-3.2$ echo $ARG2
+ici 4
+
+bash-3.2$ echo hkjhkjh"hjk"
+hkjhkjhhjk
+
+bash-3.2$ l"s"
+Makefile        abs             file1           fileres         hello           kjhkjh          minishell       srcs            trash
+abk             file 
+
+bash-3.2$ <file FARG=memo >$FARG
+crée un fichier memo
+
+bash-3.2$ <<$TYUZ TYUZ=tifu >$TYUZ | echo test
+> jlkjfl
+> memo
+> tifu
+> $TYUZ
+test
+bash-3.2$ <<"$TYUZ" TYUZ=tifu >$TYUZ | echo test
+> lkejlkj
+> tifu
+> "$TYUZ"
+> $TYUZ
+test
+bash-3.2$ <<TY"UZ" TYUZ=tifu >$TYUZ | echo test
+> kjklj
+> TY
+> UZ
+> TYUZ
+test
+bash-3.2$ <<TY"UZ" TYUZ=tifu >$TYUZ | echo test
+> TY"UZ"
+> TYUZ
+
+EXPAND avec Heredoc comme si c'etait un squote
+VAR=memo
+bash-3.2$ <$VAR VAR=memo ;echo $VAR
+memo
+bash-3.2$ <$VAR VAR=jkljlk ;echo $VAR
+bash: jkljlk: No such file or directory
+
+bash-3.2$ VAR=BLABLA
+bash-3.2$ $VAR="khjkjhjkh"
+bash: BLABLA=khjkjhjkh: command not found
+
+bash-3.2$ VAR=BOOM
+bash-3.2$ BLABLA=$VAR
+bash-3.2$ echo $BLABLA
+BOOM
+bash-3.2$ BLABLA="coucou $VAR"
+bash-3.2$ echo $BLABLA
+coucou BOOM
+bash-3.2$ echo $VAR
+jkl
+bash-3.2$ export VAR=tutut
+bash-3.2$ echo $VAR
+tutut
+
+bash-3.2$ VAR=1 BIGVAR=2 OTHERVAR=3 ; echo $VAR $BIGVAR $OTHERVAR
+1 2 3
+bash-3.2$ VAR=4 BIGVAR=5 OTHERVAR=6 echo test ; echo $VAR $BIGVAR $OTHERVAR
+test
+1 2 3
+bash-3.2$ VAR=1 BIGVAR=$VAR OTHERVAR=3 ; echo $VAR $BIGVAR $OTHERVAR
+1 1 3
+bash-3.2$ VAR=$NOTEXISTYET NOTEXISTYET=5 BIGVAR=$VAR OTHERVAR=3 ; echo $VAR $BIGVAR $OTHERVAR
+3
+bash-3.2$ echo '$'arg
+$arg
+bash-3.2$ echo "$"arg
+$arg
+bash-3.2$ echo$'arg'
+bash: echoarg: command not found
+
+https://discussions.apple.com/thread/3693628 wow fast typing...that why cat doesn't work after pipe
+
+bash-3.2$ export tatata ; env | grep tatata
+bash-3.2$ 
+bash-3.2$ export tututu= ; env | grep tututu
+tututu=
+
+ash-3.2$ arg2=something
+bash-3.2$ $arg2
+bash: something: command not found
+bash-3.2$ export arg2
+bash-3.2$ $arg2
+bash: something: command not found
+bash-3.2$ unset arg2
+bash-3.2$ $arg2
+bash-3.2$ unset arg2
+
+bash-3.2$ ARG=NEW=42 ; echo $ARG
+NEW=42
+bash-3.2$ echo $NEW
+
+$ARG ; echo $NEW
+bash: NEW=42: command not found
+bash-3.2$ export $ARG; echo $NEW
+42
+
+bash-3.2$ export §=hjk
+bash: export: `§=hjk': not a valid identifier
+
+bash-3.2$ <filenexistepas arg=89; echo $arg
+bash: filenexistepas: No such file or directory
+89
+
+bash-3.2$ echo $ARG
+ARG
+bash-3.2$ export $"$ARG"=78
+bash-3.2$ echo $ARG
+78
+
+bash-3.2$ echo -n -n -n -n tout
+toutbash-3.2$ echo -nnnnnnn tout
+toutbash-3.2$ 
+
+bash-3.2$ exit 1567567 && touch kjhkjh
+exit
+daniel_mercadiel@macbook minishell % echo $?
+79
+
+bash-3.2$ kjhkjh
+bash: kjhkjh: command not found
+bash-3.2$ exit $?
+exit
+daniel_mercadiel@macbook minishell % echo $?
+127

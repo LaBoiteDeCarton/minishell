@@ -1,1 +1,9 @@
-127
+echo test
+<<stop cat >file2
+echo salut toi
+ls | grep a
+echo toto
+hjhjkh
+kjhjkh
+stop
+echo lol

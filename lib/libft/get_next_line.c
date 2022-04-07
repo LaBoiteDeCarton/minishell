@@ -6,6 +6,8 @@ static char	*ft_strjoin_and_free(char *s1, char *s2)
 	size_t	totsize;
 
 	totsize = ft_strlen(s1) + ft_strlen(s2);
+	if (!totsize)
+		return (NULL);
 	new_s = malloc(sizeof(char) * (totsize + 1));
 	if (!new_s)
 		new_s = NULL;
@@ -58,7 +60,7 @@ int	get_next_line(int fd, char **line)
 		reading = 0;
 		c_readed = read(fd, buff, BUFFER_SIZE);
 		if (c_readed == 0 && !*line)
-			*line = ft_strdup("");
+			return (0);
 		if (c_readed <= 0)
 			return (c_readed);
 		buff[c_readed] = 0;

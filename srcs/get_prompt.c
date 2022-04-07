@@ -28,19 +28,6 @@ static char	*join_prompt(char *user, char *directory)
 	return (join);
 }
 
-static void	free_chartab(char **str)
-{
-	char **ptr;
-
-	ptr = str;
-	while (*ptr)
-	{
-		free(*ptr);
-		ptr++;
-	}
-	free(str);
-}
-
 char	*get_prompt()
 {
 	char	*user;

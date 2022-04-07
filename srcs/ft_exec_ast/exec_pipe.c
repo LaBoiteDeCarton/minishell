@@ -11,10 +11,10 @@ void	fork_pipe(t_ast node, int fdin)
 	if (!node.content)
 		return ;
 	if (node.content->next && pipe(pipe_fd) == -1)
-		return ; //ici erreur de creation de pipe avec variable ERRNO!
+		return (handle_errors(NULL)); //ici erreur de creation de pipe avec variable ERRNO!
 	pid = fork();
 	if (pid == -1)
-		return ; //ici erreur de creation de fork avec variable ERRNO;
+		return (handle_errors(NULL)); //ici erreur de creation de fork avec variable ERRNO;
 	if (pid == 0)
 	{
 		//child

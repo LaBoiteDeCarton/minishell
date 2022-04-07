@@ -34,15 +34,13 @@ char	*find_path(char *f)
 
 void	exec_cmd(t_cmd node, int *fd)
 {
-	int	pid_id;
+	pid_t	pid_id;
 	int	status;
 	int	execve_ret;
 	char	*tmp;
 
-	//check si builtin
 	if (get_builtin(node.cmd_name) != bi_none)
 		return (exec_builtin(node, fd));
-	//check si la fonction existe, si oui on peux fork, si non, terminé.
 	tmp = node.cmd_name;
 	node.cmd_name = find_path(node.cmd_name);
 	if (!node.cmd_name)
@@ -55,6 +53,7 @@ void	exec_cmd(t_cmd node, int *fd)
 	}
 	// ATTENTION, si cmd_name vide, ne rien faire
 	pid_id = fork();
+	init_exec_signals();
 	if (pid_id == -1)
 	{
 		write(2, "Unable to fork\n", 15);
@@ -75,12 +74,14 @@ void	exec_cmd(t_cmd node, int *fd)
 		}
 		execve_ret = execve(node.cmd_name, node.cmd_arg, cenv.env);
 		//ici free ce qu'on peu, on ne doit jamais arriver ici en vrai
+		ft_putstr_fd("neverland\n", STDOUT_FILENO);
 		exit(execve_ret);
 	}
 	else
 	{
 		waitpid(pid_id, &status, 0);
-		cenv.exit_status = WEXITSTATUS(status);
+		if (WIFSIGNALED(status))
+			cenv.exit_status = WEXITSTATUS(status);
 		if (fd[1] > 0)
 			close(fd[1]);
 		if (fd[0] > 0)
