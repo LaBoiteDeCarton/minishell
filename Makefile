@@ -5,8 +5,17 @@ OBJS = ${SRCS:.c=.o}
 
 H_DIR = includes
 LFT = lib/libft
-LIBFLAGS = -Llib/libft -lft -L/usr/local/opt/readline/lib -lreadline
-INCLUDEFLAGS = -I/usr/local/opt/readline/include -I${H_DIR} 
+ifdef MAC_OS_CATALINA
+	LIBFLAGS = -Llib/libft -lft -L/usr/local/opt/readline/lib -lreadline
+else
+	LIBFLAGS = -Llib/libft -lft -L${HOME}/.brew/opt/readline/lib -lreadline
+endif
+
+ifdef MAC_OS_CATALINA
+	INCLUDEFLAGS = -I/usr/local/opt/readline/include -I${H_DIR}
+else
+	INCLUDEFLAGS = -I${HOME}/.brew/opt/readline/include -I${H_DIR}
+endif
 FLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 
 .c.o:
@@ -27,5 +36,8 @@ fclean: clean
 	rm -f ${NAME}
 
 re: fclean ${NAME}
+
+install:
+	brew install readline
 
 .PHONY: all, clean, fclean, re, bonus

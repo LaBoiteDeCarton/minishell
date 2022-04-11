@@ -25,8 +25,6 @@ void	exec_builtin_echo(t_cmd node, int *fd)
 	int		endl;
 	char	*tmp;
 
-	if (fd[0] != -1 && close(fd[0]) == -1)
-		return (handle_errors("Echo"));
 	if (fd[1] == -1)
 		fd[1] = dup(STDOUT_FILENO);
 	if (fd[1] == -1)

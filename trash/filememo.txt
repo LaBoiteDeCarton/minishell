@@ -399,3 +399,9 @@ bash-3.2$ echo "<"
 <
 bash-3.2$ echo <"<"
 bash: <: No such file or directory
+
+bash-3.2$ echo >file5 test >file6 reussi
+bash-3.2$ 
+infile file5 : test reussi
+
+msh-0.1> echo <file5 test >file6 reussi

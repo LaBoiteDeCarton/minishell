@@ -1,18 +1,9 @@
 to do
 
-change str_to_instruction
-a chaque t_word, rajouter si redirect dans redirect
-							si non dans cmd_name si vide + rajouter dans cmd_arg
-
-Modifier le heredox de façon a faire le fd et save lors du parsing (STDIN courant)
-
 Builtins qui manque
 
 expand fonction gerer les " et ' en les enlevant et en faisant ce qu'il faut avec la string interieure
 
 verifier les signaux
-
-builtin exit
-	ajouter la gestion des argument et les erreurs qui en decoulent
 
 GERER LES ERREURS EN SAISI UTILISATEURS (chose que je n'ai pas faite du tout)

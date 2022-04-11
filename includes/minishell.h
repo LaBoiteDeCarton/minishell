@@ -18,10 +18,10 @@ t_mshenv	cenv;
 */
 struct s_mshenv
 {
-	char	**env;
-	int		env_s;
-	int		exit_status;
-	t_list	*var;
+	char			**env;
+	int				env_s;
+	unsigned int	exit_status;
+	t_list			*var;
 };
 
 struct s_var

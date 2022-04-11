@@ -1,4 +1,5 @@
 #include "ast.h"
+#include "minishell.h"
 #include "lexer.h"
 #include "libft.h"
 #include <stdio.h>
@@ -63,7 +64,10 @@ void	print_instr(t_instruction instr, int prof)
 	if (instr.redirection)
 	{
 		write_nchar('|', prof);
-		printf("RED PATHFILE : %s\n", ((t_redirect *)instr.redirection->content)->pathfile);
+		if (((t_redirect *)instr.redirection->content)->pathfile)
+			printf("RED PATHFILE : %s\n", ((t_redirect *)instr.redirection->content)->pathfile);
+		else
+			printf("IS NULL");
 	}
 }
 
@@ -85,6 +89,11 @@ void	printAST(t_ast *ast, int prof)
 		print_instr(*(t_instruction *)(ast->content->content), prof + 1);
 }
 
+t_lxr_type	get_type(t_list *lst)
+{
+	return (((t_lxr *)lst->content)->type);
+}
+
 int	is_token(t_list *lst)
 {
 	t_lxr_type	lst_type;
@@ -94,11 +103,6 @@ int	is_token(t_list *lst)
 		|| lst_type == sep_or
 		|| lst_type == sep_pipe
 		|| lst_type == stop);
-}
-
-t_lxr_type	get_type(t_list *lst)
-{
-	return (((t_lxr *)lst->content)->type);
 }
 
 t_list	*next_closed_scope(t_list *lst)
@@ -176,20 +180,23 @@ t_list	*add_redirection(t_list *lst)
 	t_redirect	*redirection;
 
 	lst_of_redirect = NULL;
-	while (lst && get_type(lst) != stop)
+	while (lst && (is_text(lst) || is_redirection(lst)))
 	{
 		if (is_redirection(lst))
 		{
+			redirection = NULL;
 			redirection = (t_redirect *)malloc(sizeof(t_redirect));
 			if (!redirection)
 				break ;
 			redirection->red_type = get_red(lst);
 			redirection->pathfile = NULL;
-			if (is_text(lst->next))
+			lst = lst->next;
+			if (is_text(lst))
 			{
-				redirection->pathfile = ((t_lxr *)(lst)->next->content)->content; // ici catch l'erreur si isnot word
-				lst = lst->next;
-				ft_lstadd_back(lst_of_redirect, ft_lstnew(redirection));
+				redirection->pathfile = ((t_lxr *)lst->content)->content; // ici catch l'erreur si isnot word
+				if (redirection->red_type == red_heredoc)
+					redirection->fd = get_heredoc(redirection->pathfile);
+				ft_lstadd_back(&lst_of_redirect, ft_lstnew(redirection));
 			}
 			else
 				free(redirection);
@@ -208,38 +215,51 @@ int		get_arg_size(t_list *lst)
 	{
 		if (is_text(lst))
 			nb_of_word++;
+		if (is_redirection(lst))
+			lst = lst->next;
 		lst = lst->next;
 	}
 	return (nb_of_word);
 }
 
-t_cmd	*add_cmd(t_list **lst)
+t_cmd	*add_cmd(t_list *lst)
 {
 	t_cmd	*cmd;
 	int		argsize;
 	int		i;
 
-	argsize = get_arg_size(*lst);
+	argsize = get_arg_size(lst);
 	if (!argsize)
 		return (NULL);
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!cmd)
 		return (NULL);
+	cmd->cmd_name = NULL;
 	cmd->cmd_arg = (char **)malloc(sizeof(char *) * (argsize + 1)); //catch si erreur de malloc
 	if (!cmd->cmd_arg)
 	{
 		free(cmd);
 		return (NULL);
 	}
-	cmd->cmd_arg[argsize] = NULL;
+	cmd->cmd_arg[argsize] = NULL; //memset tout a NULL please
 	i = 0;
 	while (lst && get_type(lst) != stop)
 	{
-		// if (is_word)
-		// cmd->cmd_arg[i] = ((t_lxr *)(*lst)->content)->content;
-		// i++;
-		// *lst = (*lst)->next;
+		if (is_text(lst) && !cmd->cmd_name)
+			cmd->cmd_name = ((t_lxr *)lst->content)->content;
+		if (is_text(lst))
+			cmd->cmd_arg[i++] = ((t_lxr *)lst->content)->content;
+		if (is_redirection(lst))
+			lst = lst->next;
+		if (!lst || !is_text(lst))
+		{
+			//attention chartab free ici mais memset tout a NULL avant
+			free(cmd);
+			return (NULL);
+		}
+		lst = lst->next;
 	}
+	return (cmd);
 }
 
 t_ast	*from_lexer_to_instruction(t_list *lst)
@@ -252,10 +272,10 @@ t_ast	*from_lexer_to_instruction(t_list *lst)
 	ast = (t_ast *)malloc(sizeof(t_ast)); //checker la reussite du malloc !!!!
 	ast->token = token_instruction;
 	instruction = (t_instruction *)malloc(sizeof(t_instruction)); //catch si erreur de malloc
-	instruction->cmd = add_cmd(lst);
-	instruction->redirection = add_redirection(lst);
 	instruction->fd[0] = -1;
 	instruction->fd[1] = -1;
+	instruction->redirection = add_redirection(lst);
+	instruction->cmd = add_cmd(lst);
 	ast->content = ft_lstnew(instruction);
 	return (ast);
 }
