@@ -60,11 +60,7 @@ void	exec_builtin_export(t_cmd node, int *fd)
 {
 	char	**expanded_arg;
 	int		i;
-
-	if (fd[0] > 0)
-		close(fd[0]);
-	if (fd[1] > 0)
-		close(fd[0]);
+	(void)	fd;
 	//ici on doit expand chaque arg avant de les executer.
 	expanded_arg = expande_chartab(node.cmd_arg);
 	cenv.exit_status = 0;

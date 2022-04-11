@@ -53,6 +53,7 @@ typedef enum s_redirect_type
 struct s_redirect
 {
 	t_redirect_type	red_type;
+	int				fd;
 	char			*pathfile;
 };
 

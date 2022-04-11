@@ -14,13 +14,10 @@ static void	interactive_msh()
 	while (1)
 	{
 		readline_buffer = NULL;
-		readline_buffer = ft_readline("msh-0.1 >");
+		readline_buffer = ft_readline("msh-0.1> ");
 		if (!readline_buffer)
-		{
-			ft_putstr_fd("we shouldnt be here\n", STDOUT_FILENO);
 			msh_exit();
-		}
-		if (ft_strncmp(readline_buffer, "", 1))
+		if (*readline_buffer)
 			add_history(readline_buffer);
 		ft_system(readline_buffer);
 		free(readline_buffer);

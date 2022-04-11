@@ -353,3 +353,49 @@ bash-3.2$ exit $?
 exit
 daniel_mercadiel@macbook minishell % echo $?
 127
+
+
+fonction ps pour lister les tty
+fonction tty pour savoir le tty courant
+kill -9 <PID_ID> pour kill le tty "zombie" (au cas où)
+
+(sleep 4 && echo premier fini >> file4) | (sleep 2 && echo deuxieme fini >>file4)
+file =	deuxieme fini
+		premier fini
+
+
+bash-3.2$ sleep 10 && <<here cat
+> lekjd
+> ek
+> here
+
+lekjd
+ek
+bash-3.2$
+
+
+HEREDOC SOUVRE DIRECTEment lors du parsing ast
+
+
+
+bash-3.2$ <kjhkhjhkh cat | cat
+bash: kjhkhjhkh: No such file or directory
+bash-3.2$ 
+
+
+bash-3.2$ cat | echo test
+test
+lkj
+bash-3.2$ 
+
+lsof | grep pidid
+
+bash-3.2$ <file (ls)
+bash: syntax error near unexpected token `('
+
+bash-3.2$ echo <>
+bash: syntax error near unexpected token `newline'
+bash-3.2$ echo "<"
+<
+bash-3.2$ echo <"<"
+bash: <: No such file or directory

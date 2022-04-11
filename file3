@@ -1,10 +1,9 @@
-Makefile
-file
-file2
-file3
-hello
-includes
-kjhkjh
-lib
-srcs
-trash
+echo test
+<<stop cat >file2
+echo salut toi
+ls | grep a
+echo toto
+hjhjkh
+kjhjkh
+stop
+echo lol

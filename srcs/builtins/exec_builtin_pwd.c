@@ -6,9 +6,7 @@ void	exec_builtin_pwd(t_cmd node, int *fd)
 	(void)node;
 	char	*buf;
 
-	if (fd[0] > 0)
-		close(fd[0]);
-	if (fd[1] <= 0)
+	if (fd[1] == -1)
 		fd[1] = dup(STDOUT_FILENO);
 	buf = (char *)malloc(sizeof(char) * 1000);
 	if (!buf)
@@ -25,6 +23,5 @@ void	exec_builtin_pwd(t_cmd node, int *fd)
 	}
 	ft_putstr_fd(buf, fd[1]);
 	ft_putchar_fd('\n', fd[1]);
-	close(fd[1]);
 	cenv.exit_status = 0;
 }

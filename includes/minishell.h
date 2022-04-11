@@ -31,7 +31,9 @@ struct s_var
 };
 
 void	init_signals(void);
-void	init_exec_signals();
+void	init_exec_children_signals();
+void	init_heredoc_signal();
+void	init_exec_father_signal();
 char	*ft_readline(char *prompt_msg);
 void	ft_system(char *command);
 char	*get_prompt();

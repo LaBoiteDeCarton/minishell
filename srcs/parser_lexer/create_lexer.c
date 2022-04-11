@@ -2,7 +2,7 @@
 #include "libft.h"
 #include <stdio.h>
 
-void	free_content(void *content)
+void	free_content(void *content) //Unused
 {
 	if (((t_lxr *)content)->content)
 		free(((t_lxr *)content)->content);

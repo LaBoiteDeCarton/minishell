@@ -2,6 +2,7 @@
 #include "minishell.h"
 #include "builtins.h"
 #include <stdio.h>
+#include <signal.h>
 
 char	*find_path(char *f)
 {
@@ -12,13 +13,15 @@ char	*find_path(char *f)
 
 	newf = ft_strjoin("/", f); //leaks detected maybe !
 	i = 0;
-	paths = ft_split(getenv("PATH"), ':');
+	paths = ft_split(getenv("PATH"), ':'); //ft_getenv
 	while (paths[i])
 	{
 		if (!fpath)
 			free(fpath);
 		fpath = ft_strjoin(paths[i], newf);
-		if (access(fpath, F_OK) == 0)
+		if (!fpath)
+			handle_errors("Command: ");
+		else if (access(fpath, F_OK) == 0)
 		{
 			free(newf);
 			return (fpath);
@@ -35,8 +38,8 @@ char	*find_path(char *f)
 void	exec_cmd(t_cmd node, int *fd)
 {
 	pid_t	pid_id;
-	int	status;
-	int	execve_ret;
+	int		status;
+	int		execve_ret;
 	char	*tmp;
 
 	if (get_builtin(node.cmd_name) != bi_none)
@@ -53,7 +56,6 @@ void	exec_cmd(t_cmd node, int *fd)
 	}
 	// ATTENTION, si cmd_name vide, ne rien faire
 	pid_id = fork();
-	init_exec_signals();
 	if (pid_id == -1)
 	{
 		write(2, "Unable to fork\n", 15);
@@ -62,30 +64,19 @@ void	exec_cmd(t_cmd node, int *fd)
 	}
 	else if (pid_id == 0)
 	{
-		if (fd[1] > 0)
-		{
-			dup2(fd[1], STDOUT_FILENO);
-			close(fd[1]);
-		}
-		if (fd[0] > 0)
-		{
-			dup2(fd[0], STDIN_FILENO);
-			close(fd[0]);
-		}
+		init_exec_children_signals();
+		if (fd[0] != -1 && (dup2(fd[0], STDIN_FILENO) == -1 || close(fd[0]) == -1))
+			handle_errors("Command");
+		if (fd[1] != -1 && (dup2(fd[1], STDOUT_FILENO) == -1 || close(fd[1]) == -1))
+			handle_errors("Command");
 		execve_ret = execve(node.cmd_name, node.cmd_arg, cenv.env);
 		//ici free ce qu'on peu, on ne doit jamais arriver ici en vrai
 		ft_putstr_fd("neverland\n", STDOUT_FILENO);
 		exit(execve_ret);
 	}
-	else
-	{
-		waitpid(pid_id, &status, 0);
-		if (WIFSIGNALED(status))
-			cenv.exit_status = WEXITSTATUS(status);
-		if (fd[1] > 0)
-			close(fd[1]);
-		if (fd[0] > 0)
-			close(fd[0]);
-	}
+	init_exec_father_signal();
+	waitpid(pid_id, &status, 0);
+	if (!WIFSIGNALED(status))
+		cenv.exit_status = WEXITSTATUS(status);
 	return ;
 }

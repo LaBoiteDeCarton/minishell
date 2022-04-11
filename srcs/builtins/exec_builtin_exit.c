@@ -11,6 +11,6 @@ void	exec_builtin_exit(t_cmd node, int *fd)
 	if (fd[1] > 0)
 		close(fd[0]);
 	//expand l'arg
-	
+	//ecrire uniquement en mode interactif
 	msh_exit();
 }

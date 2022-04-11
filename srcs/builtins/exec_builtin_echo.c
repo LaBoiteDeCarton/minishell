@@ -22,13 +22,15 @@ static int		arg_is_endloption(char *arg)
 
 void	exec_builtin_echo(t_cmd node, int *fd)
 {
-	int	endl;
+	int		endl;
 	char	*tmp;
 
-	if (fd[0] > 0)
-		close(fd[0]);
-	if (fd[1] <= 0)
-		fd[1] = dup(STDOUT_FILENO); //ici catch l'erreur!!
+	if (fd[0] != -1 && close(fd[0]) == -1)
+		return (handle_errors("Echo"));
+	if (fd[1] == -1)
+		fd[1] = dup(STDOUT_FILENO);
+	if (fd[1] == -1)
+		return (handle_errors("Echo"));
 	(node.cmd_arg)++;
 	endl = 1;
 	while (arg_is_endloption(*(node.cmd_arg)))
@@ -47,6 +49,5 @@ void	exec_builtin_echo(t_cmd node, int *fd)
 	}
 	if (endl)
 		ft_putchar_fd('\n', fd[1]);
-	close(fd[1]);
 	cenv.exit_status = 0;
 }

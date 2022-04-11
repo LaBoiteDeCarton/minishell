@@ -10,39 +10,35 @@ void	fork_pipe(t_ast node, int fdin)
 	
 	if (!node.content)
 		return ;
-	if (node.content->next && pipe(pipe_fd) == -1)
-		return (handle_errors(NULL)); //ici erreur de creation de pipe avec variable ERRNO!
+	if (pipe(pipe_fd) == -1)
+		return (handle_errors("Pipe"));
 	pid = fork();
 	if (pid == -1)
-		return (handle_errors(NULL)); //ici erreur de creation de fork avec variable ERRNO;
+		return (handle_errors("Pipe"));
 	if (pid == 0)
 	{
-		//child
-		if (fdin != STDIN_FILENO)
+		if ((close(pipe_fd[0]) == -1)
+			|| (fdin != STDIN_FILENO && (dup2(fdin, STDIN_FILENO) == -1 || close(fdin) == -1))
+			|| (node.content->next && dup2(pipe_fd[1], STDOUT_FILENO) == -1)
+			|| (close(pipe_fd[1]) == -1))
 		{
-			dup2(fdin, STDIN_FILENO);
-			close(fdin);
-		}
-		if (node.content->next)
-		{
-			close(pipe_fd[0]);
-			dup2(pipe_fd[1], STDOUT_FILENO);
-			close(pipe_fd[1]);
+			handle_errors("Pipe");
+			exit(258);
 		}
 		exec_ast(*(t_ast *)node.content->content);
 		//free des trucs?
 		exit(cenv.exit_status);
 	}
-	if (node.content->next)
-	{
-		close(pipe_fd[1]);
-		node.content = node.content->next;
+	if (close(pipe_fd[1]) == -1)
+		handle_errors("Pipe");
+	node.content = node.content->next;
+	if (node.content)
 		fork_pipe(node, pipe_fd[0]);
-	}
 	waitpid(pid, &status, 0);
-	if (node.content->next)
-		close(pipe_fd[0]);
-	cenv.exit_status = WEXITSTATUS(status);
+	if (close(pipe_fd[0]) == -1)
+		handle_errors("Pipe");
+	if (!WIFSIGNALED(status))
+		cenv.exit_status = WEXITSTATUS(status);
 }
 
 void	exec_pipe(t_ast node)

@@ -48,5 +48,9 @@ void	exec_instruction(t_instruction node)
 		exec_cmd(*node.cmd, node.fd);
 	else
 		cenv.exit_status = 0;
+	if (node.fd[0] != -1 && close(node.fd[0]) == -1)
+		handle_errors("Command");
+	if (node.fd[1] != -1 && close(node.fd[1]) == -1)
+		handle_errors("Command");
 	return ;
 }

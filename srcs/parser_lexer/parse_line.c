@@ -9,6 +9,17 @@ void	write_nchar(char c, int n)
 		write(1, &c, 1);
 }
 
+t_token	get_token(t_list *lst)
+{
+	if (((t_lxr *)lst->content)->type == sep_and)
+		return (token_and);
+	if (((t_lxr *)lst->content)->type == sep_or)
+		return (token_or);
+	if (((t_lxr *)lst->content)->type == sep_pipe)
+		return (token_pipe);
+	return (token_error);
+}
+
 void	print_token(t_token token)
 {
 	if (token == token_and)
@@ -19,6 +30,8 @@ void	print_token(t_token token)
 		printf("PIPE\n");
 	if (token == token_instruction)
 		printf("INSTR\n");
+	else
+		printf("token error\n");
 }
 
 void	print_instr(t_instruction instr, int prof)
@@ -56,14 +69,16 @@ void	print_instr(t_instruction instr, int prof)
 
 void	printAST(t_ast *ast, int prof)
 {
+	t_list *ptr;
 	write_nchar('|', prof);
 	print_token(ast->token);
 	if (ast->token != token_instruction)
 	{
-		while (ast->content)
+		ptr = ast->content;
+		while (ptr)
 		{
-			printAST((t_ast *)ast->content->content, prof + 1);
-			ast->content = ast->content->next;
+			printAST((t_ast *)ptr->content, prof + 1);
+			ptr = ptr->next;
 		}
 	}
 	else
@@ -72,23 +87,43 @@ void	printAST(t_ast *ast, int prof)
 
 int	is_token(t_list *lst)
 {
-	return (((t_lxr *)lst->content)->type == sep_and
-		|| ((t_lxr *)lst->content)->type == sep_or
-		|| ((t_lxr *)lst->content)->type == sep_pipe
-		|| ((t_lxr *)lst->content)->type == stop);
+	t_lxr_type	lst_type;
+
+	lst_type = get_type(lst);
+	return (lst_type == sep_and
+		|| lst_type == sep_or
+		|| lst_type == sep_pipe
+		|| lst_type == stop);
 }
 
-t_list	*last_closed_scope(t_list *lst)
+t_lxr_type	get_type(t_list *lst)
 {
-	t_list	*next;
+	return (((t_lxr *)lst->content)->type);
+}
 
-	if (!lst)
-		return (NULL);
-	next = last_closed_scope(lst->next);
-	if (next)
-		return (next);
-	if (((t_lxr *)lst->content)->type == scope_close)
-		return (lst);
+t_list	*next_closed_scope(t_list *lst)
+{
+	int		open_scope_count;
+	t_list	*ptr;
+
+	ptr = lst;
+	open_scope_count = 1;
+	while (ptr)
+	{
+		if (((t_lxr *)ptr->content)->type == scope_open)
+			open_scope_count++;
+		if (((t_lxr *)ptr->content)->type == scope_close)
+			open_scope_count--;
+		if (!open_scope_count && ptr->next && get_token(ptr->next) != stop)
+			return (ptr->next);
+		if (!open_scope_count)
+		{
+			((t_lxr *)ptr->content)->type = stop;
+			return (lst->next);
+		}
+		ptr = ptr->next;
+		
+	}
 	return (NULL);
 }
 
@@ -97,7 +132,7 @@ t_list	*next_token(t_list *lst)
 	while (lst && !is_token(lst))
 	{
 		if (((t_lxr *)lst->content)->type == scope_open)
-			lst = last_closed_scope(lst)->next;
+			lst = next_closed_scope(lst);
 		else
 			lst = lst->next;
 	}
@@ -108,15 +143,18 @@ t_list	*next_token(t_list *lst)
 
 int	is_redirection(t_list *lst)
 {
-	return (((t_lxr *)lst->content)->type == read_in
-		|| ((t_lxr *)lst->content)->type == open_out
-		|| ((t_lxr *)lst->content)->type == append
-		|| ((t_lxr *)lst->content)->type == heredoc);
+	t_lxr_type lst_type;
+
+	lst_type = get_type(lst);
+	return (lst_type == read_in
+		|| lst_type == open_out
+		|| lst_type == append
+		|| lst_type == heredoc);
 }
 
 int	is_text(t_list *lst)
 {
-	return (((t_lxr *)lst->content)->type == word);
+	return (get_type(lst) == word);
 }
 
 t_redirect_type get_red(t_list *lst)
@@ -132,57 +170,76 @@ t_redirect_type get_red(t_list *lst)
 	return (red_error);
 }
 
-void	add_redirection(t_instruction *instr, t_list **lst)
+t_list	*add_redirection(t_list *lst)
 {
+	t_list		*lst_of_redirect;
 	t_redirect	*redirection;
 
-	redirection = (t_redirect *)malloc(sizeof(t_redirect));// catcj si malloc KO
-	redirection->red_type = get_red(*lst);
-	redirection->pathfile = NULL;
-	if ((*lst)->next && is_text((*lst)->next))
+	lst_of_redirect = NULL;
+	while (lst && get_type(lst) != stop)
 	{
-		redirection->pathfile = ((t_lxr *)(*lst)->next->content)->content;
-		*lst = (*lst)->next;
+		if (is_redirection(lst))
+		{
+			redirection = (t_redirect *)malloc(sizeof(t_redirect));
+			if (!redirection)
+				break ;
+			redirection->red_type = get_red(lst);
+			redirection->pathfile = NULL;
+			if (is_text(lst->next))
+			{
+				redirection->pathfile = ((t_lxr *)(lst)->next->content)->content; // ici catch l'erreur si isnot word
+				lst = lst->next;
+				ft_lstadd_back(lst_of_redirect, ft_lstnew(redirection));
+			}
+			else
+				free(redirection);
+		}
+		lst = lst->next;
 	}
-	*lst = (*lst)->next;
-	ft_lstadd_back(&instr->redirection, ft_lstnew(redirection));
+	return (lst_of_redirect);
 }
 
 int		get_arg_size(t_list *lst)
 {
-	int 	i;
-	t_list	*ptr;
+	int 	nb_of_word;
 
-	ptr = lst;
-	i = 0;
-	while (ptr && is_text(ptr))
+	nb_of_word = 0;
+	while (lst && get_type(lst) != stop)
 	{
-		ptr = ptr->next;
-		i++;
+		if (is_text(lst))
+			nb_of_word++;
+		lst = lst->next;
 	}
-	return (i);
+	return (nb_of_word);
 }
 
-void	add_cmd(t_instruction *instr, t_list **lst)
+t_cmd	*add_cmd(t_list **lst)
 {
 	t_cmd	*cmd;
 	int		argsize;
 	int		i;
 
-	cmd = (t_cmd *)malloc(sizeof(t_cmd)); //catch si erreur de malloc
-	cmd->cmd_name = ((t_lxr *)(*lst)->content)->content;
-	cmd->cmd_arg = NULL;
 	argsize = get_arg_size(*lst);
+	if (!argsize)
+		return (NULL);
+	cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	if (!cmd)
+		return (NULL);
 	cmd->cmd_arg = (char **)malloc(sizeof(char *) * (argsize + 1)); //catch si erreur de malloc
+	if (!cmd->cmd_arg)
+	{
+		free(cmd);
+		return (NULL);
+	}
 	cmd->cmd_arg[argsize] = NULL;
 	i = 0;
-	while (*lst && is_text(*lst))
+	while (lst && get_type(lst) != stop)
 	{
-		cmd->cmd_arg[i] = ((t_lxr *)(*lst)->content)->content;
-		i++;
-		*lst = (*lst)->next;
+		// if (is_word)
+		// cmd->cmd_arg[i] = ((t_lxr *)(*lst)->content)->content;
+		// i++;
+		// *lst = (*lst)->next;
 	}
-	instr->cmd = cmd;
 }
 
 t_ast	*from_lexer_to_instruction(t_list *lst)
@@ -195,32 +252,12 @@ t_ast	*from_lexer_to_instruction(t_list *lst)
 	ast = (t_ast *)malloc(sizeof(t_ast)); //checker la reussite du malloc !!!!
 	ast->token = token_instruction;
 	instruction = (t_instruction *)malloc(sizeof(t_instruction)); //catch si erreur de malloc
-	instruction->cmd = NULL;
-	instruction->redirection = NULL;
-	instruction->fd[0] = 0;
-	instruction->fd[1] = 0;
-	while (lst && ((t_lxr *)lst->content)->type != stop)
-	{
-		if (is_redirection(lst))
-			add_redirection(instruction, &lst);
-		else if (is_text(lst))
-			add_cmd(instruction, &lst);
-		else
-			lst = lst->next;
-	}
+	instruction->cmd = add_cmd(lst);
+	instruction->redirection = add_redirection(lst);
+	instruction->fd[0] = -1;
+	instruction->fd[1] = -1;
 	ast->content = ft_lstnew(instruction);
 	return (ast);
-}
-
-t_token	get_token(t_list *lst)
-{
-	if (((t_lxr *)lst->content)->type == sep_and)
-		return (token_and);
-	if (((t_lxr *)lst->content)->type == sep_or)
-		return (token_or);
-	if (((t_lxr *)lst->content)->type == sep_pipe)
-		return (token_pipe);
-	return (token_error);
 }
 
 t_ast	*join_ast(t_ast *left, t_ast *right)
