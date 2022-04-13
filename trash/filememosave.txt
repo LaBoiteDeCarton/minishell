@@ -1,9 +1,27 @@
+< file2 < file2 cat
+ouvre les deux fichiers, si erreur dans l'ouverture, la commande n'est pas executé.
+Si aucune erreur dans l'ouverture, cat est executé avec le dernier fichier ouvert en entrée standard
+(ceci en bash uniquement, en sh il execute l'un apres l'autre)
+
+< file1 cat > fileres > fileres2
+ouvre les fichiers, le cree si besoin, mais n'utilise en sortie standard que le dernier fichier ouvert en sortie standard.
+Executé avec cette sortie.
+(en gros on fait un boucle sur l'ouverture en io, et c'est le dernier utilisé qu'on redirige qui est finalement utilisé)
 
 Pipeline:
 [time [-p]] [!] command1 [ | or |& command2 ] …
 The output of each command in the pipeline is connected via a pipe to the input of the next command. 
 That is, each command reads the previous command’s output. 
 This connection is performed before any redirections specified by the command. !!!!!!
+
+
+Si $n n'existe pas :
+bash-3.2$ echo salut $n  toi
+salut toi
+bash-3.2$ echo "salut $n toi"
+salut  toi
+bash-3.2$ echo 'salut $n toi'
+salut $n toi
 
 en cas de && et || les fichier s'ouvrent a gauche mais pas a droite. Alors que dans le pipe, d'abord tous les fichiers s'ouvrent...
 bash-3.2$ < file1 grep a && < nexistepas cat
@@ -125,7 +143,34 @@ $
 bash-3.2$ ARG=hello | echo $ARG | cat -e
 $
 bash-3.2$ export ARG=hello | echo $ARG | cat -e
+bash-3.2$ ARG=hello && echo $ARG | cat -e
+hello$
 
+
+bash-3.2$ < "file" cat
+jfhgejrhgfhjergfer
+
+bash-3.2$ echo kjhkjh "klkjj"
+kjhkjh klkjj
+bash-3.2$ echo kjhkjh   "klkjj"
+kjhkjh klkjj
+bash-3.2$ echo kjhkjh   "klk      jj"
+kjhkjh klk      jj
+bash-3.2$ 
+
+bash-3.2$ exit && touch jkhkjhjkh
+exit
+There are stopped jobs.
+
+bash-3.2$ echo 't'est
+test
+
+bash-3.2$ <jkejk <file cat
+bash: jkejk: No such file or directory
+bash-3.2$ cat jhkjhkjh
+cat: jhkjhkjh: No such file or directory
+
+Appel a exit renvoi la derniere valeur de sortie.
 
 bash-3.2$ jhjhk jhkjhk; echo $?
 bash: jhjhk: command not found
@@ -133,8 +178,17 @@ bash: jhjhk: command not found
 bash-3.2$ <kjhhkjhkhkjhkjh echo test; echo $?
 bash: kjhhkjhkhkjhkjh: No such file or directory
 1
+bash-3.2$ chmod 000 file
+bash-3.2$ <file cat ; echo $?
+bash: file: Permission denied
 1
+bash-3.2$ <file2 hjhkjhk >>file; echo $?
+bash: file: Permission denied
 1
+
+bash-3.2$ bash ./minishell 
+./minishell: ./minishell: cannot execute binary file
+
 bash-3.2$ &&&
 bash: syntax error near unexpected token `&&'
 bash-3.2$ echo $?
@@ -352,62 +406,3 @@ bash-3.2$
 infile file5 : test reussi
 
 msh-0.1> echo <file5 test >file6 reussi
-
-
-
-bash-3.2$ echo oui && echo non || echo stop
-oui
-non
-bash-3.2$ echo $poi && echo non || echo stop
-
-non
-bash-3.2$ jkljkj && echo non || echo stop
-bash: jkljkj: command not found
-stop
-bash-3.2$ jkljkj && echo non && echo cool || echo stop
-bash: jkljkj: command not found
-stop
-bash-3.2$ jkljkj && echo non && echo cool || echo stop && echo basta
-bash: jkljkj: command not found
-stop
-basta
-bash-3.2$ jkljkj && echo non && echo cool || lkjlj && echo basta
-bash: jkljkj: command not found
-bash: lkjlj: command not found
-bash-3.2$ jkljkj && echo non && echo cool || lkjlj && echo basta || echo nothing
-bash: jkljkj: command not found
-bash: lkjlj: command not found
-nothing
-bash-3.2$ ls | grep nexistepas || echo non && echo basta
-non
-basta
-bash-3.2$ (ls | grep nexistepas) || echo non && echo basta
-non
-basta
-bash-3.2$ (ls | grep file) || echo non && echo basta
-file_command
-basta
-
-
-mon ast est a chier, && et || doivent etre le meme token, on doit pouvoir parcourir la liste de cet ast jusqu'a la fin, en executant ou non selon si ||/&& et le dernier EXIT STATUS
-
-
-ORDRE DU LEXER!!!! 
-bash-3.2$ echo test | ARG=42 && echo $ARG
-
-bash-3.2$ echo test | (ARG=42 && echo $ARG)
-42
-bash-3.2$ ARG=42 && echo VIVE | echo $ARG 
-42
-bash-3.2$ unset ARG
-bash-3.2$ (ARG=42 && echo VIVE) | echo $ARG 
-
-bash-3.2$ echo test | echo | hkhjhk | echo && echo reussi
-bash-3.2$ echo test | echo | hkhjhk | kjhkhkj && echo dommage
-
-bash-3.2$ echo $"?ab"c
-?abc
-bash-3.2$ echo $'?ab'c
-?abc
-bash-3.2$ echo $?'?ab'c
-0?abc

@@ -73,7 +73,7 @@ void	add_params(char **strtab)
 	while (*strtab)
 	{
 		if (name_is_in_env(*strtab))
-			add_to_env(*strtab);
+			add_to_env(*strtab); // expand char ici //attention aux leaks
 		else
 			add_to_var(*strtab);
 		strtab++;

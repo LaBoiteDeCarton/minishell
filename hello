@@ -2,8 +2,6 @@ to do
 
 Builtins qui manque
 
-expand fonction gerer les " et ' en les enlevant et en faisant ce qu'il faut avec la string interieure
-
 verifier les signaux
 
 GERER LES ERREURS EN SAISI UTILISATEURS (chose que je n'ai pas faite du tout)

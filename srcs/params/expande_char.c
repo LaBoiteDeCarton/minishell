@@ -24,7 +24,6 @@ int		expanded_char_size(char *str)
 			expanded_size++;
 		str++;
 	}
-	printf("EXPAND SIZE = %d\n", expanded_size);
 	return (expanded_size + 1);
 }
 
