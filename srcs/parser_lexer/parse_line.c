@@ -31,8 +31,6 @@ void	print_token(t_token token)
 		printf("PIPE\n");
 	if (token == token_instruction)
 		printf("INSTR\n");
-	else
-		printf("token error\n");
 }
 
 void	print_instr(t_instruction instr, int prof)
@@ -110,39 +108,42 @@ t_list	*next_closed_scope(t_list *lst)
 	int		open_scope_count;
 	t_list	*ptr;
 
-	ptr = lst;
+	ptr = lst->next;
 	open_scope_count = 1;
-	while (ptr)
+	while (ptr && ((t_lxr *)ptr->content)->type != stop)
 	{
 		if (((t_lxr *)ptr->content)->type == scope_open)
 			open_scope_count++;
 		if (((t_lxr *)ptr->content)->type == scope_close)
 			open_scope_count--;
-		if (!open_scope_count && ptr->next && get_token(ptr->next) != stop)
-			return (ptr->next);
 		if (!open_scope_count)
-		{
-			((t_lxr *)ptr->content)->type = stop;
-			return (lst->next);
-		}
+			return (ptr);
 		ptr = ptr->next;
-		
 	}
-	return (NULL);
+	return (ptr);
 }
 
 t_list	*next_token(t_list *lst)
 {
-	while (lst && !is_token(lst))
+	t_list *ptr;
+
+	if (!lst)
+		return (NULL);
+	if (((t_lxr *)lst->content)->type == scope_open)
 	{
-		if (((t_lxr *)lst->content)->type == scope_open)
-			lst = next_closed_scope(lst);
-		else
-			lst = lst->next;
+		ptr = next_closed_scope(lst);
+		if (((t_lxr *)ptr->content)->type != stop
+				&& ptr->next
+				&& ((t_lxr *)ptr->next->content)->type != stop)
+			lst = ptr->next;
 	}
-	if (!lst || ((t_lxr *)lst->content)->type == stop)
-		return (NULL); //spaghetti?
-	return (lst);
+	while (lst)
+	{
+		if (is_token(lst))
+			return (lst);
+		lst = lst->next;
+	}
+	return (NULL);
 }
 
 int	is_redirection(t_list *lst)
@@ -180,7 +181,7 @@ t_list	*add_redirection(t_list *lst)
 	t_redirect	*redirection;
 
 	lst_of_redirect = NULL;
-	while (lst && (is_text(lst) || is_redirection(lst)))
+	while (lst && !is_token(lst))
 	{
 		if (is_redirection(lst))
 		{
@@ -211,7 +212,7 @@ int		get_arg_size(t_list *lst)
 	int 	nb_of_word;
 
 	nb_of_word = 0;
-	while (lst && get_type(lst) != stop)
+	while (lst && !is_token(lst))
 	{
 		if (is_text(lst))
 			nb_of_word++;
@@ -243,7 +244,7 @@ t_cmd	*add_cmd(t_list *lst)
 	}
 	cmd->cmd_arg[argsize] = NULL; //memset tout a NULL please
 	i = 0;
-	while (lst && get_type(lst) != stop)
+	while (lst && !is_token(lst))
 	{
 		if (is_text(lst) && !cmd->cmd_name)
 			cmd->cmd_name = ((t_lxr *)lst->content)->content;
@@ -251,11 +252,11 @@ t_cmd	*add_cmd(t_list *lst)
 			cmd->cmd_arg[i++] = ((t_lxr *)lst->content)->content;
 		if (is_redirection(lst))
 			lst = lst->next;
-		if (!lst || !is_text(lst))
+		if (!lst || is_token(lst))
 		{
 			//attention chartab free ici mais memset tout a NULL avant
 			free(cmd);
-			return (NULL);
+			return (NULL); //ne devrait âs arriver du coup? car handled by lexer_is_valide
 		}
 		lst = lst->next;
 	}
@@ -292,17 +293,29 @@ t_ast	*join_ast(t_ast *left, t_ast *right)
 	return (left);
 }
 
+/*
+ *	Create a AST tree out of lexer 
+ * 
+ * 	Works recursively :
+ * 		1. create a list pointer to the next_token
+ * 		2.a If this pointer is NULL, meaning, there is no other token like && || | ;
+ * 			we create an "instruction" type of t_ast
+ * 		2.b If pointer not NULL, we creating the new t_ast and affecting the token
+ * 		3.b Adding to the ast list the asts from the "left" and "right" of the token
+ */
+
 t_ast	*from_lexer_to_ast(t_list *lst)
 {
 	t_list	*ptr;
 	t_ast	*ret;
 
 	ptr = next_token(lst);
-	if (!ptr)
+	if (!ptr || ((t_lxr *)ptr->content)->type == stop)
 		return (from_lexer_to_instruction(lst));
 	ret = (t_ast *)malloc(sizeof(t_ast)); //catch si erreur de malloc
 	ret->token = get_token(ptr);
 	((t_lxr *)ptr->content)->type = stop;
-	ret->content = ft_lstnew(from_lexer_to_ast(lst)); //si ft_lstnew echou, leaks... attention
+	ret->content = NULL;
+	join_ast(ret, from_lexer_to_ast(lst));
 	return (join_ast(ret, from_lexer_to_ast(ptr->next))); // attention ne gere pas bien les scopes
 }

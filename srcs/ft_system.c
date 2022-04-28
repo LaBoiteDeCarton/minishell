@@ -21,10 +21,7 @@ void	ft_system(char *command)
 	lexer = create_lexer(command);
 	//printf_lexer(lexer);
 	if (!lexer_is_valide(lexer))
-	{
-		cenv.exit_status = 258;
 		return ;
-	}
 	ast = from_lexer_to_ast(lexer);
 	//printAST(ast, 0);
 	if (ast)

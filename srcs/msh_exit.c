@@ -6,6 +6,7 @@ void	msh_exit()
 	free_var(cenv.var);
 	//free ast si existe
 	rl_clear_history();
-	ft_putstr_fd("exit\n", STDERR_FILENO);
+	if (isatty(STDIN_FILENO))
+		ft_putstr_fd("exit\n", STDERR_FILENO);
 	exit(cenv.exit_status);
 }

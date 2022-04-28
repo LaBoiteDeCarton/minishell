@@ -47,7 +47,7 @@ void	add_to_env(char	*str)
 	}
 	if (cenv.env[i])
 		free(cenv.env[i]);
-	cenv.env[i] = ft_strdup(str);
+	cenv.env[i] = expande_char(str);
 	cenv.env[i + 1] = NULL;
 	if (!cenv.env[i])
 	{

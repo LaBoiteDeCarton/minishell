@@ -45,7 +45,7 @@ static void add_to_var(char *str)
 		perror("new variable is not created or modified: ");
 		return ;
 	}
-	new_var->value = ft_strdup(ptr); //ici expand d'abord le ptr
+	new_var->value = expande_char(ptr); //ici expand d'abord le ptr
 	if (!new_var->value)
 	{
 		free(new_var->name);
@@ -73,7 +73,7 @@ void	add_params(char **strtab)
 	while (*strtab)
 	{
 		if (name_is_in_env(*strtab))
-			add_to_env(*strtab); // expand char ici //attention aux leaks
+			add_to_env(*strtab);
 		else
 			add_to_var(*strtab);
 		strtab++;

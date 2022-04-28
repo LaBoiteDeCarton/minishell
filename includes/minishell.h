@@ -3,6 +3,7 @@
 
 # define MSH_VERSION "msh-0.1"
 # include "libft.h"
+# include "ast.h"
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -46,6 +47,7 @@ char	*get_prompt();
 void	handle_errors(char *msg_error);
 int		var_name_size(char *name);
 char	*expande_char(char *str);
+void	expande_commande(t_cmd *node);
 
 /* 
 	environnements functions

@@ -60,7 +60,7 @@ struct s_redirect
 t_ast	*from_lexer_to_ast(t_list *lst);
 
 void	exec_ast(t_ast ast);
-void	exec_cmd(t_cmd node, int *fd);
+void	exec_cmd(t_cmd *node, int *fd);
 void	exec_and(t_ast node);
 void	exec_or(t_ast node);
 int		n_redirect(t_list *redirections, int *fd);
@@ -68,7 +68,7 @@ void	exec_instruction(t_instruction node);
 void	exec_pipe(t_ast node);
 void	printAST(t_ast *ast, int prof);
 
-int		cmd_is_var_attribution(t_cmd node);
+int		cmd_is_var_attribution(t_cmd *node);
 int		char_is_var_attribution(char *str);
 void	add_params(char **chartab);
 void	print_params();

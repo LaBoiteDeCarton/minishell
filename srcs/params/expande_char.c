@@ -1,5 +1,21 @@
 #include "minishell.h"
 
+static int	itoasize(int n)
+{
+	int	size;
+
+	if (n < 0)
+		size = 2;
+	else
+		size = 1;
+	while (n / 10)
+	{
+		n /= 10;
+		size++;
+	}
+	return (size);
+}
+
 int		expanded_char_size(char *str)
 {
 	int		expanded_size;
@@ -15,6 +31,11 @@ int		expanded_char_size(char *str)
 			dquote_open = (dquote_open + 1) % 2;
 		else if (*str == '\'' && !dquote_open)
 			squote_open = (squote_open + 1) % 2;
+		else if (!squote_open && !ft_strncmp(str, "$?", 2))
+		{
+			expanded_size += itoasize(cenv.exit_status);
+			str++;
+		}
 		else if (*str == '$' && !squote_open)
 		{
 			expanded_size += ft_strlen(get_value(str + 1));
@@ -33,6 +54,7 @@ char	*expande_char(char *str)
 	int		i;
 	int		dquote_open;
 	int		squote_open;
+	char	*itoachar;
 
 	dquote_open = 0;
 	squote_open = 0;
@@ -49,6 +71,14 @@ char	*expande_char(char *str)
 			dquote_open = (dquote_open + 1) % 2;
 		else if (*str == '\'' && !dquote_open)
 			squote_open = (squote_open + 1) % 2;
+		else if (!squote_open && !ft_strncmp(str, "$?", 2))
+		{
+			str++;
+			itoachar = get_value(str);
+			ft_memcpy(expanded_char + i, itoachar, ft_strlen(itoachar));
+			i += ft_strlen(itoachar);
+			free(itoachar);
+		}
 		else if (*str == '$' && !squote_open)
 		{
 			str++;

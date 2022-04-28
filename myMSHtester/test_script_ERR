@@ -1,0 +1,447 @@
+COMMAND: \n
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: n: command not found$
+MSH ERROR OUTPUT :
+msh: \n: command not found$
+
+COMMAND: exit 9223372036854775808
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: exit: 9223372036854775808: numeric argument required$
+MSH ERROR OUTPUT :
+msh: exit: 9223372036854775808: numeric argument required$
+
+COMMAND: exit -92233720368547758078
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: exit: -92233720368547758078: numeric argument required$
+MSH ERROR OUTPUT :
+msh: exit: -92233720368547758078: numeric argument required$
+
+COMMAND: exit 123 456
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: exit: too many arguments$
+MSH ERROR OUTPUT :
+msh: exit: too many arguments$
+
+COMMAND: exit 123 tropcesttrop
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: exit: too many arguments$
+MSH ERROR OUTPUT :
+msh: exit: too many arguments$
+
+COMMAND: exit pasbon
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: exit: pasbon: numeric argument required$
+MSH ERROR OUTPUT :
+msh: exit: pasbon: numeric argument required$
+
+COMMAND: exit pasbon pas bon du tout
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: exit: pasbon: numeric argument required$
+MSH ERROR OUTPUT :
+msh: exit: pasbon: numeric argument required$
+
+COMMAND: exit pas bon 123 456
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: exit: pas: numeric argument required$
+MSH ERROR OUTPUT :
+msh: exit: pas: numeric argument required$
+
+COMMAND: exit 42sh
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: exit: 42sh: numeric argument required$
+MSH ERROR OUTPUT :
+msh: exit: 42sh: numeric argument required$
+
+COMMAND: ARG=arg && $ARG=OK && echo $arg && echo $ARG
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: arg=OK: command not found$
+MSH ERROR OUTPUT :
+msh: arg=OK: command not found$
+
+COMMAND: nimp
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nimp: command not found$
+MSH ERROR OUTPUT :
+msh: nimp: command not found$
+
+COMMAND: nimp avec argument de nimp
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nimp: command not found$
+MSH ERROR OUTPUT :
+msh: nimp: command not found$
+
+COMMAND: ps
+STDOUT ERROR :
+BASH OUTPUT :
+  PID TTY           TIME CMD$
+13222 ttys000    0:00.07 bash$
+91457 ttys000    0:00.05 /bin/zsh -l$
+12068 ttys001    0:00.05 -zsh$
+20905 ttys001    0:00.15 bash test_script.sh$
+21337 ttys001    0:00.00 bash$
+96291 ttys002    0:00.02 /bin/zsh -l$
+97853 ttys002    0:00.17 bash$
+MSH OUTPUT :
+  PID TTY           TIME CMD$
+13222 ttys000    0:00.07 bash$
+91457 ttys000    0:00.05 /bin/zsh -l$
+12068 ttys001    0:00.05 -zsh$
+20905 ttys001    0:00.15 bash test_script.sh$
+21340 ttys001    0:00.09 ../../minishell$
+96291 ttys002    0:00.02 /bin/zsh -l$
+97853 ttys002    0:00.17 bash$
+
+COMMAND: (ls -l)
+STDOUT ERROR :
+BASH OUTPUT :
+total 24$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 bash_err$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 bash_res$
+-rw-r--r--  1 daniel_mercadiel  staff   185 28 avr 15:00 filetest$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 msh_err$
+-rw-r--r--  1 daniel_mercadiel  staff    59 28 avr 15:00 msh_res$
+-rw-r--r--  1 daniel_mercadiel  staff  2693 28 avr 15:00 test_script_ERR$
+MSH OUTPUT :
+total 24$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 bash_err$
+-rw-r--r--  1 daniel_mercadiel  staff   410 28 avr 15:00 bash_res$
+-rw-r--r--  1 daniel_mercadiel  staff   185 28 avr 15:00 filetest$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 msh_err$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 msh_res$
+-rw-r--r--  1 daniel_mercadiel  staff  2693 28 avr 15:00 test_script_ERR$
+
+COMMAND: (ls) -l
+STDOUT ERROR :
+BASH OUTPUT :
+MSH OUTPUT :
+total 24$
+-rw-r--r--  1 daniel_mercadiel  staff    78 28 avr 15:00 bash_err$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 bash_res$
+-rw-r--r--  1 daniel_mercadiel  staff   185 28 avr 15:00 filetest$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 msh_err$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 msh_res$
+-rw-r--r--  1 daniel_mercadiel  staff  3587 28 avr 15:00 test_script_ERR$
+
+COMMAND: (ls) -l
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `-l'$
+bash: line 1: `(ls) -l'$
+MSH ERROR OUTPUT :
+
+COMMAND: (ls) -l
+EXIT_STATUS ERROR :
+msh:(0) bash:(2)
+
+COMMAND: ARG=-l && ls $ARG
+STDOUT ERROR :
+BASH OUTPUT :
+total 32$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 bash_err$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 bash_res$
+-rw-r--r--  1 daniel_mercadiel  staff   185 28 avr 15:00 filetest$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 msh_err$
+-rw-r--r--  1 daniel_mercadiel  staff    59 28 avr 15:00 msh_res$
+-rw-r--r--  1 daniel_mercadiel  staff  4271 28 avr 15:00 test_script_ERR$
+MSH OUTPUT :
+total 32$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 bash_err$
+-rw-r--r--  1 daniel_mercadiel  staff   410 28 avr 15:00 bash_res$
+-rw-r--r--  1 daniel_mercadiel  staff   185 28 avr 15:00 filetest$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 msh_err$
+-rw-r--r--  1 daniel_mercadiel  staff     0 28 avr 15:00 msh_res$
+-rw-r--r--  1 daniel_mercadiel  staff  4271 28 avr 15:00 test_script_ERR$
+
+COMMAND: ARG="echo dommage" $ARG
+STDOUT ERROR :
+BASH OUTPUT :
+MSH OUTPUT :
+neverland$
+
+COMMAND: ARG="echo dommage" $ARG
+EXIT_STATUS ERROR :
+msh:(255) bash:(0)
+
+COMMAND: <nexistepas cat
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: < nexistepas cat
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: <nexistepas echo echec
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: <     nexistepas echo echec
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: <"<"
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: <: No such file or directory$
+MSH ERROR OUTPUT :
+msh: <: No such file or directory$
+
+COMMAND: <nexistepas <filetest cat
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: <nexistepas      <filetest cat
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: <filetest <nexistepas cat
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: <nexistepas cat >newfile >newfile2 && cat newfile newfile2
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: <nexistepas cat >newfile >newfile2 || cat newfile newfile2
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+cat: newfile2: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+cat: newfile2: No such file or directory$
+
+COMMAND: <nexistepas cat >newfile >newfile2 && cat newfile newfile2
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: <nexistepas cat >newfile >newfile2 || cat newfile newfile2
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+cat: newfile: No such file or directory$
+cat: newfile2: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+cat: newfile: No such file or directory$
+cat: newfile2: No such file or directory$
+
+COMMAND: <filetest <nexistepas cat >newfile >newfile2 && cat newfile newfile2
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: <filetest <nexistepas cat >newfile >newfile2 || cat newfile newfile2
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+cat: newfile: No such file or directory$
+cat: newfile2: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+cat: newfile: No such file or directory$
+cat: newfile2: No such file or directory$
+
+COMMAND: <filetest nimp
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nimp: command not found$
+MSH ERROR OUTPUT :
+msh: nimp: command not found$
+
+COMMAND: <nexistepas nimp
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: <noaccess cat
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: noaccess: Permission denied$
+MSH ERROR OUTPUT :
+msh: noaccess: Permission denied$
+
+COMMAND: <filetest cat >noaccess
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: noaccess: Permission denied$
+MSH ERROR OUTPUT :
+msh: noaccess: Permission denied$
+
+COMMAND: <filetest cat >noaccess >newfile
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: noaccess: Permission denied$
+MSH ERROR OUTPUT :
+msh: noaccess: Permission denied$
+
+COMMAND: <filetest cat >newfile >noaccess && cat newfile
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: noaccess: Permission denied$
+MSH ERROR OUTPUT :
+msh: noaccess: Permission denied$
+
+COMMAND: <filetest cat >newfile >noaccess || cat newfile
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: noaccess: Permission denied$
+MSH ERROR OUTPUT :
+msh: noaccess: Permission denied$
+
+COMMAND: >newfile >noaccess <filetest >newfile2 cat && cat newfile newfile2
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: noaccess: Permission denied$
+MSH ERROR OUTPUT :
+msh: noaccess: Permission denied$
+
+COMMAND: >newfile >noaccess <filetest >newfile2 cat || cat newfile newfile2
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: noaccess: Permission denied$
+cat: newfile2: No such file or directory$
+MSH ERROR OUTPUT :
+msh: noaccess: Permission denied$
+cat: newfile2: No such file or directory$
+
+COMMAND: <nexistepas ls && ls >newfile || cat newfile
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+cat: newfile: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: <nexistepas ARG=89 || echo $ARG
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: ARG=ECHEC nimp ||  echo $ARG
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nimp: command not found$
+MSH ERROR OUTPUT :
+msh: nimp: command not found$
+
+COMMAND: echo test | echo | hkhjhk | echo && echo reussi
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: hkhjhk: command not found$
+MSH ERROR OUTPUT :
+msh: hkhjhk: command not found$
+
+COMMAND: echo test | echo | hkhjhk | kjhkhkj && echo dommage
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: hkhjhk: command not found$
+bash: line 1: kjhkhkj: command not found$
+MSH ERROR OUTPUT :
+msh: hkhjhk: command not found$
+msh: kjhkhkj: command not found$
+
+COMMAND: echo test | echo | hkhjhk | kjhkhkj && echo dommage
+EXIT_STATUS ERROR :
+msh:(0) bash:(127)
+
+COMMAND: < filetest grep a && < nexistepas cat
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: < nexistepas grep a && < nexistepasnonplus cat
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: < nexistepas grep a && echo YOU FAILED
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: nexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: nexistepas: No such file or directory$
+
+COMMAND: < | >
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `|'$
+bash: line 1: `< | >'$
+MSH ERROR OUTPUT :
+AddressSanitizer:DEADLYSIGNAL$
+=================================================================$
+==21982==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x0001022b8f20 bp 0x7ffeed954590 sp 0x7ffeed954570 T0)$
+==21982==The signal is caused by a READ memory access.$
+==21982==Hint: address points to the zero page.$
+    #0 0x1022b8f20 in get_type parse_line.c:92$
+    #1 0x1022b9684 in is_text parse_line.c:162$
+    #2 0x1022b9c12 in add_redirection parse_line.c:195$
+    #3 0x1022ba73d in from_lexer_to_instruction parse_line.c:278$
+    #4 0x1022baa82 in from_lexer_to_ast parse_line.c:314$
+    #5 0x1022babee in from_lexer_to_ast parse_line.c:319$
+    #6 0x1022b05db in ft_system ft_system.c:25$
+    #7 0x1022b0df0 in passive_msh main.c:36$
+    #8 0x1022b0c74 in main main.c:56$
+    #9 0x7fff67c2bcc8 in start+0x0 (libdyld.dylib:x86_64+0x1acc8)$
+$
+==21982==Register values:$
+rax = 0x0000000000000000  rbx = 0x00007ffeed954600  rcx = 0x0000100000000000  rdx = 0x0000100000000000  $
+rdi = 0x0000000000000000  rsi = 0x0000100000000000  rbp = 0x00007ffeed954590  rsp = 0x00007ffeed954570  $
+ r8 = 0x0000200000000000   r9 = 0x0000000000000000  r10 = 0xffffffffffffffff  r11 = 0x00000fffffffffff  $
+r12 = 0x0000000000000000  r13 = 0x0000000000000000  r14 = 0x0000000000000000  r15 = 0x0000000000000000  $
+AddressSanitizer can not provide additional info.$
+SUMMARY: AddressSanitizer: SEGV parse_line.c:92 in get_type$
+==21982==ABORTING$
+
+COMMAND: < | >
+EXIT_STATUS ERROR :
+msh:(134) bash:(2)
+

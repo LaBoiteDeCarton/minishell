@@ -8,49 +8,61 @@
 
 int	set_stdoutappend(char *path, int *fd)
 {
-	int	file_fd;
+	int		file_fd;
+	char	*expanded_path;
 
-	file_fd = open(path, O_WRONLY | O_CREAT | O_APPEND, 0777);
+	expanded_path = expande_char(path);
+	file_fd = open(expanded_path, O_WRONLY | O_CREAT | O_APPEND, 0777);
 	if (file_fd == -1)
 	{
-		handle_errors(path);
+		handle_errors(expanded_path);
+		free(expanded_path);
 		return (0);
 	}
 	if (*fd >= 0 && close(*fd) == -1)
-		handle_errors("heredoc: ");
+		handle_errors("'>>': ");
 	*fd = file_fd;
+	free(expanded_path);
 	return (1);
 }
 
 int	set_stdout(char *path, int *fd)
 {
 	int	file_fd;
+	char	*expanded_path;
 
-	file_fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	expanded_path = expande_char(path);
+	file_fd = open(expanded_path, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (file_fd == -1)
 	{
-		handle_errors(path);
+		handle_errors(expanded_path);
+		free(expanded_path);
 		return (0);
 	}
 	if (*fd >= 0 && close(*fd) == -1)
-		handle_errors("heredoc: ");
+		handle_errors("'>'': ");
 	*fd = file_fd;
+	free(expanded_path);
 	return (1);
 }
 
 int	set_stdin(char *path, int *fd)
 {
 	int	file_fd;
+	char	*expanded_path;
 
-	file_fd = open(path, O_RDONLY);
+	expanded_path = expande_char(path);
+	file_fd = open(expanded_path, O_RDONLY);
 	if (file_fd == -1)
 	{
-		handle_errors(path);
+		handle_errors(expanded_path);
+		free(expanded_path);
 		return (0);
 	}
 	if (*fd >= 0 && close(*fd) == -1)
-		handle_errors("stdin: ");
+		handle_errors("'<': ");
 	*fd = file_fd;
+	free(expanded_path);
 	return (1);
 }
 
@@ -59,7 +71,7 @@ int	set_stdinheredoc(int heredoc_fd, int *fd)
 	if (heredoc_fd == -1)
 		return (0);
 	if (*fd >= 0 && close(*fd) == -1)
-		handle_errors("heredoc: ");
+		handle_errors("'<<': ");
 	*fd = heredoc_fd;
 	return (1);
 }

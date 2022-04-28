@@ -411,3 +411,22 @@ bash-3.2$ echo $'?ab'c
 ?abc
 bash-3.2$ echo $?'?ab'c
 0?abc
+
+bash-3.2$ file=newfile >$file 
+fichier newfile existe
+bash-3.2$ >$file2 file2=newfile2
+fichier newfile2 existe aussi
+
+bash-3.2$ echo $?
+0
+bash-3.2$ echo $"?"
+?
+bash-3.2$ echo $'?'
+?
+
+bash-3.2$ arg=ok
+bash-3.2$ ok=deux
+bash-3.2$ echo $"$arg"
+ok
+bash-3.2$ echo "$"$arg""
+$ok

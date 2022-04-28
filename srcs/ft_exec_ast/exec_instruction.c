@@ -3,6 +3,8 @@
 
 /*
 	Exec instruction :
+	Si TOUS les arguments sont des attributions de variables, on effectue les attributions
+		Sinon on ignore les attribution
 	Si il existe des redictions : effectue les redirections.
 		Si les redirections echoue (valeur de retour == 0) alors on termine sans executer la commande
 		la valeur du exit_status est de 1
@@ -17,6 +19,8 @@
 
 static void	skip_var_attribution(t_cmd *cmd)
 {
+	if (!cmd)
+		return ;
 	while (char_is_var_attribution(*(cmd->cmd_arg)))
 		cmd->cmd_arg++;
 	cmd->cmd_name = cmd->cmd_arg[0];
@@ -31,7 +35,7 @@ void	exec_instruction(t_instruction node)
 	//if cmd is an VAR attribution && ther is other args, on doit ignorer la VAR attribution, et exeuter la suite
 	//do the expansion of red char (directly in n_redirection)
 	//if cmd wasnt a VAR attribution, do the expansion and execute
-	do_not_exec_cmd = cmd_is_var_attribution(*(node.cmd));
+	do_not_exec_cmd = cmd_is_var_attribution(node.cmd);
 	if (do_not_exec_cmd)
 		add_params(node.cmd->cmd_arg);
 	else
@@ -44,8 +48,8 @@ void	exec_instruction(t_instruction node)
 		cenv.exit_status = 1;
 		return ;
 	}
-	if (node.cmd && !do_not_exec_cmd)
-		exec_cmd(*node.cmd, node.fd);
+	if (!do_not_exec_cmd)
+		exec_cmd(node.cmd, node.fd);
 	else
 		cenv.exit_status = 0;
 	if (node.fd[0] != -1 && close(node.fd[0]) == -1)

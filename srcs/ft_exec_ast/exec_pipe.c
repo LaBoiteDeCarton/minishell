@@ -37,8 +37,10 @@ void	fork_pipe(t_ast node, int fdin)
 	waitpid(pid, &status, 0);
 	if (close(pipe_fd[0]) == -1)
 		handle_errors("Pipe");
-	if (!WIFSIGNALED(status))
+	if (WIFEXITED(status))
 		cenv.exit_status = WEXITSTATUS(status);
+	else
+		cenv.exit_status = 13;
 }
 
 void	exec_pipe(t_ast node)

@@ -23,7 +23,6 @@ static int		arg_is_endloption(char *arg)
 void	exec_builtin_echo(t_cmd node, int *fd)
 {
 	int		endl;
-	char	*tmp;
 
 	if (fd[1] == -1)
 		fd[1] = dup(STDOUT_FILENO);
@@ -38,12 +37,10 @@ void	exec_builtin_echo(t_cmd node, int *fd)
 	}
 	while (*(node.cmd_arg))
 	{
-		tmp = expande_char(*(node.cmd_arg));
-		ft_putstr_fd(tmp, fd[1]);
-		free(tmp);
-		(node.cmd_arg)++;
-		if (*(node.cmd_arg))
+		ft_putstr_fd(*(node.cmd_arg), fd[1]);
+		if (*(node.cmd_arg + 1) && ft_strlen(*(node.cmd_arg)))
 			ft_putchar_fd(' ', fd[1]);
+		(node.cmd_arg)++;
 	}
 	if (endl)
 		ft_putchar_fd('\n', fd[1]);

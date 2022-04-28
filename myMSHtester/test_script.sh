@@ -8,11 +8,12 @@ BOLDRED="\033[1m\033[31m"
 CYAN="\033[36m"
 WHITE="\033[37m"
 BOLDYELLOW="\033[1m\033[33m"
+BOLDWHITE="\033[1m\033[37m"
 INT32_MAX=2147483647
 INT64_MAX=9223372036854775807
 
-mkdir testSpaceDir
-cd testSpaceDir
+mkdir SpaceDir
+cd SpaceDir
 >test_script_ERR
 
 function exec_test()
@@ -23,13 +24,13 @@ function exec_test()
 	echo $@ | ../"$MSH_PATH"minishell >msh_res 2>msh_err
 	MSH_ES=$?;
 	printf $WHITE"COMMAND:$CYAN $@\n"$RESET
-	printf $WHITE"STD_OUT | STD_ERR | \$?\n"
+	printf $BOLDWHITE"std_out | std_err | \$?\n"
 	diff msh_res bash_res >/dev/null
 	if [ $? -eq 0 ]; then
 		printf "    $GREEN%s$RESET   " "✓ "
 	else
 		printf "    $RED%s$RESET   " "✗ "
-		echo "COMMAND: \"$@\"" >>test_script_ERR;
+		echo "COMMAND: $@" >>test_script_ERR;
 		echo "STDOUT ERROR :" >>test_script_ERR; 
 		echo "BASH OUTPUT :" >>test_script_ERR
 		cat -e bash_res >>test_script_ERR
@@ -42,7 +43,7 @@ function exec_test()
 		printf "    $GREEN%s$RESET    " "✓ "
 	else
 		printf "    $RED%s$RESET   " "✗ "
-		echo "COMMAND: \"$@\"" >>test_script_ERR;
+		echo "COMMAND: $@" >>test_script_ERR;
 		echo "STDERR ERROR :" >>test_script_ERR;
 		echo "BASH ERROR OUTPUT :" >>test_script_ERR
 		cat -e bash_err >>test_script_ERR
@@ -59,9 +60,11 @@ function exec_test()
 		echo  "msh:($MSH_ES) bash:($BASH_ES)" >> test_script_ERR;
 		echo "" >> test_script_ERR;
 	fi
-	printf "\n\n$RESET$WHITE"
+	printf "\n$RESET$WHITE"
 }
 
+exec_test " "
+exec_test "\\n"
 #ECHO TEST
 #echo with one argument
 exec_test "echo salut"
@@ -159,6 +162,7 @@ exec_test "(ls -l)"
 exec_test "(ls) -l"
 exec_test "'l'\"s\""
 exec_test "ARG=ls && \$ARG"
+exec_test "ARG=-l && ls \$ARG"
 exec_test "ARG=\"echo dommage\" \$ARG"
 
 #TEST REDIRECTIONS
@@ -252,15 +256,22 @@ exec_test "<nexistepas ls && ls >newfile || cat newfile"
 rm newfile 2>/dev/null
 #Arguments et redirections
 exec_test "<filetest FARG=memo >\$FARG"
-if [ ! -e '$FARG' ]; then
-	printf $BOLDRED"FILE \"\$FARG\" WAS NOT CREATED THIS IS NOT WHAT WE EXCPECTED SO... %s$RESET\n" "✗"
+if [ ! -e 'memo' ]; then
+	printf $BOLDRED"FILE \"memo\" WAS NOT CREATED THIS IS NOT WHAT WE EXCPECTED SO... %s$RESET\n" "✗"
+fi
+if [ -e '$FARG' ]; then
+	printf $BOLDRED"FILE \"\$FARG\" WAS CREATED THIS IS NOT WHAT WE EXCPECTED SO... %s$RESET\n" "✗"
 fi
 rm '$FARG' 2> /dev/null
+rm memo 2>/dev/null
 
 #TEST ||
 exec_test "<nexistepas ARG=89 || echo \$ARG"
 exec_test "ARG=ECHEC nimp ||  echo \$ARG"
 #TEST PIPE
+
+exec_test "echo test | echo | hkhjhk | echo && echo reussi"
+exec_test "echo test | echo | hkhjhk | kjhkhkj && echo dommage"
 
 
 #TEST &&
@@ -269,11 +280,20 @@ exec_test "< filetest grep a && echo YOU WIN"
 exec_test "< nexistepas grep a && < nexistepasnonplus cat"
 exec_test "< nexistepas grep a && echo YOU FAILED"
 rm filetest 2> /dev/null
+#TEST PARANTHESIS
+exec_test "(sleep 4 && echo premier fini >> file) | (sleep 2 && echo deuxieme fini >>file)"
+diff file ../filecmp >/dev/null
+if [ ! $? -eq 0 ]; then
+	printf $BOLDRED"FILE CONTENT IS NOT WHAT EXPECTED... %s$RESET\n" "✗"
+fi
 
 exec_test "< | >"
 
 chmod 777 noaccess
 rm noaccess
+cd ..
+cp SpaceDir/test_script_ERR test_script_ERR
+rm -rf SpaceDir
 
 #TEST ||
 

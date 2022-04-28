@@ -18,7 +18,7 @@ static int	ft_strisll(char *str)
 	if (ft_strlen(ptr) > 19)
 		return (0);
 	if (ft_strlen(ptr) == 19)
-		return (!(ft_strncmp(ptr, "9223372036854775807", 20) >= 0));
+		return (!(ft_strncmp(ptr, "9223372036854775807", 20) > 0));
 	return (1);
 }
 
@@ -57,7 +57,7 @@ void	exec_builtin_exit(t_cmd node, int *fd)
 			ft_putstr_fd(*node.cmd_arg, STDERR_FILENO);
 			ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
 			cenv.exit_status = 255;
-			goto exitend; // interdit
+			goto exitend; // interdit a corriger mais tranquil
 		}
 		(node.cmd_arg)++;
 		if (*node.cmd_arg)

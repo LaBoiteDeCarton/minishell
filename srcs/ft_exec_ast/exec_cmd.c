@@ -35,18 +35,19 @@ char	*find_path(char *f)
 	return (NULL);
 }
 
-void	exec_cmd(t_cmd node, int *fd)
+void	exec_cmd(t_cmd *node, int *fd)
 {
 	pid_t	pid_id;
 	int		status;
 	int		execve_ret;
 	char	*tmp;
 
-	if (get_builtin(node.cmd_name) != bi_none)
-		return (exec_builtin(node, fd));
-	tmp = node.cmd_name;
-	node.cmd_name = find_path(node.cmd_name);
-	if (!node.cmd_name)
+	expande_commande(node);
+	if (get_builtin(node->cmd_name) != bi_none)
+		return (exec_builtin(*node, fd));
+	tmp = node->cmd_name;
+	node->cmd_name = find_path(node->cmd_name);
+	if (!node->cmd_name)
 	{
 		ft_putstr_fd("msh: ", STDERR_FILENO);
 		ft_putstr_fd(tmp, STDERR_FILENO);
@@ -69,7 +70,7 @@ void	exec_cmd(t_cmd node, int *fd)
 			handle_errors("Command");
 		if (fd[1] != -1 && (dup2(fd[1], STDOUT_FILENO) == -1 || close(fd[1]) == -1))
 			handle_errors("Command");
-		execve_ret = execve(node.cmd_name, node.cmd_arg, cenv.env);
+		execve_ret = execve(node->cmd_name, node->cmd_arg, cenv.env);
 		//ici free ce qu'on peu, on ne doit jamais arriver ici en vrai
 		ft_putstr_fd("neverland\n", STDOUT_FILENO);
 		exit(execve_ret);

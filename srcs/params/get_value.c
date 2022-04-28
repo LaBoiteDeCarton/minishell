@@ -40,13 +40,22 @@ int	var_name_size(char *name)
 	return (name_size);
 }
 
+static char	*get_exit_stat_value()
+{
+	return (ft_itoa(cenv.exit_status));
+}
+
 //on retourne un pointeur sur le premier caractere de la valeur (pas de copie)
 char	*get_value(char *name)
 {
 	char	*value;
 	int		name_size;
 
+	if (*name == '?')
+		return (get_exit_stat_value());
 	name_size = var_name_size(name);
+	if (!name_size)
+		return ("$");
 	value = get_from_env(name, name_size);
 	if (!value)
 		value = get_from_var(name, name_size);

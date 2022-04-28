@@ -10,8 +10,6 @@ typedef enum s_lxr_type
 	word,
 	scope_open,
 	scope_close,
-	// single_qt,
-	// double_qt,
 	read_in,
 	open_out,
 	append,
@@ -19,7 +17,7 @@ typedef enum s_lxr_type
 	sep_and,
 	sep_or,
 	sep_pipe,
-	stop
+	stop,
 }	t_lxr_type;
 
 struct s_lxr

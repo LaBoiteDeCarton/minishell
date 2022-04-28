@@ -11,13 +11,18 @@ int	char_is_var_attribution(char *str)
 	return (1);
 }
 
-int	cmd_is_var_attribution(t_cmd node)
+int	cmd_is_var_attribution(t_cmd *node)
 {
-	while (*node.cmd_arg)
+	char	**chartab;
+
+	if (!node)
+		return (0);
+	chartab = node->cmd_arg;
+	while (*chartab)
 	{
-		if (!char_is_var_attribution(*node.cmd_arg))
+		if (!char_is_var_attribution(*(chartab)))
 			return (0);
-		node.cmd_arg++;
+		chartab++;
 	}
 	return (1);
 }
