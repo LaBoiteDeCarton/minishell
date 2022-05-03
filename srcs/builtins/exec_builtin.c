@@ -17,4 +17,6 @@ void	exec_builtin(t_cmd node, int *fd)
 		exec_builtin_unset(node, fd);
 	if (bi_type == bi_exit)
 		exec_builtin_exit(node, fd);
+	if (bi_type == bi_cd)
+		exec_builtin_cd(node, fd);
 }

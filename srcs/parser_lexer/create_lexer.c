@@ -122,34 +122,6 @@ void	scroll_str(char **str, t_lxr_type type)
 		(*str)++;
 }
 
-// char	*fil_sqt_content_from_str(char *str)
-// {
-// 	int		i;
-// 	char	*res;
-	
-// 	i = 0;
-// 	str++;
-// 	while (str[i] && str[i] != '\'')
-// 		i++;
-// 	res = (char *)malloc(sizeof(char) * (i + 1));
-// 	ft_strlcpy(res, str, i + 1);
-// 	return (res);
-// }
-
-// char	*fil_dqt_content_from_str(char *str)
-// {
-// 	int		i;
-// 	char	*res;
-	
-// 	i = 0;
-// 	str++;
-// 	while (str[i] && str[i] != '\"')
-// 		i++;
-// 	res = (char *)malloc(sizeof(char) * (i + 1));
-// 	ft_strlcpy(res, str, i + 1);
-// 	return (res);
-// }
-
 t_list	*create_lexer(char *str)
 {
 	t_lxr	*lxr;
@@ -172,9 +144,89 @@ t_list	*create_lexer(char *str)
 	return (res);
 }
 
+/*
+	should_be :
+		0 - whatever
+		1 - a word
+		2 - not a token
+		not a scope etc..
+*/
+
+int		what_is_next(t_lxr_type type)
+{
+	if (type == word)
+		return (0);
+	if (type == read_in || type == open_out || type == append | type == heredoc)
+		return (1);
+	if (type == sep_and || type == sep_or || type == sep_pipe)
+		return (0);
+	return (0);
+}
+
+static int	is_token(t_lxr_type type)
+{
+	return (type == sep_and || type == sep_or || type == sep_pipe);
+}
+
+int		lexer_error(char *err)
+{
+	ft_putstr_fd("msh: syntax error near unexpected token `", STDERR_FILENO);
+	ft_putstr_fd(err, STDERR_FILENO);
+	ft_putendl_fd("'", STDERR_FILENO);
+	return (0);
+}
+
+char	*get_str_lxr(t_lxr_type type)
+{
+	if (type == scope_open)
+		return ("(");
+	if (type == scope_close)
+		return (")");
+	if (type == read_in)
+		return ("<");
+	if (type == open_out)
+		return (">");
+	if (type == append)
+		return (">>");
+	if (type == heredoc)
+		return ("<<");
+	if (type == sep_and)
+		return ("&&");
+	if (type == sep_or)
+		return ("||");
+	if (type == sep_pipe)
+		return ("|");
+	return ("newline");
+}
+
 int		lexer_is_valide(t_list	*lst)
 {
 	(void)lst;
+	t_list *ptr;
 	//exit_status == 258 si KO
+	ptr = lst;
+	int	should_be;
+	int	scope_count;
+
+	should_be = 0;
+	scope_count = 0;
+	while (ptr)
+	{
+		if (((t_lxr *)ptr->content)->type == scope_open)
+			scope_count++;
+		else if (((t_lxr *)ptr->content)->type == scope_close && !scope_count)
+			return (lexer_error(")"));
+		else if (((t_lxr *)ptr->content)->type == scope_close)
+			scope_count--;
+		else if (!should_be)
+			should_be = what_is_next(((t_lxr *)ptr->content)->type);
+		else if (should_be == 1 && ((t_lxr *)ptr->content)->type != word)
+			return (lexer_error(get_str_lxr(((t_lxr *)ptr->content)->type)));
+		else if (should_be == 2 && is_token(((t_lxr *)ptr->content)->type))
+			return (0);
+		ptr = ptr->next;
+	}
+	if (scope_count != 0)
+		return (lexer_error("newline"));
 	return (1);
 }

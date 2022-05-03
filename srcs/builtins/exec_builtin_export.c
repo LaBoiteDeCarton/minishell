@@ -61,7 +61,7 @@ void	exec_builtin_export(t_cmd node, int *fd)
 	char	**expanded_arg;
 	int		i;
 	(void)	fd;
-	//ici on doit expand chaque arg avant de les executer.
+	//ici on doit expand chaque arg avant de les executer. (deja expand dan exec_cmd)
 	expanded_arg = expande_chartab(node.cmd_arg);
 	cenv.exit_status = 0;
 	i = 0;

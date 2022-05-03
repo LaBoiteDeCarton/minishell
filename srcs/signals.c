@@ -4,6 +4,29 @@
 #include <readline/history.h>
 #include "libft.h"
 #include <stdio.h>
+#include <termios.h>
+
+void	echoctl_on(void)
+{
+	struct termios		tm;
+
+	if (tcgetattr(STDIN_FILENO, &tm) == -1)
+		return (handle_errors("tcgetattr"));
+	tm.c_lflag |= ECHOCTL;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &tm) == -1)
+		return (handle_errors("tcsetattr"));
+}
+
+void	echoctl_off(void)
+{
+	struct termios		tm;
+
+	if (tcgetattr(STDIN_FILENO, &tm) == -1)
+		return (handle_errors("tcgetattr"));
+	tm.c_lflag &= ~ECHOCTL;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &tm) == -1)
+		return (handle_errors("tcsetattr"));
+}
 
 void	sig_handler(int sig)
 {
@@ -17,38 +40,43 @@ void	sig_handler(int sig)
 	}
 }
 
-void	sig_exec_father_handler(int sig)
-{
-	if (sig == SIGINT)
-		cenv.exit_status = 130;
-	else if (sig == SIGQUIT)
-	{
-		cenv.exit_status = 131;
-		ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
-	}
-}
-
 void	init_heredoc_signal()
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void	init_exec_father_signal()
+void	sig_father(int sig)
+{
+	if (sig == SIGINT)
+	{
+		cenv.exit_status = 130;
+		ft_putchar_fd('\n', STDOUT_FILENO);
+	}
+	if (sig == SIGQUIT)
+	{
+		cenv.exit_status = 131;
+		ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
+	}
+}
+
+void	init_father_sig()
 {
 	struct sigaction sa;
 
-	sa.__sigaction_u.__sa_handler = &sig_exec_father_handler;
+	sa.__sigaction_u.__sa_handler = &sig_father;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
-		handle_errors("sigaction SIGINT not initialize: ");
+		handle_errors("sigaction: ");
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
-		handle_errors("sigaction SIGQUIT not initialize: ");
+		handle_errors("sigaction: ");
 }
 
-void	init_exec_children_signals()
+void	init_child_sig()
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
+	if (isatty(STDIN_FILENO))
+		echoctl_on();
 }
 
 void	init_signals(void)
@@ -57,8 +85,8 @@ void	init_signals(void)
 
 	sa.__sigaction_u.__sa_handler = &sig_handler;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
-		handle_errors("sigaction SIGINT not initialized: ");
+		handle_errors("sigaction: ");
 	signal(SIGQUIT, SIG_IGN);
-	// if (sigaction(SIGQUIT, &sa, NULL) == -1)
-	// 	handle_errors("sigaction SIGQUIT not initialize: ");
+	if (isatty(STDIN_FILENO))
+		echoctl_off();
 }

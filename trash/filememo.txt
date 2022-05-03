@@ -430,3 +430,81 @@ bash-3.2$ echo $"$arg"
 ok
 bash-3.2$ echo "$"$arg""
 $ok
+
+bash-3.2$ arg=-n
+bash-3.2$ echo $arg salut
+salutbash-3.2$ 
+
+ arg=-n
+msh-0.1> echo $arg salut
+salutmsh-0.1> echo $arg$arg salut
+-n-n salut
+msh-0.1> echo $arg $arg salut
+
+
+Corriger ceci ::
+msh-0.1> <<stop cat | echo salut
+> peoiepie
+> ioipeoie
+salut
+msh-0.1> 
+
+heredoc sans fork?
+regler cat /dev/null | ls (reste cat dans ps quand ^C en plus du fait que ça ne s'arrete pas
+
+bash-3.2$ PWD=caca
+bash-3.2$ env | grep PWD
+OLDPWD=/Users/daniel_mercadiel/Documents/42/42Cursus/minishell
+PWD=caca
+bash-3.2$ cd srcs
+bash: cd: srcs: No such file or directory
+bash-3.2$ cd ..
+bash-3.2$ env | grep PWD
+OLDPWD=caca
+PWD=/Users/daniel_mercadiel/Documents/42/42Cursus/minishell
+bash-3.2$ cd srcs/
+bash-3.2$ env | grep PWD
+OLDPWD=/Users/daniel_mercadiel/Documents/42/42Cursus/minishell
+PWD=/Users/daniel_mercadiel/Documents/42/42Cursus/minishell/srcs
+bash-3.2$ 
+
+bash-3.2$ unset HOME
+bash-3.2$ cd
+bash: cd: HOME not set
+
+the_current_working_directory is saved in builtin pwd of bash
+
+dans TOTO/TATA dont TOTO supprimé
+
+bash-3.2$ pwd
+pwd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+bash-3.2$ cd ..
+chdir: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+bash-3.2$ pwd
+..
+bash-3.2$ cd ..
+bash-3.2$ pwd
+../..
+bash-3.2$ cd swap_push/
+bash-3.2$ pwd
+../../swap_push
+bash-3.2$ cd ..
+bash-3.2$ pwd
+/Users/daniel_mercadiel/Documents
+bash-3.2$ 
+wow
+
+
+bash-3.2$ pwd
+pwd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+bash-3.2$ echo $?
+1 <<<<------
+
+bash-3.2$ cd .
+cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+bash-3.2$ pwd
+/Users/daniel_mercadiel/Documents/42/42Cursus/minishell/TOTO/.
+bash-3.2$ cd .
+cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+bash-3.2$ pwd
+/Users/daniel_mercadiel/Documents/42/42Cursus/minishell/TOTO/./.

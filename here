@@ -1,0 +1,4 @@
+<<stop cat
+echo salut
+stop
+echo test

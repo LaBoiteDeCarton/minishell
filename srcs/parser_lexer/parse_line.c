@@ -92,7 +92,7 @@ t_lxr_type	get_type(t_list *lst)
 	return (((t_lxr *)lst->content)->type);
 }
 
-int	is_token(t_list *lst)
+static int	is_token(t_list *lst)
 {
 	t_lxr_type	lst_type;
 

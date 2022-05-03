@@ -77,4 +77,11 @@ void	set_env(char **env)
 		add_to_env(*env);
 		env++;
 	}
+	cenv.tcwd = getcwd(NULL, 0);
+	if (!cenv.tcwd)
+	{
+		ft_putstr_fd("msh-init: error retrieving current directory: ", STDERR_FILENO);
+		ft_putstr_fd("getcwd: ", STDERR_FILENO);
+		perror("cannot access parent directories");
+	}
 }

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <signal.h>
 
-char	*find_path(char *f)
+static char	*find_path(char *f)
 {
 	int		i;
 	char	*fpath;
@@ -65,17 +65,18 @@ void	exec_cmd(t_cmd *node, int *fd)
 	}
 	else if (pid_id == 0)
 	{
-		init_exec_children_signals();
-		if (fd[0] != -1 && (dup2(fd[0], STDIN_FILENO) == -1 || close(fd[0]) == -1))
+		init_child_sig();
+		if (fd[0] != -1 && (dup2(fd[0], STDIN_FILENO) == -1 || close(fd[0]) == -1)) //do_piping
 			handle_errors("Command");
 		if (fd[1] != -1 && (dup2(fd[1], STDOUT_FILENO) == -1 || close(fd[1]) == -1))
 			handle_errors("Command");
 		execve_ret = execve(node->cmd_name, node->cmd_arg, cenv.env);
 		//ici free ce qu'on peu, on ne doit jamais arriver ici en vrai
 		ft_putstr_fd("neverland\n", STDOUT_FILENO);
+		handle_errors("execve");
 		exit(execve_ret);
 	}
-	init_exec_father_signal();
+	init_father_sig();
 	waitpid(pid_id, &status, 0);
 	if (!WIFSIGNALED(status))
 		cenv.exit_status = WEXITSTATUS(status);

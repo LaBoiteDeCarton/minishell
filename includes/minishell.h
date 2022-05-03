@@ -23,6 +23,7 @@ struct s_mshenv
 	int				env_s;
 	unsigned int	exit_status;
 	t_list			*var;
+	char			*tcwd;
 };
 
 struct s_var
@@ -32,9 +33,9 @@ struct s_var
 };
 
 void	init_signals(void);
-void	init_exec_children_signals();
+void	init_child_sig();
 void	init_heredoc_signal();
-void	init_exec_father_signal();
+void	init_father_sig();
 char	*ft_readline(char *prompt_msg);
 void	ft_system(char *command);
 char	*get_prompt();

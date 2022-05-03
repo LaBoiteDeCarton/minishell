@@ -14,5 +14,7 @@ t_builtin	get_builtin(char *name)
 		return (bi_unset);
 	if (!ft_strncmp("exit", name, 5))
 		return (bi_exit);
+	if (!ft_strncmp("cd", name, 3))
+		return (bi_cd);
 	return bi_none;
 }

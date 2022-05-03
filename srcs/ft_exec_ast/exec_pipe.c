@@ -11,10 +11,10 @@ void	fork_pipe(t_ast node, int fdin)
 	if (!node.content)
 		return ;
 	if (pipe(pipe_fd) == -1)
-		return (handle_errors("Pipe"));
+		return (handle_errors("pipe"));
 	pid = fork();
 	if (pid == -1)
-		return (handle_errors("Pipe"));
+		return (handle_errors("fork"));
 	if (pid == 0)
 	{
 		if ((close(pipe_fd[0]) == -1)
@@ -30,13 +30,13 @@ void	fork_pipe(t_ast node, int fdin)
 		exit(cenv.exit_status);
 	}
 	if (close(pipe_fd[1]) == -1)
-		handle_errors("Pipe");
+		handle_errors("close");
 	node.content = node.content->next;
 	if (node.content)
 		fork_pipe(node, pipe_fd[0]);
 	waitpid(pid, &status, 0);
 	if (close(pipe_fd[0]) == -1)
-		handle_errors("Pipe");
+		handle_errors("close");
 	if (WIFEXITED(status))
 		cenv.exit_status = WEXITSTATUS(status);
 	else

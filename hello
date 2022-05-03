@@ -2,6 +2,8 @@ to do
 
 Builtins qui manque
 
-verifier les signaux
-
 GERER LES ERREURS EN SAISI UTILISATEURS (chose que je n'ai pas faite du tout)
+
+heredoc sans fork?
+^C lors du heredoc doit annuler la commande entiere (c'est comme si nous etions encore en saisi de commande enfaite)
+regler cat /dev/null | ls (reste cat dans ps quand ^C en plus du fait que ça ne s'arrete pas
