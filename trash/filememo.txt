@@ -508,3 +508,33 @@ bash-3.2$ cd .
 cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
 bash-3.2$ pwd
 /Users/daniel_mercadiel/Documents/42/42Cursus/minishell/TOTO/./.
+
+
+
+bash-3.2$ export AAAAAAAA
+bash-3.2$ export BBBBBBBB=
+bash-3.2$ export CCCCCCCC=""
+bash-3.2$ export | grep AAAAAA
+declare -x AAAAAAAA
+bash-3.2$ export | grep BBBBBB
+declare -x BBBBBBBB=""
+bash-3.2$ export | grep CCCCCC
+declare -x CCCCCCCC=""
+
+bash-3.2$ env | grep AAAAAA
+bash-3.2$ env | grep BBBBBB
+BBBBBBBB=
+bash-3.2$ env | grep CCCCCC
+CCCCCCCC=
+
+
+_=/usr/bin/env
+bash-3.2$ env | grep TOTO
+bash-3.2$ TOTO=1
+bash-3.2$ env | grep TOTO
+TOTO=1
+bash-3.2$ export TATA
+bash-3.2$ TATA=45
+bash-3.2$ echo haha | echo $TATA
+45
+bash-3.2$ 

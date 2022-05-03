@@ -5,17 +5,19 @@
 static int	name_is_in_env(char *str)
 {
 	int		param_name_s;
+	int		env_name_s;
 	char	**env_ptr;
 
 	param_name_s = 0;
 	while (str[param_name_s] && str[param_name_s] != '=')
 		param_name_s++;
-	if (str[param_name_s] == '=')
-		param_name_s++;
 	env_ptr = cenv.env;
 	while (*env_ptr)
 	{
-		if (!ft_strncmp(str, *env_ptr, param_name_s))
+		env_name_s = 0;
+		while ((*env_ptr)[env_name_s] && (*env_ptr)[env_name_s] != '=')
+			env_name_s++;
+		if (param_name_s == env_name_s && ft_strncmp(str, *env_ptr, param_name_s))
 			return (1);
 		env_ptr++;
 	}

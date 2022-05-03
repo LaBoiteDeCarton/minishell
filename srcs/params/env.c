@@ -23,12 +23,16 @@ static void	resize_env()
 static int	cmp_param_name(char *param, char *env_param)
 {
 	int	i;
+	int j;
 
 	i = 0;
 	while (param[i] && param[i] != '=')
 		i++;
-	if (param[i] == '=')
-		i++;
+	j=0;
+	while (env_param[j] && env_param[j] != '=')
+		j++;
+	if (i != j)
+		return (1);
 	return (ft_strncmp(param, env_param, i));
 }
 

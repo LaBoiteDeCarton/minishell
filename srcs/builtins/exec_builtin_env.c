@@ -13,7 +13,8 @@ void	exec_builtin_env(t_cmd node, int *fd)
 	chartab = cenv.env;
 	while (*chartab)
 	{
-		ft_putendl_fd(*chartab, fd[1]);
+		if (ft_strchr(*chartab, '='))
+			ft_putendl_fd(*chartab, fd[1]);
 		chartab++;
 	}
 	cenv.exit_status = 0;

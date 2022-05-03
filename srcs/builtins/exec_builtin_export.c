@@ -20,10 +20,12 @@ static void	export_valname(char *name)
 				return (handle_errors("the argument was not exported: "));
 			add_to_env(name);
 			free(name);
+			return ;
 			//ici delete from var utilisant la meme fonction que dans unset please
 		}
 		var_ptr = var_ptr->next;
 	}
+	add_to_env(name);
 }
 
 static void	export_one(char *str)
@@ -41,34 +43,51 @@ static void	export_one(char *str)
 	add_to_env(str);
 }
 
-static char	**expande_chartab(char	**chartab)
-{
-	char	**expanded_chartab;
-	int		chartab_len;
+//difference entre NULL et /0 dans 
 
-	chartab_len = 0;
-	while (chartab[chartab_len])
-		chartab_len++;
-	expanded_chartab = (char **)malloc(sizeof(char *) * (chartab_len + 1));
-	expanded_chartab[chartab_len] = NULL;
-	while (chartab_len-- > 0)
-		expanded_chartab[chartab_len] = expande_char(chartab[chartab_len]);
-	return (expanded_chartab);
+void print_exported(int *fd)
+{
+	char	**ptr_env;
+	char	*ptr_name;
+
+	if (*fd == -1)
+		*fd = dup(STDOUT_FILENO);
+	if (*fd == -1)
+		return (handle_errors("exporte"));
+	ptr_env = cenv.env;
+	while (*ptr_env)
+	{
+		ft_putstr_fd("declare -x ", *fd);
+		ptr_name = *ptr_env;
+		while (*ptr_name && *ptr_name != '=')
+		{
+			ft_putchar_fd(*ptr_name, *fd);
+			ptr_name++;
+		}
+		if (*ptr_name == '=')
+		{
+			ptr_name++;
+			ft_putstr_fd("=\"", *fd);
+			ft_putstr_fd(ptr_name, *fd);
+			ft_putchar_fd('"', *fd);
+		}
+		ft_putendl_fd("", *fd);
+		ptr_env++;
+	}
 }
 
 void	exec_builtin_export(t_cmd node, int *fd)
 {
-	char	**expanded_arg;
 	int		i;
 	(void)	fd;
-	//ici on doit expand chaque arg avant de les executer. (deja expand dan exec_cmd)
-	expanded_arg = expande_chartab(node.cmd_arg);
+
 	cenv.exit_status = 0;
-	i = 0;
-	while (expanded_arg[i])
+	i = 1;
+	if (!node.cmd_arg[i])
+		return (print_exported(fd + 1));
+	while (node.cmd_arg[i])
 	{
-		export_one(expanded_arg[i]);
+		export_one(node.cmd_arg[i]);
 		i++;
 	}
-	free_chartab(expanded_arg);
 }
