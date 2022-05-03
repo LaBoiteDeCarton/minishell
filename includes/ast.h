@@ -70,7 +70,6 @@ void	printAST(t_ast *ast, int prof);
 
 int		cmd_is_var_attribution(t_cmd *node);
 int		char_is_var_attribution(char *str);
-void	add_params(char **chartab);
 void	print_params();
 int		get_heredoc(char *limiter);
 

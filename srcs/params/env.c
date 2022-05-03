@@ -36,7 +36,29 @@ static int	cmp_param_name(char *param, char *env_param)
 	return (ft_strncmp(param, env_param, i));
 }
 
-void	add_to_env(char	*str)
+void	del_from_env(char *str)
+{
+	int i;
+
+	i = 0;
+	while (i < cenv.env_s)
+	{
+		if (!cmp_param_name(str, cenv.env[i]))
+		{
+			free(cenv.env[i]);
+			cenv.env[i] = NULL;
+			break ;
+		}
+		i++;
+	}
+	while (cenv.env[i])
+	{
+		cenv.env[i] = cenv.env[i + 1];
+		i++;
+	}
+}
+
+void	add_to_env(char	*str) // differncie add_to env et change_env val
 {
 	int	i;
 
@@ -52,12 +74,8 @@ void	add_to_env(char	*str)
 	if (cenv.env[i])
 		free(cenv.env[i]);
 	cenv.env[i] = expande_char(str);
-	cenv.env[i + 1] = NULL;
 	if (!cenv.env[i])
-	{
-		ft_putstr_fd("msh: ", STDERR_FILENO);
-		perror("the env is corrupted: ");
-	}
+		handle_errors("the env is corrupted");
 }
 
 void	set_env(char **env)
@@ -68,9 +86,7 @@ void	set_env(char **env)
 	if (!cenv.env)
 	{
 		cenv.env_s = 0;
-		ft_putstr_fd("msh: ", STDERR_FILENO);
-		perror("environnement parsing error: ");
-		return ;
+		return (handle_errors("environnement parsing error"));
 	}
 	cenv.env_s = 1023;
 	i = 0;

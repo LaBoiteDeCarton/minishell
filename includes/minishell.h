@@ -55,7 +55,10 @@ void	expande_commande(t_cmd *node);
 */
 void	set_env(char **env);
 void	add_to_env(char	*str);
-
+void	add_param(char *param);
+void	add_params(char **chartab);
+void	del_param(char *name);
+void	del_from_env(char *str);
 char	*get_value(char *name);
 
 

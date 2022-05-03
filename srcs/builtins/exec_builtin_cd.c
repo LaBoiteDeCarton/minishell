@@ -39,6 +39,7 @@ void	exec_builtin_cd(t_cmd node, int *fd)
 {
 	(void)node;
 	(void)fd;
+	char	*temp;
 
 	if (chdir(node.cmd_arg[1]) == -1)
 	{
@@ -49,6 +50,10 @@ void	exec_builtin_cd(t_cmd node, int *fd)
 	{
 		cenv.exit_status = 0;
 		maj_tcwd(node.cmd_arg[1]);
+		add_param("OLDPWD=$PWD");
+		temp = ft_strjoin("PWD=", cenv.tcwd);
+		add_param(temp);
+		free(temp);
 	}
 }
 //on fait le chdir, si ko voilà.

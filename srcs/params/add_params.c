@@ -17,7 +17,7 @@ static int	name_is_in_env(char *str)
 		env_name_s = 0;
 		while ((*env_ptr)[env_name_s] && (*env_ptr)[env_name_s] != '=')
 			env_name_s++;
-		if (param_name_s == env_name_s && ft_strncmp(str, *env_ptr, param_name_s))
+		if (param_name_s == env_name_s && !ft_strncmp(str, *env_ptr, param_name_s))
 			return (1);
 		env_ptr++;
 	}
@@ -36,21 +36,25 @@ static void add_to_var(char *str)
 		perror("new variable is not created or modified: ");
 		return ;
 	}
+	new_var->value = NULL;
 	ptr = ft_strchr(str, '=');
-	*ptr = '\0';
-	ptr++;
+	if (*ptr)
+	{
+		*ptr = '\0';
+		ptr++;
+		new_var->value = expande_char(ptr + 1);
+		if (!new_var->value)
+		{
+			free(new_var);
+			ft_putstr_fd("msh: ", STDERR_FILENO);
+			perror("new variable is not created or modified: ");
+			return ;
+		}
+	}
 	new_var->name = ft_strdup(str);
 	if (!new_var->name)
 	{
-		free(new_var);
-		ft_putstr_fd("msh: ", STDERR_FILENO);
-		perror("new variable is not created or modified: ");
-		return ;
-	}
-	new_var->value = expande_char(ptr); //ici expand d'abord le ptr
-	if (!new_var->value)
-	{
-		free(new_var->name);
+		free(new_var->value);
 		free(new_var);
 		ft_putstr_fd("msh: ", STDERR_FILENO);
 		perror("new variable is not created or modified: ");
@@ -70,14 +74,41 @@ static void add_to_var(char *str)
 	// }
 }
 
+t_list	*del_from_var(char *name, t_list *var)
+{
+	t_list	*reste;
+
+	if (!var)
+		return (NULL);
+	if (ft_strncmp(name, ((t_var *)var->content)->name, ft_strlen(name) + 1))
+	{
+		reste = var->next;
+		ft_lstdelone(var, &free);
+		return (reste);
+	}
+	var->next = del_from_var(name, var->next);
+	return (var);
+}
+
+void	add_param(char *param)
+{
+	if (name_is_in_env(param))
+		add_to_env(param);
+	else
+		add_to_var(param);
+}
+
+void	del_param(char *name)
+{
+	del_from_env(name);
+	cenv.var = del_from_var(name, cenv.var);
+}
+
 void	add_params(char **strtab)
 {
 	while (*strtab)
 	{
-		if (name_is_in_env(*strtab))
-			add_to_env(*strtab);
-		else
-			add_to_var(*strtab);
+		add_param(*strtab);
 		strtab++;
 	}
 }
