@@ -27,7 +27,7 @@ static int	name_is_in_env(char *str)
 static void add_to_var(char *str)
 {
 	t_var	*new_var;
-	char	*ptr;
+	int		i;
 
 	new_var = (t_var *)malloc(sizeof(t_var));
 	if (!new_var)
@@ -36,29 +36,32 @@ static void add_to_var(char *str)
 		perror("new variable is not created or modified: ");
 		return ;
 	}
+	i = 0;
 	new_var->value = NULL;
-	ptr = ft_strchr(str, '=');
-	if (*ptr)
+	while (str[i] && str[i] != '=')
+		i++;
+	new_var->name = (char *)malloc(sizeof(char) * i + 1);
+	if (!new_var->name)
 	{
-		*ptr = '\0';
-		ptr++;
-		new_var->value = expande_char(ptr + 1);
+		free(new_var);
+		ft_putstr_fd("msh: ", STDERR_FILENO);
+		perror("new variable is not created or modified: ");
+		return ;
+	}
+	ft_strlcpy(new_var->name, str, i + 1);
+	new_var->name[i] = '\0';
+	if (str[i])
+	{
+		i++;
+		new_var->value = expande_char(str + i);
 		if (!new_var->value)
 		{
+			free(new_var->name);
 			free(new_var);
 			ft_putstr_fd("msh: ", STDERR_FILENO);
 			perror("new variable is not created or modified: ");
 			return ;
 		}
-	}
-	new_var->name = ft_strdup(str);
-	if (!new_var->name)
-	{
-		free(new_var->value);
-		free(new_var);
-		ft_putstr_fd("msh: ", STDERR_FILENO);
-		perror("new variable is not created or modified: ");
-		return ;
 	}
 	//if (errno?)
 	ft_lstadd_front(&cenv.var, ft_lstnew(new_var));
@@ -80,7 +83,7 @@ t_list	*del_from_var(char *name, t_list *var)
 
 	if (!var)
 		return (NULL);
-	if (ft_strncmp(name, ((t_var *)var->content)->name, ft_strlen(name) + 1))
+	if (!ft_strncmp(name, ((t_var *)var->content)->name, ft_strlen(name) + 1))
 	{
 		reste = var->next;
 		ft_lstdelone(var, &free);
@@ -93,9 +96,15 @@ t_list	*del_from_var(char *name, t_list *var)
 void	add_param(char *param)
 {
 	if (name_is_in_env(param))
+	{
+		//printf("%s is in env\n", param);
 		add_to_env(param);
+	}
 	else
+	{
+		//printf("%s is NOT in env\n", param);
 		add_to_var(param);
+	}
 }
 
 void	del_param(char *name)

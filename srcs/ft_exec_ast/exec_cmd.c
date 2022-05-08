@@ -11,23 +11,33 @@ static char	*find_path(char *f)
 	char	**paths;
 	char	*newf;
 
-	newf = ft_strjoin("/", f); //leaks detected maybe !
-	i = 0;
+	newf = ft_strjoin("/", f);
 	paths = ft_split(getenv("PATH"), ':'); //ft_getenv
+	if (!paths)
+	{
+		free(newf);
+		handle_errors(f);
+		return (f);
+	}
+	i = 0;
+	fpath = NULL;
 	while (paths[i])
 	{
-		if (!fpath)
+		if (fpath)
 			free(fpath);
 		fpath = ft_strjoin(paths[i], newf);
 		if (!fpath)
 			handle_errors("Command: ");
 		else if (access(fpath, F_OK) == 0)
 		{
+			free(f);
 			free(newf);
+			free_chartab(paths);
 			return (fpath);
 		}
 		i++;
 	}
+	free_chartab(paths);
 	free(fpath);
 	free(newf);
 	if (access(f, F_OK) == 0)

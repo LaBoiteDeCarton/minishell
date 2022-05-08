@@ -88,7 +88,8 @@ char	*fil_content_from_str(char *str)
 			while (str[i] && str[i] != '\'')
 				i++;
 		}
-		i++;
+		if (str[i])
+			i++;
 	}
 	res = (char *)malloc(sizeof(char) * (i + 1));
 	ft_strlcpy(res, str, i + 1);
@@ -113,7 +114,8 @@ void	scroll_str(char **str, t_lxr_type type)
 				while (**str && **str != '\'')
 					(*str)++;
 			}
-			(*str)++;
+			if (**str)
+				(*str)++;
 		}
 	}
 	else if (type == heredoc || type == sep_and || type == sep_or || type == append)
@@ -199,6 +201,24 @@ char	*get_str_lxr(t_lxr_type type)
 	return ("newline");
 }
 
+int		check_quote_parity(char *str)
+{
+	int	dq;
+	int	sq;
+
+	dq = 0;
+	sq = 0;
+	while (*str)
+	{
+		if (*str == '\"' && !sq)
+			dq = (dq + 1) % 2;
+		if (*str == '\'' && !dq)
+			sq = (sq + 1) % 2;
+		str++;
+	}
+	return (sq || dq);
+}
+
 int		lexer_is_valide(t_list	*lst)
 {
 	(void)lst;
@@ -218,12 +238,14 @@ int		lexer_is_valide(t_list	*lst)
 			return (lexer_error(")"));
 		else if (((t_lxr *)ptr->content)->type == scope_close)
 			scope_count--;
-		else if (!should_be)
-			should_be = what_is_next(((t_lxr *)ptr->content)->type);
 		else if (should_be == 1 && ((t_lxr *)ptr->content)->type != word)
 			return (lexer_error(get_str_lxr(((t_lxr *)ptr->content)->type)));
 		else if (should_be == 2 && is_token(((t_lxr *)ptr->content)->type))
 			return (0);
+		if (((t_lxr *)ptr->content)->type == word
+			&& check_quote_parity(((t_lxr *)ptr->content)->content))
+			return (lexer_error("\"' or `'"));
+		should_be = what_is_next(((t_lxr *)ptr->content)->type);
 		ptr = ptr->next;
 	}
 	if (scope_count != 0)

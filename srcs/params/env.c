@@ -43,10 +43,12 @@ void	del_from_env(char *str)
 	i = 0;
 	while (i < cenv.env_s)
 	{
+		if (!cenv.env[i])
+			break ;
 		if (!cmp_param_name(str, cenv.env[i]))
 		{
 			free(cenv.env[i]);
-			cenv.env[i] = NULL;
+			//cenv.env[i] = NULL;
 			break ;
 		}
 		i++;
@@ -58,7 +60,7 @@ void	del_from_env(char *str)
 	}
 }
 
-void	add_to_env(char	*str) // differncie add_to env et change_env val
+void	add_to_env(char	*str)
 {
 	int	i;
 

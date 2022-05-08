@@ -281,6 +281,7 @@ exec_test "< nexistepas grep a && < nexistepasnonplus cat"
 exec_test "< nexistepas grep a && echo YOU FAILED"
 rm filetest 2> /dev/null
 #TEST PARANTHESIS
+echo "do not sigquit please, wait 8seconds"
 exec_test "(sleep 4 && echo premier fini >> file) | (sleep 2 && echo deuxieme fini >>file)"
 diff file ../filecmp >/dev/null
 if [ ! $? -eq 0 ]; then

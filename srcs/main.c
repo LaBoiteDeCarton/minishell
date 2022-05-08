@@ -54,5 +54,7 @@ int	main(int ac, char **av, char **env)
 		interactive_msh();
 	else
 		passive_msh();
+	system("leaks minishell");
+	msh_exit();
 	exit(cenv.exit_status);
 }

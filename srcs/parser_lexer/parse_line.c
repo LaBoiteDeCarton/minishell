@@ -87,7 +87,16 @@ void	printAST(t_ast *ast, int prof)
 		print_instr(*(t_instruction *)(ast->content->content), prof + 1);
 }
 
-t_lxr_type	get_type(t_list *lst)
+void printASTLIST(t_list *ast)
+{
+	while (ast)
+	{
+		printAST((t_ast *)ast->content, 0);
+		ast = ast->next;
+	}
+}
+
+static t_lxr_type	get_type(t_list *lst)
 {
 	return (((t_lxr *)lst->content)->type);
 }
@@ -318,4 +327,43 @@ t_ast	*from_lexer_to_ast(t_list *lst)
 	ret->content = NULL;
 	join_ast(ret, from_lexer_to_ast(lst));
 	return (join_ast(ret, from_lexer_to_ast(ptr->next))); // attention ne gere pas bien les scopes
+}
+
+void	free_redirection(void *content)
+{
+	t_redirect *redirect;
+
+	redirect = (t_redirect *)content;
+	if (redirect->pathfile)
+		free(redirect->pathfile);
+	free(redirect);
+}
+
+void	free_instruction(void *content)
+{
+	t_instruction *instr;
+
+	instr = (t_instruction *)content;
+	ft_lstclear(&instr->redirection, &free_redirection);
+	if (instr->cmd)
+	{
+		if (instr->cmd->cmd_name)
+			free(instr->cmd->cmd_name);
+		if (instr->cmd->cmd_arg)
+			free_chartab(instr->cmd->cmd_arg);
+		free(instr->cmd);
+	}
+	free(instr);
+}
+
+void	free_ast(void *content)
+{
+	t_ast *ast;
+
+	ast = (t_ast *)content;
+	if (ast->token == token_instruction)
+		ft_lstclear(&ast->content, &free_instruction);
+	else
+		ft_lstclear(&ast->content, &free_ast);
+	free(ast);
 }

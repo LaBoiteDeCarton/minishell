@@ -10,13 +10,16 @@
 	- (None)
 */
 
-void	exec_or(t_ast node)
+void	exec_or(t_ast *node)
 {
-	while (node.content)
+	t_list	*ptr;
+
+	ptr = node->content;
+	while (ptr)
 	{
-		exec_ast(*(t_ast *)node.content->content);
+		exec_ast((t_ast *)ptr->content);
 		if (!cenv.exit_status)
 			break ;
-		node.content = node.content->next;
+		ptr = ptr->next;
 	}
 }

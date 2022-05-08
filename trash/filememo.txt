@@ -538,3 +538,5 @@ bash-3.2$ TATA=45
 bash-3.2$ echo haha | echo $TATA
 45
 bash-3.2$ 
+msh-0.1> <file echo <file1 salut <file2 toi
+salut toi
