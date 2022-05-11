@@ -6,6 +6,8 @@
 
 static t_lxr_type	get_type(t_list *lexer)
 {
+	if (!lexer)
+		return (stop);
 	return (((t_lxr *)lexer->content)->type);
 }
 
@@ -184,13 +186,71 @@ static void	scroll_lexer_to_next_token(t_list	**lexer)
 			scope_count++;
 		if (get_type(*lexer) == scope_close)
 			scope_count--;
-		if (is_token(*lexer) && !scope_count)
+		if (is_token(*lexer) && get_type(*lexer) != sep_pipe && !scope_count)
 			break ;
 		*lexer = (*lexer)->next;
+		if (scope_count < 0)
+			*lexer = NULL;
 	}
 }
 
-static t_ast *next_ast(t_list **lexer)
+static int	is_pipe(t_list *lexer)
+{
+	int	scope_count;
+
+	scope_count = 0;
+	while (lexer)
+	{
+		if (get_type(lexer) == scope_open)
+			scope_count++;
+		if (get_type(lexer) == scope_close)
+			scope_count--;
+		if (is_token(lexer) && !scope_count)
+			break ;
+		lexer = lexer->next;
+	}
+	if (get_type(lexer) == sep_pipe)
+		return (1);
+	return (0);
+}
+
+static void	scroll_lexer_to_next_pipe(t_list **lexer)
+{
+	while (*lexer)
+	{
+		if (is_token(*lexer) && get_type(*lexer) == sep_pipe)
+		{
+			*lexer = (*lexer)->next;
+			break;
+		}
+		(*lexer) = (*lexer)->next;
+	}
+}
+
+static t_ast *from_lexer_to_pipe(t_list *lexer)
+{
+	t_ast	*pipe;
+	
+	if (!lexer)
+		return (NULL);
+	pipe = (t_ast *)malloc(sizeof(t_ast));
+	if (!pipe)
+	{
+		handle_errors("parsing");
+		return (NULL);
+	}
+	pipe->token = token_pipe;
+	pipe->content = NULL;
+	ft_lstadd_back(&(pipe->content), ft_lstnew(next_ast(&lexer, 0)));
+	while (lexer && is_pipe(lexer))
+	{
+		scroll_lexer_to_next_pipe(&lexer);
+		ft_lstadd_back(&(pipe->content), ft_lstnew(next_ast(&lexer, 0)));
+	}
+	return (pipe);
+}
+
+t_ast *next_ast(t_list **lexer, int piping)
 {
 	t_ast *ast;
 
@@ -200,37 +260,51 @@ static t_ast *next_ast(t_list **lexer)
 		handle_errors("parsing");
 		return (NULL);
 	}
-	if (get_type(*lexer) == scope_open)
-	{
-		ast->token = token_execute;
-		ast->content = create_ast_list((*lexer)->next);
-		//*lexer = (*lexer)->next;
-		scroll_lexer_to_next_token(lexer);
-		return (ast);
-	}
+	// if (get_type(*lexer) == scope_open)
+	// {
+	// 	ast->token = token_execute;
+	// 	ast->content = create_ast_list((*lexer)->next);
+	// 	//*lexer = (*lexer)->next;
+	// 	return (ast);
+	// }
 	ast->token = translate_token(*lexer);
 	//ici faire les checks de PIPE
-	if (ast->token == token_instruction)
+	if (ast->token == token_instruction && piping && is_pipe(*lexer))
+	{
+		ast->token = token_execute;
+		ast->content = ft_lstnew(from_lexer_to_pipe(*lexer));
+	}
+	else if (get_type(*lexer) == scope_open)
+	{
+		ast->token = token_execute;
+		ast->content = create_ast_lst((*lexer)->next);
+		//*lexer = (*lexer)->next;
+		//return (ast);
+	}
+	else if (ast->token == token_instruction)
 		ast->content = ft_lstnew(from_lexer_to_instruction(*lexer));
 	else
-		ast->content = ft_lstnew(next_ast(&((*lexer)->next)));
+		ast->content = ft_lstnew(next_ast(&((*lexer)->next), 1));
 	if (!ast->content)
 	{
 		handle_errors("parsing");
 		free(ast);
 		return (NULL);
 	}
-	scroll_lexer_to_next_token(lexer);
 	return (ast);
 }
 
-t_list *create_ast_list(t_list *lexer)
+t_list *create_ast_lst(t_list *lexer)
 {
 	t_list	*ast_lst;
 
 	ast_lst = NULL;
 	while (lexer)
-		ft_lstadd_back(&ast_lst, ft_lstnew(next_ast(&lexer)));
+	{
+		//join_ast_list(&ast_lst, next_ast(&lexer, 1)); faire un joint ast qui fusionne deux ast si ils ont le meme token
+		ft_lstadd_back(&ast_lst, ft_lstnew(next_ast(&lexer, 1)));
+		scroll_lexer_to_next_token(&lexer);
+	}
 	return (ast_lst);
 }
 

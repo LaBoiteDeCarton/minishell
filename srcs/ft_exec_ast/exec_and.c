@@ -16,11 +16,9 @@ void	exec_and(t_ast *node)
 	t_list	*ptr;
 
 	ptr = node->content;
-	while (ptr)
+	while (ptr && !cenv.exit_status)
 	{
 		exec_ast((t_ast *)ptr->content);
-		if (cenv.exit_status)
-			break ;
 		ptr = ptr->next;
 	}
 }

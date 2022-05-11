@@ -22,7 +22,10 @@ static void	skip_var_attribution(t_cmd *cmd)
 	if (!cmd)
 		return ;
 	while (char_is_var_attribution(*(cmd->cmd_arg)))
+	{
+		free(*(cmd->cmd_arg)); //////ICI
 		cmd->cmd_arg++;
+	}
 	cmd->cmd_name = cmd->cmd_arg[0];
 }
 

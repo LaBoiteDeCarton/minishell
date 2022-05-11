@@ -26,12 +26,12 @@ void	ft_system(char *command)
 		ft_lstclear(&lexer, &free);
 		return ;
 	}
-	ast = create_ast_list(lexer);
-	printASTLIST(ast);
+	ast = create_ast_lst(lexer);
+	//printASTLIST(ast);
 	ft_lstclear(&lexer, &free);
-	// if (ast)
-	// 	exec_ast(ast);
-	//free_ast(ast);
+	if (ast)
+		exec_ast_lst(ast);
+	ft_lstclear(&ast, &free_ast);
 	//lexer ne free pas les char* mais le AST doit le faire lui
 	//free ast
 }

@@ -31,6 +31,8 @@ void	print_token(t_token token)
 		printf("PIPE\n");
 	if (token == token_instruction)
 		printf("INSTR\n");
+	if (token == token_execute)
+		printf("EXEC\n");
 }
 
 void	print_instr(t_instruction instr, int prof)
@@ -347,8 +349,6 @@ void	free_instruction(void *content)
 	ft_lstclear(&instr->redirection, &free_redirection);
 	if (instr->cmd)
 	{
-		if (instr->cmd->cmd_name)
-			free(instr->cmd->cmd_name);
 		if (instr->cmd->cmd_arg)
 			free_chartab(instr->cmd->cmd_arg);
 		free(instr->cmd);

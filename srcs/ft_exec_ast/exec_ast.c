@@ -2,6 +2,8 @@
 
 void	exec_ast(t_ast *ast)
 {
+	if (ast->token == token_execute)
+		exec_ast_lst(ast->content);
 	if (ast->token == token_instruction)
 		exec_instruction((t_instruction *)ast->content->content);
 	if (ast->token == token_and)

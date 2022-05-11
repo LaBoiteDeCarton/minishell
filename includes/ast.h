@@ -59,8 +59,9 @@ struct s_redirect
 };
 
 t_ast	*from_lexer_to_ast(t_list *lst);
-t_list *create_ast_list(t_list *lexer); //remplace from_lexer_to_ast
+t_list	*create_ast_lst(t_list *lexer);
 
+void	exec_ast_lst(t_list *ast_lst);
 void	exec_ast(t_ast *ast);
 void	exec_cmd(t_cmd *node, int *fd);
 void	exec_and(t_ast *node);
@@ -78,5 +79,6 @@ void	print_params();
 int		get_heredoc(char *limiter);
 
 void	free_ast(void *ast);
+t_ast *next_ast(t_list **lexer, int piping);
 
 #endif

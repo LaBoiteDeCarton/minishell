@@ -50,21 +50,21 @@ void	exec_cmd(t_cmd *node, int *fd)
 	pid_t	pid_id;
 	int		status;
 	int		execve_ret;
-	char	*tmp;
 
 	expande_commande(node);
 	if (get_builtin(node->cmd_name) != bi_none)
 		return (exec_builtin(*node, fd));
-	tmp = node->cmd_name;
 	node->cmd_name = find_path(node->cmd_name);
 	if (!node->cmd_name)
 	{
+		node->cmd_name = node->cmd_arg[0];
 		ft_putstr_fd("msh: ", STDERR_FILENO);
-		ft_putstr_fd(tmp, STDERR_FILENO);
+		ft_putstr_fd(node->cmd_name, STDERR_FILENO);
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
 		cenv.exit_status = 127;
 		return ;
 	}
+	node->cmd_arg[0] = node->cmd_name;
 	// ATTENTION, si cmd_name vide, ne rien faire
 	pid_id = fork();
 	if (pid_id == -1)
