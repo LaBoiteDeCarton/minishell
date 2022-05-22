@@ -8,6 +8,6 @@ void	msh_exit()
 	rl_clear_history();
 	if (isatty(STDIN_FILENO))
 		ft_putstr_fd("exit\n", STDERR_FILENO);
-	//system("leaks minishell");
+	system("leaks minishell");
 	exit(cenv.exit_status);
 }

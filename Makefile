@@ -16,7 +16,7 @@ LFT = lib/libft
 #else
 #	INCLUDEFLAGS = -I${HOME}/.brew/opt/readline/include -I${H_DIR}
 #endif
-FLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+FLAGS = -Wall -Wextra -Werror #-g -fsanitize=address
 
 .c.o:
 	gcc ${FLAGS} ${INCLUDEFLAGS} -c $< -o ${<:.c=.o}

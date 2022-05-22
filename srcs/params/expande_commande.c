@@ -1,6 +1,8 @@
 #include "minishell.h"
 #include "ast.h"
 
+
+
 void	expande_commande(t_cmd *node)
 {
 	char	*name_save;
@@ -14,6 +16,7 @@ void	expande_commande(t_cmd *node)
 	i = 1;
 	while (node->cmd_arg[i])
 	{
+		//ici faire un truc compliquer
 		arg_save = node->cmd_arg[i];
 		node->cmd_arg[i] = expande_char(node->cmd_arg[i]);
 		free(arg_save);

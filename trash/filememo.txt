@@ -540,3 +540,65 @@ bash-3.2$ echo haha | echo $TATA
 bash-3.2$ 
 msh-0.1> <file echo <file1 salut <file2 toi
 salut toi
+
+echo $?
+0
+bash-3.2$ echo salut | sleep 10
+^C
+bash-3.2$ echo $?
+130
+bash-3.2$ sleep 10 | kjhkjhkjhjkh
+bash: kjhkjhkjhjkh: command not found
+^C
+bash-3.2$ echo $?
+127
+bash-3.2$ sleep 10 | echo $?
+0
+^C
+bash-3.2$ lkjlkjlkjklj
+bash: lkjlkjlkjklj: command not found
+bash-3.2$ sleep 10 | echo $?
+0
+^C
+bash-3.2$ jkhkjhkjh
+bash: jkhkjhkjh: command not found
+bash-3.2$ echo $? >> file10 | sleep 10 | echo $?
+0
+^C
+bash-3.2$ echo $?
+0
+bash-3.2$ ;2A;2B
+
+""
+''
+"      "
+'       '
+
+ARG="echo salut" && $ARG toi
+ARG="echo salut" && "$ARG" toi
+
+bash-3.2$ VAR="salut    toi"
+bash-3.2$ echo $VAR
+salut toi
+
+
+
+<$RIEN
+<""
+<"$RIEN"
+
+bash-3.2$ ARG="salut           toi"
+bash-3.2$ PATH=$ARG
+bash-3.2$ echo $PATH
+salut toi
+
+bash-3.2$ ARG="       "
+bash-3.2$ echo "$ARG" | cat -e
+       $
+bash-3.2$ echo $ARG | cat -e
+
+bash-3.2$ ARG="      jj "
+bash-3.2$ echo $ARG | cat -e
+jj$
+bash-3.2$ echo "$ARG" | cat -e
+      jj $

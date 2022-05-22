@@ -19,12 +19,26 @@
 
 static void	skip_var_attribution(t_cmd *cmd)
 {
+	int	i;
+	char **ptr;
+
 	if (!cmd)
 		return ;
-	while (char_is_var_attribution(*(cmd->cmd_arg)))
+	i = 0;
+	while (char_is_var_attribution(cmd->cmd_arg[i]))
 	{
-		free(*(cmd->cmd_arg)); //////ICI
-		cmd->cmd_arg++;
+		free(cmd->cmd_arg[i]); //////ICI
+		cmd->cmd_arg[i] = NULL;
+		i++;
+	}
+	if (i == 0)
+		return ;
+	ptr = cmd->cmd_arg + i;
+	while (*ptr)
+	{
+		*(ptr - i) = *ptr;
+		*ptr = NULL;
+		ptr++;
 	}
 	cmd->cmd_name = cmd->cmd_arg[0];
 }

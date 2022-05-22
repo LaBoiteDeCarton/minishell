@@ -86,8 +86,8 @@ t_list	*del_from_var(char *name, t_list *var)
 	if (!ft_strncmp(name, ((t_var *)var->content)->name, ft_strlen(name) + 1))
 	{
 		reste = var->next;
-		ft_lstdelone(var, &free);
-		return (reste);
+		ft_lstdelone(var, &clear_var);
+		return (del_from_var(name, reste));
 	}
 	var->next = del_from_var(name, var->next);
 	return (var);

@@ -23,7 +23,7 @@ void	ft_system(char *command)
 	if (!lexer_is_valide(lexer))
 	{
 		cenv.exit_status = 258;
-		ft_lstclear(&lexer, &free);
+		ft_lstclear(&lexer, &free_content);
 		return ;
 	}
 	ast = create_ast_lst(lexer);

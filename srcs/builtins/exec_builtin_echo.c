@@ -38,7 +38,7 @@ void	exec_builtin_echo(t_cmd node, int *fd)
 	while (*(node.cmd_arg))
 	{
 		ft_putstr_fd(*(node.cmd_arg), fd[1]);
-		if (*(node.cmd_arg + 1)) //&& ft_strlen(*(node.cmd_arg) faire avec argsize (changer la structure, si NULL ne pas metre d'espace, si /0 c'est different et donc on met un espace)
+		if (*(node.cmd_arg + 1) && ft_strlen(*(node.cmd_arg))) //&& ft_strlen(*(node.cmd_arg) faire avec argsize (changer la structure, si NULL ne pas metre d'espace, si /0 c'est different et donc on met un espace)
 			ft_putchar_fd(' ', fd[1]);
 		(node.cmd_arg)++;
 	}

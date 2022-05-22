@@ -1,20 +1,21 @@
 #include "minishell.h"
 
-static char	*get_from_var(char *name, int name_s)
+static char	*get_from_var(char *name, size_t name_s)
 {
 	t_list	*var_ptr;
 
 	var_ptr = cenv.var;
 	while (var_ptr)
 	{
-		if (!ft_strncmp(name, ((t_var *)var_ptr->content)->name, name_s))
+		if (name_s == ft_strlen(((t_var *)var_ptr->content)->name)
+			&& !ft_strncmp(name, ((t_var *)var_ptr->content)->name, name_s))
 			return (((t_var *)var_ptr->content)->value);
 		var_ptr = var_ptr->next;
 	}
 	return (NULL);
 }
 
-static char	*get_from_env(char *name, int name_s)
+static char	*get_from_env(char *name, size_t name_s)
 {
 	char	**env_ptr;
 
@@ -28,9 +29,9 @@ static char	*get_from_env(char *name, int name_s)
 	return (NULL);
 }
 
-int	var_name_size(char *name)
+size_t	var_name_size(char *name)
 {
-	int	name_size;
+	size_t	name_size;
 
 	name_size = 0;
 	if (name[name_size] && ft_isdigit(name[name_size]))
@@ -49,7 +50,7 @@ static char	*get_exit_stat_value()
 char	*get_value(char *name)
 {
 	char	*value;
-	int		name_size;
+	size_t	name_size;
 
 	if (*name == '?')
 		return (get_exit_stat_value());

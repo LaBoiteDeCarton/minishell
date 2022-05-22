@@ -2,7 +2,7 @@
 #include "libft.h"
 #include <stdio.h>
 
-void	free_content(void *content) //Unused
+void	free_content(void *content)
 {
 	if (((t_lxr *)content)->content)
 		free(((t_lxr *)content)->content);
@@ -248,7 +248,7 @@ int		lexer_is_valide(t_list	*lst)
 		should_be = what_is_next(((t_lxr *)ptr->content)->type);
 		ptr = ptr->next;
 	}
-	if (scope_count != 0)
+	if (scope_count != 0 || should_be)
 		return (lexer_error("newline"));
 	return (1);
 }

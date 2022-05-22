@@ -46,7 +46,8 @@ char	*get_prompt();
 		msh: 'message personalisé': 'message contenu dans ERRNO'
 */
 void	handle_errors(char *msg_error);
-int		var_name_size(char *name);
+
+size_t		var_name_size(char *name);
 char	*expande_char(char *str);
 void	expande_commande(t_cmd *node);
 
@@ -65,6 +66,7 @@ char	*get_value(char *name);
 
 void	free_chartab(char **chartab);
 void	free_var(t_list *var);
+void	clear_var(void *var);
 
 void	msh_exit();
 

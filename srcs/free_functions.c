@@ -10,12 +10,13 @@ void	free_chartab(char **chartab)
 	free(chartab);	
 }
 
-static void	clear_var(void *var)
+void	clear_var(void *var)
 {
 	if (((t_var *)var)->name)
 		free(((t_var *)var)->name);
 	if (((t_var *)var)->value)
 		free(((t_var *)var)->value);
+	free((t_var *)var);
 }
 
 void	free_var(t_list *var)

@@ -6,6 +6,9 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 
+
+//ajouter la chose suivante : Si expand char donne NULL repondre ambiguous redirect, si expand char donne un chartab de taille > 2 alors meme erreur
+
 int	set_stdoutappend(char *path, int *fd)
 {
 	int		file_fd;

@@ -61,33 +61,6 @@ bash: line 1: exit: 42sh: numeric argument required$
 MSH ERROR OUTPUT :
 msh: exit: 42sh: numeric argument required$
 
-COMMAND: echo  	 	salut  	 	 $NEXISTEPAS  	 	  toi
-STDOUT ERROR :
-BASH OUTPUT :
-salut toi$
-MSH OUTPUT :
-salut  toi$
-
-COMMAND: VAR=4 BIGVAR=5 OTHERVAR=6 echo test && echo $VAR $BIGVAR $OTHERVAR
-STDOUT ERROR :
-BASH OUTPUT :
-test$
-$
-MSH OUTPUT :
-test$
-  $
-
-COMMAND: VAR=4 BIGVAR=5 OTHERVAR=6 echo test && echo $VAR $BIGVAR $OTHERVAR
-EXIT_STATUS ERROR :
-msh:(134) bash:(0)
-
-COMMAND: VAR=$NOTEXISTYET NOTEXISTYET=5 BIGVAR=$VAR OTHERVAR=3 && echo $VAR $BIGVAR $OTHERVAR
-STDOUT ERROR :
-BASH OUTPUT :
-3$
-MSH OUTPUT :
-  3$
-
 COMMAND: ARG=arg && $ARG=OK && echo $arg && echo $ARG
 STDERR ERROR :
 BASH ERROR OUTPUT :
@@ -113,53 +86,53 @@ COMMAND: ps
 STDOUT ERROR :
 BASH OUTPUT :
   PID TTY           TIME CMD$
-77996 ttys001    0:00.03 /bin/zsh -l$
-81710 ttys001    0:00.09 bash$
+ 4431 ttys001    0:00.01 bash$
+77996 ttys001    0:00.09 /bin/zsh -l$
 83914 ttys002    0:00.03 /bin/zsh -l$
-88489 ttys002    0:00.01 bash$
-84284 ttys003    0:00.07 -zsh$
-90879 ttys003    0:00.15 bash test_script.sh$
-91317 ttys003    0:00.00 bash$
+88489 ttys002    0:00.19 bash$
+ 4818 ttys003    0:00.16 bash test_script.sh$
+ 5252 ttys003    0:00.00 bash$
+84284 ttys003    0:00.09 -zsh$
 MSH OUTPUT :
   PID TTY           TIME CMD$
-77996 ttys001    0:00.03 /bin/zsh -l$
-81710 ttys001    0:00.09 bash$
+ 4431 ttys001    0:00.01 bash$
+77996 ttys001    0:00.09 /bin/zsh -l$
 83914 ttys002    0:00.03 /bin/zsh -l$
-88489 ttys002    0:00.01 bash$
-84284 ttys003    0:00.07 -zsh$
-90879 ttys003    0:00.15 bash test_script.sh$
-91320 ttys003    0:00.00 ../../minishell$
+88489 ttys002    0:00.19 bash$
+ 4818 ttys003    0:00.16 bash test_script.sh$
+ 5255 ttys003    0:00.00 ../../minishell$
+84284 ttys003    0:00.09 -zsh$
 
 COMMAND: (ls -l)
 STDOUT ERROR :
 BASH OUTPUT :
 total 24$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 bash_err$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 bash_res$
--rw-r--r--  1 daniel_mercadiel  staff   185 11 mai 10:42 filetest$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 msh_err$
--rw-r--r--  1 daniel_mercadiel  staff    59 11 mai 10:42 msh_res$
--rw-r--r--  1 daniel_mercadiel  staff  3208 11 mai 10:42 test_script_ERR$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 bash_err$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 bash_res$
+-rw-r--r--  1 daniel_mercadiel  staff   185 21 mai 13:59 filetest$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_err$
+-rw-r--r--  1 daniel_mercadiel  staff    59 21 mai 13:59 msh_res$
+-rw-r--r--  1 daniel_mercadiel  staff  2693 21 mai 13:59 test_script_ERR$
 MSH OUTPUT :
 total 24$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 bash_err$
--rw-r--r--  1 daniel_mercadiel  staff   410 11 mai 10:42 bash_res$
--rw-r--r--  1 daniel_mercadiel  staff   185 11 mai 10:42 filetest$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 msh_err$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 msh_res$
--rw-r--r--  1 daniel_mercadiel  staff  3208 11 mai 10:42 test_script_ERR$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 bash_err$
+-rw-r--r--  1 daniel_mercadiel  staff   410 21 mai 13:59 bash_res$
+-rw-r--r--  1 daniel_mercadiel  staff   185 21 mai 13:59 filetest$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_err$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_res$
+-rw-r--r--  1 daniel_mercadiel  staff  2693 21 mai 13:59 test_script_ERR$
 
 COMMAND: (ls) -l
 STDOUT ERROR :
 BASH OUTPUT :
 MSH OUTPUT :
-total 32$
--rw-r--r--  1 daniel_mercadiel  staff    78 11 mai 10:42 bash_err$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 bash_res$
--rw-r--r--  1 daniel_mercadiel  staff   185 11 mai 10:42 filetest$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 msh_err$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 msh_res$
--rw-r--r--  1 daniel_mercadiel  staff  4102 11 mai 10:42 test_script_ERR$
+total 24$
+-rw-r--r--  1 daniel_mercadiel  staff    78 21 mai 13:59 bash_err$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 bash_res$
+-rw-r--r--  1 daniel_mercadiel  staff   185 21 mai 13:59 filetest$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_err$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_res$
+-rw-r--r--  1 daniel_mercadiel  staff  3587 21 mai 13:59 test_script_ERR$
 
 COMMAND: (ls) -l
 STDERR ERROR :
@@ -176,20 +149,20 @@ COMMAND: ARG=-l && ls $ARG
 STDOUT ERROR :
 BASH OUTPUT :
 total 32$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 bash_err$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 bash_res$
--rw-r--r--  1 daniel_mercadiel  staff   185 11 mai 10:42 filetest$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 msh_err$
--rw-r--r--  1 daniel_mercadiel  staff    59 11 mai 10:42 msh_res$
--rw-r--r--  1 daniel_mercadiel  staff  4786 11 mai 10:42 test_script_ERR$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 bash_err$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 bash_res$
+-rw-r--r--  1 daniel_mercadiel  staff   185 21 mai 13:59 filetest$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_err$
+-rw-r--r--  1 daniel_mercadiel  staff    59 21 mai 13:59 msh_res$
+-rw-r--r--  1 daniel_mercadiel  staff  4271 21 mai 13:59 test_script_ERR$
 MSH OUTPUT :
 total 32$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 bash_err$
--rw-r--r--  1 daniel_mercadiel  staff   410 11 mai 10:42 bash_res$
--rw-r--r--  1 daniel_mercadiel  staff   185 11 mai 10:42 filetest$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 msh_err$
--rw-r--r--  1 daniel_mercadiel  staff     0 11 mai 10:42 msh_res$
--rw-r--r--  1 daniel_mercadiel  staff  4786 11 mai 10:42 test_script_ERR$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 bash_err$
+-rw-r--r--  1 daniel_mercadiel  staff   410 21 mai 13:59 bash_res$
+-rw-r--r--  1 daniel_mercadiel  staff   185 21 mai 13:59 filetest$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_err$
+-rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_res$
+-rw-r--r--  1 daniel_mercadiel  staff  4271 21 mai 13:59 test_script_ERR$
 
 COMMAND: ARG="echo dommage" $ARG
 STDOUT ERROR :
@@ -205,7 +178,7 @@ msh: execve: Permission denied$
 
 COMMAND: ARG="echo dommage" $ARG
 EXIT_STATUS ERROR :
-msh:(134) bash:(0)
+msh:(255) bash:(0)
 
 COMMAND: <nexistepas cat
 STDERR ERROR :
@@ -403,10 +376,6 @@ bash: line 1: nimp: command not found$
 MSH ERROR OUTPUT :
 msh: nimp: command not found$
 
-COMMAND: ARG=ECHEC nimp ||  echo $ARG
-EXIT_STATUS ERROR :
-msh:(134) bash:(0)
-
 COMMAND: echo test | echo | hkhjhk | echo && echo reussi
 STDERR ERROR :
 BASH ERROR OUTPUT :
@@ -415,23 +384,13 @@ MSH ERROR OUTPUT :
 msh: hkhjhk: command not found$
 
 COMMAND: echo test | echo | hkhjhk | kjhkhkj && echo dommage
-STDOUT ERROR :
-BASH OUTPUT :
-MSH OUTPUT :
-dommage$
-
-COMMAND: echo test | echo | hkhjhk | kjhkhkj && echo dommage
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: hkhjhk: command not found$
 bash: line 1: kjhkhkj: command not found$
 MSH ERROR OUTPUT :
-msh: hkhjhk: commsh: kjhkhkj: command not found$
-mand not found$
-
-COMMAND: echo test | echo | hkhjhk | kjhkhkj && echo dommage
-EXIT_STATUS ERROR :
-msh:(0) bash:(127)
+msh: hkhjhk: command not found$
+msh: kjhkhkj: command not found$
 
 COMMAND: < filetest grep a && < nexistepas cat
 STDERR ERROR :

@@ -3,6 +3,7 @@
 #include "builtins.h"
 #include <stdio.h>
 #include <signal.h>
+#include <sys/stat.h>
 
 static char	*find_path(char *f)
 {
@@ -11,17 +12,24 @@ static char	*find_path(char *f)
 	char	**paths;
 	char	*newf;
 
-	newf = ft_strjoin("/", f);
-	paths = ft_split(getenv("PATH"), ':'); //ft_getenv
-	if (!paths)
+	if (!ft_strlen(f))
+		return (NULL);
+	newf = get_value("PATH");
+	if (newf && *newf != '\0')
 	{
-		free(newf);
-		handle_errors(f);
-		return (f);
+		paths = ft_split(newf, ':');
+		if (!paths)
+		{
+			handle_errors(f);
+			return (f);
+		}
 	}
+	else
+		paths = NULL;
+	newf = ft_strjoin("/", f);
 	i = 0;
 	fpath = NULL;
-	while (paths[i])
+	while (paths && paths[i])
 	{
 		if (fpath)
 			free(fpath);
@@ -37,12 +45,34 @@ static char	*find_path(char *f)
 		}
 		i++;
 	}
-	free_chartab(paths);
-	free(fpath);
+	if (paths)
+		free_chartab(paths);
+	if (fpath)
+		free(fpath);
 	free(newf);
 	if (access(f, F_OK) == 0)
 		return (f);
 	return (NULL);
+}
+
+static int	check_if_directory(char *path)
+{
+	struct stat fs;
+
+	if (stat(path, &fs))
+	{
+		handle_errors("stat");
+		return (1);
+	}
+	if (S_ISDIR(fs.st_mode))
+	{
+		ft_putstr_fd("msh: ", STDERR_FILENO);
+		ft_putstr_fd(path, STDERR_FILENO);
+		ft_putstr_fd(": is a directory\n", STDERR_FILENO);
+		cenv.exit_status = 126;
+		return (1);
+	}
+	return (0);
 }
 
 void	exec_cmd(t_cmd *node, int *fd)
@@ -65,12 +95,13 @@ void	exec_cmd(t_cmd *node, int *fd)
 		return ;
 	}
 	node->cmd_arg[0] = node->cmd_name;
-	// ATTENTION, si cmd_name vide, ne rien faire
+	if (check_if_directory(node->cmd_name))
+		return ;
 	pid_id = fork();
 	if (pid_id == -1)
 	{
-		write(2, "Unable to fork\n", 15);
-		cenv.exit_status = 130; //ici trouver la valeur pour une erreur en interne
+		handle_errors("fork");
+		cenv.exit_status = 130;
 		return ;
 	}
 	else if (pid_id == 0)
@@ -81,9 +112,9 @@ void	exec_cmd(t_cmd *node, int *fd)
 		if (fd[1] != -1 && (dup2(fd[1], STDOUT_FILENO) == -1 || close(fd[1]) == -1))
 			handle_errors("Command");
 		execve_ret = execve(node->cmd_name, node->cmd_arg, cenv.env);
-		//ici free ce qu'on peu, on ne doit jamais arriver ici en vrai
-		ft_putstr_fd("neverland\n", STDOUT_FILENO);
 		handle_errors("execve");
+		free_chartab(cenv.env);
+		free_var(cenv.var);
 		exit(execve_ret);
 	}
 	init_father_sig();
