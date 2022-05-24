@@ -7,14 +7,21 @@
 #include <sys/ioctl.h>
 
 
-//ajouter la chose suivante : Si expand char donne NULL repondre ambiguous redirect, si expand char donne un chartab de taille > 2 alors meme erreur
+//si dans expand char, le char a un espace alors ambigious redirect, si path == NULL ambigious redirect aussi
 
 int	set_stdoutappend(char *path, int *fd)
 {
 	int		file_fd;
 	char	*expanded_path;
 
-	expanded_path = expande_char(path);
+	expanded_path = expande_char(path); //ici ne pas faire d'expand, mais directement utiliser le path car il est expand dans le parsing?
+	if (!expanded_path || ft_strchr(expanded_path, ' '))
+	{
+		ft_putstr_fd("msh: ", STDERR_FILENO);
+		ft_putstr_fd(path, STDERR_FILENO);
+		ft_putendl_fd(": ambigious redirect", STDERR_FILENO);
+		return (0);
+	}
 	file_fd = open(expanded_path, O_WRONLY | O_CREAT | O_APPEND, 0777);
 	if (file_fd == -1)
 	{
@@ -35,6 +42,13 @@ int	set_stdout(char *path, int *fd)
 	char	*expanded_path;
 
 	expanded_path = expande_char(path);
+	if (!expanded_path || ft_strchr(expanded_path, ' '))
+	{
+		ft_putstr_fd("msh: ", STDERR_FILENO);
+		ft_putstr_fd(path, STDERR_FILENO);
+		ft_putendl_fd(": ambigious redirect", STDERR_FILENO);
+		return (0);
+	}
 	file_fd = open(expanded_path, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (file_fd == -1)
 	{
@@ -55,6 +69,13 @@ int	set_stdin(char *path, int *fd)
 	char	*expanded_path;
 
 	expanded_path = expande_char(path);
+	if (!expanded_path || ft_strchr(expanded_path, ' '))
+	{
+		ft_putstr_fd("msh: ", STDERR_FILENO);
+		ft_putstr_fd(path, STDERR_FILENO);
+		ft_putendl_fd(": ambigious redirect", STDERR_FILENO);
+		return (0);
+	}
 	file_fd = open(expanded_path, O_RDONLY);
 	if (file_fd == -1)
 	{

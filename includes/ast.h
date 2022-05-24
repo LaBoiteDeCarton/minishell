@@ -38,6 +38,7 @@ struct s_cmd
 struct s_instruction
 {
 	t_list		*redirection;
+	t_list		*declared_var; //new-features, 
 	t_cmd		*cmd;
 	int			fd[2];
 };

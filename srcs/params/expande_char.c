@@ -16,7 +16,7 @@ static int	itoasize(int n)
 	return (size);
 }
 
-int		expanded_char_size(char *str)
+static int		expanded_char_size(char *str)
 {
 	int		expanded_size;
 	int		dquote_open;

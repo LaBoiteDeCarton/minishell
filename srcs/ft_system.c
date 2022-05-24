@@ -19,7 +19,7 @@ void	ft_system(char *command)
 	// system(command);
 
 	lexer = create_lexer(command);
-	//printf_lexer(lexer);
+	printf_lexer(lexer);
 	if (!lexer_is_valide(lexer))
 	{
 		cenv.exit_status = 258;

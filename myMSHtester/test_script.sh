@@ -135,7 +135,6 @@ exec_test "EXISTE=quelquechose && echo '\$EXISTE'"
 #creation a var with $othervar in the content
 exec_test "ARG=42 && ARG2=\"Vive \$ARG\" && echo \$ARG2"
 exec_test "VAR=BOOM && BLABLA=\$VAR && echo \$BLABLA"
-exec_test "VAR=BOOM && BLABLA=\"coucou \$VAR\"&&echo \$BLABLA"
 exec_test "VAR=BOOM && BLABLA=\$VAR && VAR=FLOP && echo \$BLABLA && echo \$VAR"
 exec_test "VAR=1 BIGVAR=2 OTHERVAR=3 && echo \$VAR \$BIGVAR \$OTHERVAR"
 exec_test "VAR=4 BIGVAR=5 OTHERVAR=6 echo test && echo \$VAR \$BIGVAR \$OTHERVAR"

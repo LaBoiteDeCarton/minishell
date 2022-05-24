@@ -5,6 +5,7 @@ int	get_heredoc(char *limiter)
 {
 	int		pipe_fd[2];
 	char	*line;
+	char	*expanded_line;
 	int		status;
 	pid_t	pid_id;
 
@@ -28,13 +29,15 @@ int	get_heredoc(char *limiter)
 			line = ft_readline("> ");
 			if (!line)
 				break ;
-			if (line && !ft_strncmp(limiter, line, ft_strlen(limiter) + 1)) //len + 1? pour prendre en compte le NULL?
+			if (line && !ft_strncmp(limiter, line, ft_strlen(limiter) + 1))
 			{
 				free(line);
 				break ;
 			}
-			ft_putstr_fd(line, pipe_fd[1]);
+			expanded_line = expande_char(line);
+			ft_putstr_fd(expanded_line, pipe_fd[1]);
 			ft_putstr_fd("\n", pipe_fd[1]);
+			free(expanded_line);
 			free(line);
 		}
 		close(pipe_fd[1]);

@@ -60,5 +60,7 @@ char	*get_value(char *name)
 	value = get_from_env(name, name_size);
 	if (!value)
 		value = get_from_var(name, name_size);
+	// if (!value)
+	// 	value = get_from_local(name, name_size);
 	return (value);
 }
