@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_system.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 14:32:18 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 14:32:19 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 #include <stdlib.h>
 #include "lexer.h"
@@ -12,26 +24,25 @@
 		on lance l'execution
 */
 
+/*
+	printf_lexer(lexer);
+	printASTLIST(ast);
+*/
+
 void	ft_system(char *command)
 {
 	t_list	*lexer;
-	t_list	*ast;
-	// system(command);
 
 	lexer = create_lexer(command);
-	printf_lexer(lexer);
 	if (!lexer_is_valide(lexer))
 	{
-		cenv.exit_status = 258;
-		ft_lstclear(&lexer, &free_content);
+		g_cenv.exit_status = 258;
+		ft_lstclear(&lexer, &free_lexer);
 		return ;
 	}
-	ast = create_ast_lst(lexer);
-	//printASTLIST(ast);
+	g_cenv.ast = create_ast_lst(lexer);
 	ft_lstclear(&lexer, &free);
-	if (ast)
-		exec_ast_lst(ast);
-	ft_lstclear(&ast, &free_ast);
-	//lexer ne free pas les char* mais le AST doit le faire lui
-	//free ast
+	if (g_cenv.ast)
+		exec_ast_lst(g_cenv.ast);
+	ft_lstclear(&g_cenv.ast, &free_ast);
 }

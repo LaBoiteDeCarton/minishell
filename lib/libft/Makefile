@@ -51,7 +51,8 @@ SRCS = ft_isalnum.c \
 		ft_lst1.c \
 		ft_lst2.c \
 		ft_strisdigit.c \
-		get_next_line.c
+		get_next_line.c \
+		nothing.c
 
 OBJS = ${SRCS:.c=.o}
 

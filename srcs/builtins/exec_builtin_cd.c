@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_builtin_cd.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 14:49:59 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 14:50:00 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "builtins.h"
 #include "minishell.h"
 #include <sys/stat.h>
@@ -7,18 +19,25 @@
 	How it works :
 		do chdir:
 			if return (-1) - the directory doesn't exist
-			if return (0) - we do the maj of the tcwd (The Current Work Directory) value
+			if return (0) - we do the maj of the tcwd 
+				(The Current Work Directory) value
 	checker si path existe
 		tel quel, puis accroché au pwd (getcwd)
 
-	Si oui et OLDPWD existe mettre la variable env OLDPWD avec la valeur du current PWD
-	Si oui et PWD existe mettre la variable env PWD avec la valeur du nouveau PWD
+	Si oui et OLDPWD existe mettre la variable env OLDPWD avec la valeur 
+	du current PWD
+	Si oui et PWD existe mettre la variable env PWD avec la valeur du 
+	nouveau PWD
+
+
+	!args[1] || ft_strequ(args[1], "~") 
+	home unset error "cd: HOME not set"
 */
 
-static void maj_tcwd(char *path)
+static void	maj_tcwd(char *path)
 {
 	char	*new_tcwd;
-	
+
 	new_tcwd = getcwd(NULL, 0);
 	if (!new_tcwd)
 	{
@@ -26,43 +45,32 @@ static void maj_tcwd(char *path)
 		ft_putstr_fd("getcwd: ", STDERR_FILENO);
 		perror("cannot access parent directories");
 		path = ft_strjoin("/", path);
-		new_tcwd = ft_strjoin(cenv.tcwd, path);
+		new_tcwd = ft_strjoin(g_cenv.tcwd, path);
 		if (path)
 			free(path);
 	}
-	if (cenv.tcwd)
-		free(cenv.tcwd);
-	cenv.tcwd = new_tcwd;
+	if (g_cenv.tcwd)
+		free(g_cenv.tcwd);
+	g_cenv.tcwd = new_tcwd;
 }
 
 void	exec_builtin_cd(t_cmd node, int *fd)
 {
-	(void)node;
-	(void)fd;
 	char	*temp;
 
+	(void)fd;
 	if (chdir(node.cmd_arg[1]) == -1)
 	{
-		cenv.exit_status = 1;
+		g_cenv.exit_status = 1;
 		handle_errors(node.cmd_arg[1]);
 	}
 	else
 	{
-		cenv.exit_status = 0;
+		g_cenv.exit_status = 0;
 		maj_tcwd(node.cmd_arg[1]);
 		add_param("OLDPWD=$PWD");
-		temp = ft_strjoin("PWD=", cenv.tcwd);
+		temp = ft_strjoin("PWD=", g_cenv.tcwd);
 		add_param(temp);
 		free(temp);
 	}
 }
-//on fait le chdir, si ko voilà.
-//si ok on essaye de creer le nouveau pwd en faiant appel a getcwd si possible,
-	//si ko alors petit souci on l'affiche, puis on continue (sans erreur car chdir a fonctionné!!)
-//on concatene avec le tcwd sauvegardé, maj + maj de OLDPWD et PWD (si existe)
-	
-/*
-!args[1] || ft_strequ(args[1], "~") 
-
-home unset error "cd: HOME not set"
-*/

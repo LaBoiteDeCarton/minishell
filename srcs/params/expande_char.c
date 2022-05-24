@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expande_char.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 16:11:33 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 16:11:34 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	itoasize(int n)
@@ -16,7 +28,7 @@ static int	itoasize(int n)
 	return (size);
 }
 
-static int		expanded_char_size(char *str)
+static int	expanded_char_size(char *str)
 {
 	int		expanded_size;
 	int		dquote_open;
@@ -33,7 +45,7 @@ static int		expanded_char_size(char *str)
 			squote_open = (squote_open + 1) % 2;
 		else if (!squote_open && !ft_strncmp(str, "$?", 2))
 		{
-			expanded_size += itoasize(cenv.exit_status);
+			expanded_size += itoasize(g_cenv.exit_status);
 			str++;
 		}
 		else if (*str == '$' && !squote_open)

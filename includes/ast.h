@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ast.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 14:29:02 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 14:29:04 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef AST_H
 # define AST_H
 # include <sys/wait.h>
@@ -38,7 +50,6 @@ struct s_cmd
 struct s_instruction
 {
 	t_list		*redirection;
-	t_list		*declared_var; //new-features, 
 	t_cmd		*cmd;
 	int			fd[2];
 };
@@ -67,7 +78,7 @@ void	exec_ast(t_ast *ast);
 void	exec_cmd(t_cmd *node, int *fd);
 void	exec_and(t_ast *node);
 void	exec_or(t_ast *node);
-int		n_redirect(t_list *redirections, int *fd);
+int		redirect(t_redirect redirection, int *fd);
 void	exec_instruction(t_instruction *node);
 void	exec_pipe(t_ast *node);
 
@@ -76,10 +87,10 @@ void	printAST(t_ast *ast, int prof);
 
 int		cmd_is_var_attribution(t_cmd *node);
 int		char_is_var_attribution(char *str);
-void	print_params();
+void	print_params(void);
 int		get_heredoc(char *limiter);
 
 void	free_ast(void *ast);
-t_ast *next_ast(t_list **lexer, int piping);
+t_ast	*next_ast(t_list **lexer, int piping);
 
 #endif

@@ -70,5 +70,6 @@ int		ft_islower(int c);
 int		ft_isupper(int c);
 int 	ft_strisdigit(char *str);
 int		get_next_line(int fd, char **line);
+void	nothing(void *content);
 
 #endif

@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 14:29:09 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 14:29:10 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef BUILTINS_H
 # define BUILTINS_H
 
-#include "ast.h"
+# include "ast.h"
 
 typedef enum s_builtin
 {
@@ -13,7 +25,7 @@ typedef enum s_builtin
 	bi_unset,
 	bi_env,
 	bi_exit
-} t_builtin;
+}	t_builtin;
 
 t_builtin	get_builtin(char *name);
 void		exec_builtin(t_cmd node, int *fd);

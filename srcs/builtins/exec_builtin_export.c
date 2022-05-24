@@ -1,31 +1,42 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_builtin_export.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 14:50:29 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 14:50:30 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "builtins.h"
 #include "minishell.h"
 
-static void	export_valname(char *name)
+static void	export_valname(char *str)
 {
-	t_list	*var_ptr;
+	t_list	*v_ptr;
 	char	*new_arg;
 
-	var_ptr = cenv.var;
-	while (var_ptr)
+	v_ptr = g_cenv.var;
+	while (v_ptr)
 	{
-		if (!ft_strncmp(((t_var *)(var_ptr->content))->name, name, ft_strlen(name)))
+		if (!ft_strncmp(((t_var *)(v_ptr->content))->name, str, ft_strlen(str)))
 		{
-			new_arg = ft_strjoin(name, "=");
+			new_arg = ft_strjoin(str, "=");
 			if (!new_arg)
 				return (handle_errors("the argument was not exported: "));
-			name = ft_strjoin(new_arg, ((t_var *)(var_ptr->content))->value);
+			str = ft_strjoin(new_arg, ((t_var *)(v_ptr->content))->value);
 			free(new_arg);
-			if (!name)
+			if (!str)
 				return (handle_errors("the argument was not exported: "));
-			add_to_env(name);
-			free(name);
+			add_to_env(str);
+			free(str);
 			return ;
-			//ici delete from var utilisant la meme fonction que dans unset please
 		}
-		var_ptr = var_ptr->next;
+		v_ptr = v_ptr->next;
 	}
-	add_to_env(name);
+	add_to_env(str);
 }
 
 static void	export_one(char *str)
@@ -37,24 +48,18 @@ static void	export_one(char *str)
 		ft_putstr_fd("msh: export: ", STDERR_FILENO);
 		ft_putstr_fd(str, STDERR_FILENO);
 		ft_putstr_fd(": not a valid identifier\n", STDERR_FILENO);
-		cenv.exit_status = 1;
+		g_cenv.exit_status = 1;
 		return ;
 	}
 	add_to_env(str);
 }
 
-//difference entre NULL et /0 dans 
-
-void print_exported(int *fd)
+static void	print_exported(int *fd)
 {
 	char	**ptr_env;
 	char	*ptr_name;
 
-	if (*fd == -1)
-		*fd = dup(STDOUT_FILENO);
-	if (*fd == -1)
-		return (handle_errors("exporte"));
-	ptr_env = cenv.env;
+	ptr_env = g_cenv.env;
 	while (*ptr_env)
 	{
 		ft_putstr_fd("declare -x ", *fd);
@@ -78,10 +83,13 @@ void print_exported(int *fd)
 
 void	exec_builtin_export(t_cmd node, int *fd)
 {
-	int		i;
-	(void)	fd;
+	int	i;
 
-	cenv.exit_status = 0;
+	if (*fd == -1)
+		*fd = dup(STDOUT_FILENO);
+	if (*fd == -1)
+		return (handle_errors("exporte"));
+	g_cenv.exit_status = 0;
 	i = 1;
 	if (!node.cmd_arg[i])
 		return (print_exported(fd + 1));

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_cmd.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 15:11:18 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 15:11:19 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ast.h"
 #include "minishell.h"
 #include "builtins.h"
@@ -57,7 +69,7 @@ static char	*find_path(char *f)
 
 static int	check_if_directory(char *path)
 {
-	struct stat fs;
+	struct stat	fs;
 
 	if (stat(path, &fs))
 	{
@@ -69,7 +81,7 @@ static int	check_if_directory(char *path)
 		ft_putstr_fd("msh: ", STDERR_FILENO);
 		ft_putstr_fd(path, STDERR_FILENO);
 		ft_putstr_fd(": is a directory\n", STDERR_FILENO);
-		cenv.exit_status = 126;
+		g_cenv.exit_status = 126;
 		return (1);
 	}
 	return (0);
@@ -82,6 +94,11 @@ void	exec_cmd(t_cmd *node, int *fd)
 	int		execve_ret;
 
 	expande_commande(node);
+	if (!node->cmd_name)
+	{
+		g_cenv.exit_status = 0;
+		return ;
+	}
 	if (get_builtin(node->cmd_name) != bi_none)
 		return (exec_builtin(*node, fd));
 	node->cmd_name = find_path(node->cmd_name);
@@ -91,7 +108,7 @@ void	exec_cmd(t_cmd *node, int *fd)
 		ft_putstr_fd("msh: ", STDERR_FILENO);
 		ft_putstr_fd(node->cmd_name, STDERR_FILENO);
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
-		cenv.exit_status = 127;
+		g_cenv.exit_status = 127;
 		return ;
 	}
 	node->cmd_arg[0] = node->cmd_name;
@@ -101,25 +118,25 @@ void	exec_cmd(t_cmd *node, int *fd)
 	if (pid_id == -1)
 	{
 		handle_errors("fork");
-		cenv.exit_status = 130;
+		g_cenv.exit_status = 130;
 		return ;
 	}
 	else if (pid_id == 0)
 	{
 		init_child_sig();
-		if (fd[0] != -1 && (dup2(fd[0], STDIN_FILENO) == -1 || close(fd[0]) == -1)) //do_piping
+		if (fd[0] != -1 && (dup2(fd[0], STDIN_FILENO) == -1 || close(fd[0]) == -1))
 			handle_errors("Command");
 		if (fd[1] != -1 && (dup2(fd[1], STDOUT_FILENO) == -1 || close(fd[1]) == -1))
 			handle_errors("Command");
-		execve_ret = execve(node->cmd_name, node->cmd_arg, cenv.env);
+		execve_ret = execve(node->cmd_name, node->cmd_arg, g_cenv.env);
 		handle_errors("execve");
-		free_chartab(cenv.env);
-		free_var(cenv.var);
+		free_chartab(g_cenv.env);
+		free_var(g_cenv.var);
 		exit(execve_ret);
 	}
 	init_father_sig();
 	waitpid(pid_id, &status, 0);
 	if (!WIFSIGNALED(status))
-		cenv.exit_status = WEXITSTATUS(status);
+		g_cenv.exit_status = WEXITSTATUS(status);
 	return ;
 }

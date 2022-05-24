@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 14:34:52 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 14:34:53 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ast.h"
 #include "lexer.h"
 #include "minishell.h"
@@ -6,8 +18,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
-static void	interactive_msh()
+static void	interactive_msh(void)
 {
 	char	*readline_buffer;
 
@@ -25,7 +36,7 @@ static void	interactive_msh()
 	}
 }
 
-static void	passive_msh()
+static void	passive_msh(void)
 {
 	char	*read_stdin;
 
@@ -45,16 +56,14 @@ int	main(int ac, char **av, char **env)
 {
 	(void)ac;
 	(void)av;
-
 	set_env(env);
-	cenv.exit_status = 0;
-	cenv.var = NULL;
+	g_cenv.exit_status = 0;
+	g_cenv.var = NULL;
 	init_signals();
 	if (isatty(STDIN_FILENO))
 		interactive_msh();
 	else
 		passive_msh();
-	//system("leaks minishell");
 	msh_exit();
-	exit(cenv.exit_status);
+	exit(g_cenv.exit_status);
 }

@@ -5,6 +5,27 @@ bash: line 1: n: command not found$
 MSH ERROR OUTPUT :
 msh: \n: command not found$
 
+COMMAND: "$EXISTEPAS"
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: : command not found$
+MSH ERROR OUTPUT :
+msh: : command not found$
+
+COMMAND: ""
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: : command not found$
+MSH ERROR OUTPUT :
+msh: : command not found$
+
+COMMAND: ''
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: : command not found$
+MSH ERROR OUTPUT :
+msh: : command not found$
+
 COMMAND: exit 9223372036854775808
 STDERR ERROR :
 BASH ERROR OUTPUT :
@@ -61,6 +82,20 @@ bash: line 1: exit: 42sh: numeric argument required$
 MSH ERROR OUTPUT :
 msh: exit: 42sh: numeric argument required$
 
+COMMAND: VAR=BLABLA && $VAR=HAHA
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: BLABLA=HAHA: command not found$
+MSH ERROR OUTPUT :
+msh: BLABLA=HAHA: command not found$
+
+COMMAND: <filenexistepas arg=89 || echo $arg
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: filenexistepas: No such file or directory$
+MSH ERROR OUTPUT :
+msh: filenexistepas: No such file or directory$
+
 COMMAND: ARG=arg && $ARG=OK && echo $arg && echo $ARG
 STDERR ERROR :
 BASH ERROR OUTPUT :
@@ -82,57 +117,36 @@ bash: line 1: nimp: command not found$
 MSH ERROR OUTPUT :
 msh: nimp: command not found$
 
-COMMAND: ps
-STDOUT ERROR :
-BASH OUTPUT :
-  PID TTY           TIME CMD$
- 4431 ttys001    0:00.01 bash$
-77996 ttys001    0:00.09 /bin/zsh -l$
-83914 ttys002    0:00.03 /bin/zsh -l$
-88489 ttys002    0:00.19 bash$
- 4818 ttys003    0:00.16 bash test_script.sh$
- 5252 ttys003    0:00.00 bash$
-84284 ttys003    0:00.09 -zsh$
-MSH OUTPUT :
-  PID TTY           TIME CMD$
- 4431 ttys001    0:00.01 bash$
-77996 ttys001    0:00.09 /bin/zsh -l$
-83914 ttys002    0:00.03 /bin/zsh -l$
-88489 ttys002    0:00.19 bash$
- 4818 ttys003    0:00.16 bash test_script.sh$
- 5255 ttys003    0:00.00 ../../minishell$
-84284 ttys003    0:00.09 -zsh$
-
 COMMAND: (ls -l)
 STDOUT ERROR :
 BASH OUTPUT :
 total 24$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 bash_err$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 bash_res$
--rw-r--r--  1 daniel_mercadiel  staff   185 21 mai 13:59 filetest$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_err$
--rw-r--r--  1 daniel_mercadiel  staff    59 21 mai 13:59 msh_res$
--rw-r--r--  1 daniel_mercadiel  staff  2693 21 mai 13:59 test_script_ERR$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 bash_err$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 bash_res$
+-rw-r--r--  1 dmercadi  2021_nice   185 May 24 19:16 filetest$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 msh_err$
+-rw-r--r--  1 dmercadi  2021_nice    59 May 24 19:16 msh_res$
+-rw-r--r--  1 dmercadi  2021_nice  2845 May 24 19:16 test_script_ERR$
 MSH OUTPUT :
 total 24$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 bash_err$
--rw-r--r--  1 daniel_mercadiel  staff   410 21 mai 13:59 bash_res$
--rw-r--r--  1 daniel_mercadiel  staff   185 21 mai 13:59 filetest$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_err$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_res$
--rw-r--r--  1 daniel_mercadiel  staff  2693 21 mai 13:59 test_script_ERR$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 bash_err$
+-rw-r--r--  1 dmercadi  2021_nice   386 May 24 19:16 bash_res$
+-rw-r--r--  1 dmercadi  2021_nice   185 May 24 19:16 filetest$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 msh_err$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 msh_res$
+-rw-r--r--  1 dmercadi  2021_nice  2845 May 24 19:16 test_script_ERR$
 
 COMMAND: (ls) -l
 STDOUT ERROR :
 BASH OUTPUT :
 MSH OUTPUT :
 total 24$
--rw-r--r--  1 daniel_mercadiel  staff    78 21 mai 13:59 bash_err$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 bash_res$
--rw-r--r--  1 daniel_mercadiel  staff   185 21 mai 13:59 filetest$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_err$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_res$
--rw-r--r--  1 daniel_mercadiel  staff  3587 21 mai 13:59 test_script_ERR$
+-rw-r--r--  1 dmercadi  2021_nice    78 May 24 19:16 bash_err$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 bash_res$
+-rw-r--r--  1 dmercadi  2021_nice   185 May 24 19:16 filetest$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 msh_err$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 msh_res$
+-rw-r--r--  1 dmercadi  2021_nice  3691 May 24 19:16 test_script_ERR$
 
 COMMAND: (ls) -l
 STDERR ERROR :
@@ -145,40 +159,12 @@ COMMAND: (ls) -l
 EXIT_STATUS ERROR :
 msh:(0) bash:(2)
 
-COMMAND: ARG=-l && ls $ARG
-STDOUT ERROR :
-BASH OUTPUT :
-total 32$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 bash_err$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 bash_res$
--rw-r--r--  1 daniel_mercadiel  staff   185 21 mai 13:59 filetest$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_err$
--rw-r--r--  1 daniel_mercadiel  staff    59 21 mai 13:59 msh_res$
--rw-r--r--  1 daniel_mercadiel  staff  4271 21 mai 13:59 test_script_ERR$
-MSH OUTPUT :
-total 32$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 bash_err$
--rw-r--r--  1 daniel_mercadiel  staff   410 21 mai 13:59 bash_res$
--rw-r--r--  1 daniel_mercadiel  staff   185 21 mai 13:59 filetest$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_err$
--rw-r--r--  1 daniel_mercadiel  staff     0 21 mai 13:59 msh_res$
--rw-r--r--  1 daniel_mercadiel  staff  4271 21 mai 13:59 test_script_ERR$
-
-COMMAND: ARG="echo dommage" $ARG
-STDOUT ERROR :
-BASH OUTPUT :
-MSH OUTPUT :
-neverland$
-
-COMMAND: ARG="echo dommage" $ARG
+COMMAND: ARG="echo salut" && "$ARG" toi
 STDERR ERROR :
 BASH ERROR OUTPUT :
+bash: line 1: echo salut: command not found$
 MSH ERROR OUTPUT :
-msh: execve: Permission denied$
-
-COMMAND: ARG="echo dommage" $ARG
-EXIT_STATUS ERROR :
-msh:(255) bash:(0)
+msh: echo salut: command not found$
 
 COMMAND: <nexistepas cat
 STDERR ERROR :
@@ -235,6 +221,20 @@ BASH ERROR OUTPUT :
 bash: line 1: nexistepas: No such file or directory$
 MSH ERROR OUTPUT :
 msh: nexistepas: No such file or directory$
+
+COMMAND: FILE="not cool" && <$FILE cat
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: $FILE: ambiguous redirect$
+MSH ERROR OUTPUT :
+msh: $FILE: ambigious redirect$
+
+COMMAND: <$FILE FILE=lkkjlkjljl
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: lkkjlkjljl: No such file or directory$
+MSH ERROR OUTPUT :
+msh: lkkjlkjljl: No such file or directory$
 
 COMMAND: <nexistepas cat >newfile >newfile2 && cat newfile newfile2
 STDERR ERROR :

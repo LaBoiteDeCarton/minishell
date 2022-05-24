@@ -1,13 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free_functions.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 14:31:21 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 14:31:23 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	free_chartab(char **chartab)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (chartab[i])
 		free(chartab[i++]);
-	free(chartab);	
+	free(chartab);
 }
 
 void	clear_var(void *var)

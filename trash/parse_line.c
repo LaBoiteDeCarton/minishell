@@ -4,12 +4,6 @@
 #include "libft.h"
 #include <stdio.h>
 
-void	write_nchar(char c, int n)
-{
-	while (n-- > 0)
-		write(1, &c, 1);
-}
-
 t_token	get_token(t_list *lst)
 {
 	if (((t_lxr *)lst->content)->type == sep_and)
@@ -19,83 +13,6 @@ t_token	get_token(t_list *lst)
 	if (((t_lxr *)lst->content)->type == sep_pipe)
 		return (token_pipe);
 	return (token_error);
-}
-
-void	print_token(t_token token)
-{
-	if (token == token_and)
-		printf("AND\n");
-	if (token == token_or)
-		printf("OR\n");
-	if (token == token_pipe)
-		printf("PIPE\n");
-	if (token == token_instruction)
-		printf("INSTR\n");
-	if (token == token_execute)
-		printf("EXEC\n");
-}
-
-void	print_instr(t_instruction instr, int prof)
-{
-	int i;
-
-	if (!instr.cmd)
-	{
-		write_nchar('|', prof);
-		printf("CMD NULL\n");
-	}
-	if (instr.cmd)
-	{
-		write_nchar('|', prof);
-		printf("CMD : %s\n", instr.cmd->cmd_name);
-		i = 0;
-		while (instr.cmd->cmd_arg[i])
-		{
-			write_nchar('|', prof);
-			printf("%d-ieme arg : %s\n", i, instr.cmd->cmd_arg[i]);
-			i++;
-		}
-	}
-	if (!instr.redirection)
-	{
-		write_nchar('|', prof);
-		printf("NO REDIRECTIONS\n");
-	}
-	if (instr.redirection)
-	{
-		write_nchar('|', prof);
-		if (((t_redirect *)instr.redirection->content)->pathfile)
-			printf("RED PATHFILE : %s\n", ((t_redirect *)instr.redirection->content)->pathfile);
-		else
-			printf("IS NULL");
-	}
-}
-
-void	printAST(t_ast *ast, int prof)
-{
-	t_list *ptr;
-	write_nchar('|', prof);
-	print_token(ast->token);
-	if (ast->token != token_instruction)
-	{
-		ptr = ast->content;
-		while (ptr)
-		{
-			printAST((t_ast *)ptr->content, prof + 1);
-			ptr = ptr->next;
-		}
-	}
-	else
-		print_instr(*(t_instruction *)(ast->content->content), prof + 1);
-}
-
-void printASTLIST(t_list *ast)
-{
-	while (ast)
-	{
-		printAST((t_ast *)ast->content, 0);
-		ast = ast->next;
-	}
 }
 
 static t_lxr_type	get_type(t_list *lst)
@@ -329,41 +246,4 @@ t_ast	*from_lexer_to_ast(t_list *lst)
 	ret->content = NULL;
 	join_ast(ret, from_lexer_to_ast(lst));
 	return (join_ast(ret, from_lexer_to_ast(ptr->next))); // attention ne gere pas bien les scopes
-}
-
-void	free_redirection(void *content)
-{
-	t_redirect *redirect;
-
-	redirect = (t_redirect *)content;
-	if (redirect->pathfile)
-		free(redirect->pathfile);
-	free(redirect);
-}
-
-void	free_instruction(void *content)
-{
-	t_instruction *instr;
-
-	instr = (t_instruction *)content;
-	ft_lstclear(&instr->redirection, &free_redirection);
-	if (instr->cmd)
-	{
-		if (instr->cmd->cmd_arg)
-			free_chartab(instr->cmd->cmd_arg);
-		free(instr->cmd);
-	}
-	free(instr);
-}
-
-void	free_ast(void *content)
-{
-	t_ast *ast;
-
-	ast = (t_ast *)content;
-	if (ast->token == token_instruction)
-		ft_lstclear(&ast->content, &free_instruction);
-	else
-		ft_lstclear(&ast->content, &free_ast);
-	free(ast);
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirect.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 15:11:42 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 15:11:43 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ast.h"
 #include "minishell.h"
 #include <fcntl.h>
@@ -6,15 +18,17 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 
+/*
+	si dans expand char, le char a un espace alors ambigious redirect, 
+	si path == NULL ambigious redirect aussi
+*/
 
-//si dans expand char, le char a un espace alors ambigious redirect, si path == NULL ambigious redirect aussi
-
-int	set_stdoutappend(char *path, int *fd)
+static int	set_stdoutappend(char *path, int *fd)
 {
 	int		file_fd;
 	char	*expanded_path;
 
-	expanded_path = expande_char(path); //ici ne pas faire d'expand, mais directement utiliser le path car il est expand dans le parsing?
+	expanded_path = expande_char(path);
 	if (!expanded_path || ft_strchr(expanded_path, ' '))
 	{
 		ft_putstr_fd("msh: ", STDERR_FILENO);
@@ -36,9 +50,9 @@ int	set_stdoutappend(char *path, int *fd)
 	return (1);
 }
 
-int	set_stdout(char *path, int *fd)
+static int	set_stdout(char *path, int *fd)
 {
-	int	file_fd;
+	int		file_fd;
 	char	*expanded_path;
 
 	expanded_path = expande_char(path);
@@ -63,9 +77,9 @@ int	set_stdout(char *path, int *fd)
 	return (1);
 }
 
-int	set_stdin(char *path, int *fd)
+static int	set_stdin(char *path, int *fd)
 {
-	int	file_fd;
+	int		file_fd;
 	char	*expanded_path;
 
 	expanded_path = expande_char(path);
@@ -90,7 +104,7 @@ int	set_stdin(char *path, int *fd)
 	return (1);
 }
 
-int	set_stdinheredoc(int heredoc_fd, int *fd)
+static int	set_stdinheredoc(int heredoc_fd, int *fd)
 {
 	if (heredoc_fd == -1)
 		return (0);
@@ -100,7 +114,7 @@ int	set_stdinheredoc(int heredoc_fd, int *fd)
 	return (1);
 }
 
-static int	redirect(t_redirect redirection, int *fd)
+int	redirect(t_redirect redirection, int *fd)
 {
 	if (redirection.red_type == red_in)
 		return (set_stdin(redirection.pathfile, fd));
@@ -111,18 +125,4 @@ static int	redirect(t_redirect redirection, int *fd)
 	else if (redirection.red_type == red_heredoc)
 		return (set_stdinheredoc(redirection.fd, fd));
 	return (0);
-}
-
-int	n_redirect(t_list *redirections, int *fd)
-{
-	t_list *ptr;
-
-	ptr = redirections;
-	while (ptr)
-	{
-		if (!redirect(*(t_redirect *)ptr->content, fd))
-			return (0);
-		ptr = ptr->next;
-	}
-	return (1);
 }

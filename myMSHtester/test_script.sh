@@ -65,6 +65,10 @@ function exec_test()
 
 exec_test " "
 exec_test "\\n"
+exec_test "\$EXISTEPAS"
+exec_test "\"\$EXISTEPAS\""
+exec_test "\"\""
+exec_test "''"
 #ECHO TEST
 #echo with one argument
 exec_test "echo salut"
@@ -85,6 +89,7 @@ exec_test "echo 't'est"
 exec_test "echo -n salut le monde"
 exec_test "echo -n -n -n -n salut le monde"
 exec_test "echo -nnnnnnnnnnn salut le monde avec des n"
+exec_test "echo "" salut"
 
 
 #BUILTIN EXIT
@@ -105,6 +110,7 @@ exec_test "exit pasbon"
 exec_test "exit pasbon pas bon du tout"
 exec_test "exit pas bon 123 456"
 exec_test "exit 42sh"
+exec_test "echo toto | exit | echo tata"
 #exit before creating the new file
 exec_test "exit 15 && touch NEVER"
 if [ -e NEVER ]; then
@@ -121,6 +127,8 @@ exec_test "echo '\$NEXISTEPAS'"
 exec_test "echo \"bonjour \$NEXISTEPAS le monde\""
 exec_test "echo 'bonjour \$NEXISTEPAS le monde'"
 exec_test "echo  	 	salut  	 	 \$NEXISTEPAS  	 	  toi"
+exec_test "ARG=\"salut           toi\" && echo \$ARG && echo \"\$ARG\""
+exec_test "ARG=\"    jj    \" && echo \$ARG && echo \"\$ARG\""
 exec_test "EXISTE=quelquechose && echo \$EXISTE"
 exec_test "EXISTE=raté && echo \$EXISTEOUPAS"
 exec_test "EXISTE=raté && echo \$EXISTE1"
@@ -140,10 +148,16 @@ exec_test "VAR=1 BIGVAR=2 OTHERVAR=3 && echo \$VAR \$BIGVAR \$OTHERVAR"
 exec_test "VAR=4 BIGVAR=5 OTHERVAR=6 echo test && echo \$VAR \$BIGVAR \$OTHERVAR"
 exec_test "VAR=1 BIGVAR=\$VAR OTHERVAR=3 && echo \$VAR \$BIGVAR \$OTHERVAR"
 exec_test "VAR=\$NOTEXISTYET NOTEXISTYET=5 BIGVAR=\$VAR OTHERVAR=3 && echo \$VAR \$BIGVAR \$OTHERVAR"
+exec_test "VAR=BLABLA && \$VAR=HAHA"
+exec_test "ARG=NEW=42 && echo \$ARG && echo \$NEW"
+exec_test "<filenexistepas arg=89 || echo \$arg"
 exec_test "arg=something && echo '$'arg"
 exec_test "arg=something && echo '$'\"arg\""
+exec_test "echo bahdisdonc\"  ici pas cool   \"   ensuite    et voila'lkjlk j'jkl jlkj"
 #trying to creat a var with $var in the name of var
 exec_test "ARG=arg && \$ARG=OK && echo \$arg && echo \$ARG"
+exec_test "ARG=hello | echo \$ARG"
+exec_test "export ARG=hello | echo \$ARG"
 
 #TEST CMD le && doit fonctionner
 printf "ceci sera le contenu du fichier\ndlekjelekj\naiop\naaaaaaa\nlkjlkjljlj\n\n\nkdjlksjdkldjaljkjblkjlkc\nkjlkjlkjbkjlkj\nkjkkjkjhhkhbc\n\nkjhkjhkjbbbbb\nbbbbbccbbccbbcbbc\ncbcbbcbcbcbcbc\nbbbbb\nbbbb\nbbb" >filetest
@@ -153,7 +167,6 @@ exec_test "nimp avec argument de nimp"
 exec_test "cat nexistepas"
 exec_test "cat nexistepas filetest"
 exec_test "cat filetest nexistepas"
-exec_test "ps"
 exec_test "cat -e filetest"
 exec_test "l\"s\""
 exec_test "(ls)"
@@ -161,8 +174,10 @@ exec_test "(ls -l)"
 exec_test "(ls) -l"
 exec_test "'l'\"s\""
 exec_test "ARG=ls && \$ARG"
-exec_test "ARG=-l && ls \$ARG"
+exec_test "ARG=-a && ls \$ARG"
 exec_test "ARG=\"echo dommage\" \$ARG"
+exec_test "ARG=\"echo salut\" && \$ARG toi"
+exec_test "ARG=\"echo salut\" && \"\$ARG\" toi"
 
 #TEST REDIRECTIONS
 exec_test "<filetest cat"
@@ -184,6 +199,10 @@ exec_test "<nexistepas <filetest cat"
 exec_test "<nexistepas      <filetest cat"
 exec_test "<filetest <nexistepas cat"
 exec_test "<filetest cat >newfile && cat newfile"
+exec_test "FILE=\"filetest\" && <\$FILE cat"
+exec_test "FILE=\"not cool\" && <\$FILE cat"
+exec_test "<\$FILE FILE=filetest"
+exec_test "<\$FILE FILE=lkkjlkjljl"
 rm newfile newfile2 2>/dev/null
 exec_test "<filetest cat >newfile >newfile2 && cat newfile newfile2"
 rm newfile newfile2 2>/dev/null
@@ -286,6 +305,12 @@ diff file ../filecmp >/dev/null
 if [ ! $? -eq 0 ]; then
 	printf $BOLDRED"FILE CONTENT IS NOT WHAT EXPECTED... %s$RESET\n" "✗"
 fi
+
+
+#BUILTIN CD
+exec_test "cd .. && pwd"
+exec_test "cd .. && ls"
+exec_test "cd .. | ls"
 
 exec_test "< | >"
 

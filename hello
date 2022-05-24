@@ -1,16 +1,1 @@
-to do
-echo WTF
-Builtins qui manque
-
 GERER LES ERREURS EN SAISI UTILISATEURS --> presque ok manque les paranytheses en mieux
-
-heredoc sans fork?
-^C lors du heredoc doit annuler la commande entiere (c'est comme si nous etions encore en saisi de commande enfaite)
-regler cat /dev/null | ls (reste cat dans ps quand ^C en plus du fait que ça ne s'arrete pas
-
-
-OK pour l'expand il faut tout changer. En gros on expand au moment du parsing.
-Une fois le lexer crée on passe dans tous les words pour creer les params et les enlever du lexer
-Ensuite on fait le parsing ast normal.
-Details :
-- on while sur le lexer, 

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_builtin.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 14:49:12 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 14:49:13 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "builtins.h"
 
 t_builtin	get_builtin(char *name)
@@ -16,5 +28,5 @@ t_builtin	get_builtin(char *name)
 		return (bi_exit);
 	if (!ft_strncmp("cd", name, 3))
 		return (bi_cd);
-	return bi_none;
+	return (bi_none);
 }

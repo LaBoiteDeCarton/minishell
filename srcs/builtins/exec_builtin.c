@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_builtin.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 14:48:49 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 14:48:50 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "builtins.h"
 
 void	exec_builtin(t_cmd node, int *fd)
 {
-	t_builtin bi_type;
+	t_builtin	bi_type;
 
 	bi_type = get_builtin(node.cmd_name);
 	if (bi_type == bi_echo)

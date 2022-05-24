@@ -1,11 +1,51 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_heredoc.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 15:59:04 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 15:59:05 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ast.h"
 #include "minishell.h"
+
+static void	child(int *pipe_fd, char *limiter)
+{
+	char	*line;
+	char	*expanded_line;
+
+	init_heredoc_signal();
+	close(pipe_fd[0]);
+	while (1)
+	{
+		line = ft_readline("> ");
+		if (!line)
+			break ;
+		if (line && !ft_strncmp(limiter, line, ft_strlen(limiter) + 1))
+			break ;
+		expanded_line = expande_char(line);
+		ft_putstr_fd(expanded_line, pipe_fd[1]);
+		ft_putstr_fd("\n", pipe_fd[1]);
+		free(expanded_line);
+		free(line);
+	}
+	if (line)
+		free(line);
+	close(pipe_fd[1]);
+	free_chartab(g_cenv.env);
+	free_var(g_cenv.var);
+	if (g_cenv.ast)
+		ft_lstclear(&g_cenv.ast, &free_ast);
+	exit(EXIT_SUCCESS);
+}
 
 int	get_heredoc(char *limiter)
 {
 	int		pipe_fd[2];
-	char	*line;
-	char	*expanded_line;
 	int		status;
 	pid_t	pid_id;
 
@@ -17,39 +57,20 @@ int	get_heredoc(char *limiter)
 	pid_id = fork();
 	if (pid_id == -1)
 	{
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
 		handle_errors(limiter);
 		return (-1);
 	}
 	if (pid_id == 0)
-	{
-		init_heredoc_signal();
-		close(pipe_fd[0]);
-		while (1)
-		{
-			line = ft_readline("> ");
-			if (!line)
-				break ;
-			if (line && !ft_strncmp(limiter, line, ft_strlen(limiter) + 1))
-			{
-				free(line);
-				break ;
-			}
-			expanded_line = expande_char(line);
-			ft_putstr_fd(expanded_line, pipe_fd[1]);
-			ft_putstr_fd("\n", pipe_fd[1]);
-			free(expanded_line);
-			free(line);
-		}
-		close(pipe_fd[1]);
-		exit(EXIT_SUCCESS);
-	}
+		child(pipe_fd, limiter);
 	signal(SIGINT, SIG_IGN);
 	close(pipe_fd[1]);
 	waitpid(pid_id, &status, 0);
 	if (WIFSIGNALED(status))
 	{
 		close(pipe_fd[0]);
-		cenv.exit_status = 255;
+		g_cenv.exit_status = 255;
 		return (-1);
 	}
 	init_signals();

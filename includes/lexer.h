@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 14:29:15 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 14:29:16 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef LEXER_H
 # define LEXER_H
 
@@ -28,7 +40,7 @@ struct s_lxr
 
 t_list	*create_lexer(char *str);
 void	printf_lexer(t_list	*lst);
-void	free_content(void *content);
+void	free_lexer(void *content);
 int		lexer_is_valide(t_list	*lst);
 
 #endif

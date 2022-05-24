@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_builtin_echo.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 14:50:05 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 14:50:06 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "builtins.h"
 #include "minishell.h"
 
-static int		arg_is_endloption(char *arg)
+static int	arg_is_endloption(char *arg)
 {
 	if (!arg)
 		return (0);
@@ -38,11 +50,11 @@ void	exec_builtin_echo(t_cmd node, int *fd)
 	while (*(node.cmd_arg))
 	{
 		ft_putstr_fd(*(node.cmd_arg), fd[1]);
-		if (*(node.cmd_arg + 1) && ft_strlen(*(node.cmd_arg))) //&& ft_strlen(*(node.cmd_arg) faire avec argsize (changer la structure, si NULL ne pas metre d'espace, si /0 c'est different et donc on met un espace)
+		if (*(node.cmd_arg + 1))
 			ft_putchar_fd(' ', fd[1]);
 		(node.cmd_arg)++;
 	}
 	if (endl)
 		ft_putchar_fd('\n', fd[1]);
-	cenv.exit_status = 0;
+	g_cenv.exit_status = 0;
 }

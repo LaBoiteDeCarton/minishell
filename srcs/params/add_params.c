@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   add_params.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 16:11:16 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 16:11:17 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ast.h"
 #include "minishell.h"
-#include <stdio.h>
 
 static int	name_is_in_env(char *str)
 {
@@ -11,7 +22,7 @@ static int	name_is_in_env(char *str)
 	param_name_s = 0;
 	while (str[param_name_s] && str[param_name_s] != '=')
 		param_name_s++;
-	env_ptr = cenv.env;
+	env_ptr = g_cenv.env;
 	while (*env_ptr)
 	{
 		env_name_s = 0;
@@ -64,8 +75,8 @@ static void add_to_var(char *str)
 		}
 	}
 	//if (errno?)
-	ft_lstadd_front(&cenv.var, ft_lstnew(new_var));
-	// var_ptr = cenv.var; supprimer le doublon
+	ft_lstadd_front(&g_cenv.var, ft_lstnew(new_var));
+	// var_ptr = g_cenv.var; supprimer le doublon
 	// while (var_ptr)
 	// {
 	// 	if (var_ptr->next)
@@ -110,7 +121,7 @@ void	add_param(char *param)
 void	del_param(char *name)
 {
 	del_from_env(name);
-	cenv.var = del_from_var(name, cenv.var);
+	g_cenv.var = del_from_var(name, g_cenv.var);
 }
 
 void	add_params(char **strtab)

@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_value.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 16:11:44 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 16:11:45 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static char	*get_from_var(char *name, size_t name_s)
 {
 	t_list	*var_ptr;
 
-	var_ptr = cenv.var;
+	var_ptr = g_cenv.var;
 	while (var_ptr)
 	{
 		if (name_s == ft_strlen(((t_var *)var_ptr->content)->name)
@@ -19,7 +31,7 @@ static char	*get_from_env(char *name, size_t name_s)
 {
 	char	**env_ptr;
 
-	env_ptr = cenv.env;
+	env_ptr = g_cenv.env;
 	while (*env_ptr)
 	{
 		if (!ft_strncmp(name, *env_ptr, name_s) && (*env_ptr)[name_s] == '=')
@@ -41,12 +53,11 @@ size_t	var_name_size(char *name)
 	return (name_size);
 }
 
-static char	*get_exit_stat_value()
+static char	*get_exit_stat_value(void)
 {
-	return (ft_itoa(cenv.exit_status));
+	return (ft_itoa(g_cenv.exit_status));
 }
 
-//on retourne un pointeur sur le premier caractere de la valeur (pas de copie)
 char	*get_value(char *name)
 {
 	char	*value;
@@ -60,7 +71,5 @@ char	*get_value(char *name)
 	value = get_from_env(name, name_size);
 	if (!value)
 		value = get_from_var(name, name_size);
-	// if (!value)
-	// 	value = get_from_local(name, name_size);
 	return (value);
 }

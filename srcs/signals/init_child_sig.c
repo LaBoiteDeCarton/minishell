@@ -1,33 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_builtin_env.c                                 :+:      :+:    :+:   */
+/*   init_child_sig.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/24 14:50:11 by dmercadi          #+#    #+#             */
-/*   Updated: 2022/05/24 14:50:12 by dmercadi         ###   ########.fr       */
+/*   Created: 2022/05/24 14:46:00 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 14:46:31 by dmercadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
+#include <signal.h>
 #include "minishell.h"
+#include <termios.h>
 
-void	exec_builtin_env(t_cmd node, int *fd)
+static void	echoctl_on(void)
 {
-	char	**chartab;
+	struct termios		tm;
 
-	(void)node;
-	if (fd[1] <= 0)
-		fd[1] = dup(STDOUT_FILENO);
-	if (fd[1] == -1)
-		return (handle_errors("Env: "));
-	chartab = g_cenv.env;
-	while (*chartab)
-	{
-		if (ft_strchr(*chartab, '='))
-			ft_putendl_fd(*chartab, fd[1]);
-		chartab++;
-	}
-	g_cenv.exit_status = 0;
+	if (tcgetattr(STDIN_FILENO, &tm) == -1)
+		return (handle_errors("tcgetattr"));
+	tm.c_lflag |= ECHOCTL;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &tm) == -1)
+		return (handle_errors("tcsetattr"));
+}
+
+void	init_child_sig(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	if (isatty(STDIN_FILENO))
+		echoctl_on();
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_builtin_exit.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/24 14:50:23 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/24 14:50:24 by dmercadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "builtins.h"
 #include "minishell.h"
 #include <stdlib.h>
@@ -6,7 +18,7 @@ static int	ft_strisll(char *str)
 {
 	char	*ptr;
 
-	if (str && (*str == '-'|| *str == '+'))
+	if (str && (*str == '-' || *str == '+'))
 		str++;
 	ptr = str;
 	while (str && *str)
@@ -47,30 +59,29 @@ static int	ft_atoll(const char *str)
 void	exec_builtin_exit(t_cmd node, int *fd)
 {
 	(node.cmd_arg)++;
-	if (*node.cmd_arg)
+	while (*node.cmd_arg)
 	{
 		if (ft_strisll(*node.cmd_arg))
-			cenv.exit_status = ft_atoll(*node.cmd_arg);
+			g_cenv.exit_status = ft_atoll(*node.cmd_arg);
 		else
 		{
 			ft_putstr_fd("msh: exit: ", STDERR_FILENO);
 			ft_putstr_fd(*node.cmd_arg, STDERR_FILENO);
 			ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
-			cenv.exit_status = 255;
-			goto exitend; // interdit a corriger mais tranquil
+			g_cenv.exit_status = 255;
+			break ;
 		}
-		(node.cmd_arg)++;
-		if (*node.cmd_arg)
+		if (*(node.cmd_arg + 1))
 		{
 			ft_putstr_fd("msh: exit: too many arguments\n", STDERR_FILENO);
-			cenv.exit_status = 1;
+			g_cenv.exit_status = 1;
 			return ;
 		}
+		break ;
 	}
-exitend:
 	if (fd[0] > 0)
 		close(fd[0]);
 	if (fd[1] > 0)
-		close(fd[0]);
+		close(fd[1]);
 	msh_exit();
 }
