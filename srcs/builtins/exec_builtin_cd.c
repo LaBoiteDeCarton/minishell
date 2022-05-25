@@ -54,15 +54,36 @@ static void	maj_tcwd(char *path)
 	g_cenv.tcwd = new_tcwd;
 }
 
+static char	*find_home(void)
+{
+	char	*home;
+
+	home = get_value("HOME");
+	if (!home)
+	{
+		g_cenv.exit_status = 1;
+		ft_putstr_fd("msh: cd: HOME not set", STDERR_FILENO);
+		return (NULL);
+	}
+	return (home);
+}
+
 void	exec_builtin_cd(t_cmd node, int *fd)
 {
 	char	*temp;
+	char	*where_to_go;
 
 	(void)fd;
-	if (chdir(node.cmd_arg[1]) == -1)
+	if (!node.cmd_arg[1])
+		where_to_go = find_home();
+	else
+		where_to_go = node.cmd_arg[1];
+	if (!where_to_go)
+		return ;
+	if (chdir(where_to_go) == -1)
 	{
 		g_cenv.exit_status = 1;
-		handle_errors(node.cmd_arg[1]);
+		handle_errors(where_to_go);
 	}
 	else
 	{

@@ -62,7 +62,7 @@ void	handle_errors(char *msg_error);
 size_t	var_name_size(char *name);
 char	*expande_char(char *str);
 void	expande_commande(t_cmd *node);
-t_list	*get_dir_lst(char	*pattern);
+t_list	*get_dir_lst(char *pattern, char *dir);
 
 /* 
 	environnements functions

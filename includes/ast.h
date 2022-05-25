@@ -76,6 +76,7 @@ t_list	*create_ast_lst(t_list *lexer);
 void	exec_ast_lst(t_list *ast_lst);
 void	exec_ast(t_ast *ast);
 void	exec_cmd(t_cmd *node, int *fd);
+char	*find_path(char *f);
 void	exec_and(t_ast *node);
 void	exec_or(t_ast *node);
 int		redirect(t_redirect redirection, int *fd);

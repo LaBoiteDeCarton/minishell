@@ -23,9 +23,8 @@ static void	child(int *pipe_fd, char *limiter)
 	while (1)
 	{
 		line = ft_readline("> ");
-		if (!line)
-			break ;
-		if (line && !ft_strncmp(limiter, line, ft_strlen(limiter) + 1))
+		if (!line
+			|| (line && !ft_strncmp(limiter, line, ft_strlen(limiter) + 1)))
 			break ;
 		expanded_line = expande_char(line);
 		ft_putstr_fd(expanded_line, pipe_fd[1]);
@@ -43,6 +42,20 @@ static void	child(int *pipe_fd, char *limiter)
 	exit(EXIT_SUCCESS);
 }
 
+static int	handle_heredoc_errors(char *limiter)
+{
+	handle_errors(limiter);
+	return (-1);
+}
+
+static void	close_pipe(int *pipe_fd)
+{
+	if (close(pipe_fd[0]) == -1)
+		handle_errors("close");
+	if (close(pipe_fd[1]) == -1)
+		handle_errors("close");
+}
+
 int	get_heredoc(char *limiter)
 {
 	int		pipe_fd[2];
@@ -50,17 +63,12 @@ int	get_heredoc(char *limiter)
 	pid_t	pid_id;
 
 	if (pipe(pipe_fd))
-	{
-		handle_errors(limiter);
-		return (-1);
-	}
+		return (handle_heredoc_errors(limiter));
 	pid_id = fork();
 	if (pid_id == -1)
 	{
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		handle_errors(limiter);
-		return (-1);
+		close_pipe(pipe_fd);
+		return (handle_heredoc_errors(limiter));
 	}
 	if (pid_id == 0)
 		child(pipe_fd, limiter);

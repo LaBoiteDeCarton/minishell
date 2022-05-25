@@ -36,7 +36,7 @@ static int	is_token(t_list *lst)
 
 static int	is_redirection(t_list *lst)
 {
-	t_lxr_type lst_type;
+	t_lxr_type	lst_type;
 
 	lst_type = get_type(lst);
 	return (lst_type == read_in
@@ -50,9 +50,9 @@ static int	is_text(t_list *lst)
 	return (get_type(lst) == word);
 }
 
-static t_token translate_token(t_list *lexer)
+static t_token	translate_token(t_list *lexer)
 {
-	t_lxr_type lxr_type;
+	t_lxr_type	lxr_type;
 
 	lxr_type = get_type(lexer);
 	if (lxr_type == sep_and)
@@ -64,9 +64,9 @@ static t_token translate_token(t_list *lexer)
 	return (token_instruction);
 }
 
-static int		get_arg_size(t_list *lst)
+static int	get_arg_size(t_list *lst)
 {
-	int 	nb_of_word;
+	int	nb_of_word;
 
 	nb_of_word = 0;
 	while (lst && !is_token(lst))
@@ -80,7 +80,7 @@ static int		get_arg_size(t_list *lst)
 	return (nb_of_word);
 }
 
-static t_redirect_type get_red(t_list *lst)
+static t_redirect_type	get_red(t_list *lst)
 {
 	if (((t_lxr *)lst->content)->type == read_in)
 		return (red_in);
@@ -103,22 +103,15 @@ static t_list	*add_redirection(t_list *lst)
 	{
 		if (is_redirection(lst))
 		{
-			redirection = NULL;
 			redirection = (t_redirect *)malloc(sizeof(t_redirect));
 			if (!redirection)
 				break ;
 			redirection->red_type = get_red(lst);
-			redirection->pathfile = NULL;
 			lst = lst->next;
-			if (is_text(lst))
-			{
-				redirection->pathfile = ((t_lxr *)lst->content)->content; // ici catch l'erreur si isnot word
-				if (redirection->red_type == red_heredoc)
-					redirection->fd = get_heredoc(redirection->pathfile);
-				ft_lstadd_back(&lst_of_redirect, ft_lstnew(redirection));
-			}
-			else
-				free(redirection);
+			redirection->pathfile = ((t_lxr *)lst->content)->content;
+			if (redirection->red_type == red_heredoc)
+				redirection->fd = get_heredoc(redirection->pathfile);
+			ft_lstadd_back(&lst_of_redirect, ft_lstnew(redirection));
 		}
 		lst = lst->next;
 	}
@@ -138,13 +131,13 @@ static t_cmd	*add_cmd(t_list *lst)
 	if (!cmd)
 		return (NULL);
 	cmd->cmd_name = NULL;
-	cmd->cmd_arg = (char **)malloc(sizeof(char *) * (argsize + 1)); //catch si erreur de malloc
+	cmd->cmd_arg = (char **)malloc(sizeof(char *) * (argsize + 1));
 	if (!cmd->cmd_arg)
 	{
 		free(cmd);
 		return (NULL);
 	}
-	cmd->cmd_arg[argsize] = NULL; //memset tout a NULL please
+	cmd->cmd_arg[argsize] = NULL;
 	i = 0;
 	while (lst && !is_token(lst))
 	{
@@ -154,12 +147,6 @@ static t_cmd	*add_cmd(t_list *lst)
 			cmd->cmd_arg[i++] = ((t_lxr *)lst->content)->content;
 		if (is_redirection(lst))
 			lst = lst->next;
-		if (!lst || is_token(lst))
-		{
-			//attention chartab free ici mais memset tout a NULL avant
-			free(cmd);
-			return (NULL); //ne devrait âs arriver du coup? car handled by lexer_is_valide
-		}
 		lst = lst->next;
 	}
 	return (cmd);
@@ -168,7 +155,7 @@ static t_cmd	*add_cmd(t_list *lst)
 static t_instruction	*from_lexer_to_instruction(t_list *lexer)
 {
 	t_instruction	*instruction;
-	
+
 	if (!lexer)
 		return (NULL);
 	instruction = (t_instruction *)malloc(sizeof(t_instruction));
@@ -186,7 +173,7 @@ static t_instruction	*from_lexer_to_instruction(t_list *lexer)
 
 static void	scroll_lexer_to_next_token(t_list	**lexer)
 {
-	int scope_count;
+	int	scope_count;
 
 	scope_count = 0;
 	if (get_type(*lexer) == scope_open)
@@ -233,16 +220,16 @@ static void	scroll_lexer_to_next_pipe(t_list **lexer)
 		if (is_token(*lexer) && get_type(*lexer) == sep_pipe)
 		{
 			*lexer = (*lexer)->next;
-			break;
+			break ;
 		}
 		(*lexer) = (*lexer)->next;
 	}
 }
 
-static t_ast *from_lexer_to_pipe(t_list *lexer)
+static t_ast	*from_lexer_to_pipe(t_list *lexer)
 {
 	t_ast	*pipe;
-	
+
 	if (!lexer)
 		return (NULL);
 	pipe = (t_ast *)malloc(sizeof(t_ast));
@@ -262,9 +249,9 @@ static t_ast *from_lexer_to_pipe(t_list *lexer)
 	return (pipe);
 }
 
-t_ast *next_ast(t_list **lexer, int piping)
+t_ast	*next_ast(t_list **lexer, int piping)
 {
-	t_ast *ast;
+	t_ast	*ast;
 
 	ast = (t_ast *)malloc(sizeof(t_ast));
 	if (!ast)
@@ -272,15 +259,7 @@ t_ast *next_ast(t_list **lexer, int piping)
 		handle_errors("parsing");
 		return (NULL);
 	}
-	// if (get_type(*lexer) == scope_open)
-	// {
-	// 	ast->token = token_execute;
-	// 	ast->content = create_ast_list((*lexer)->next);
-	// 	//*lexer = (*lexer)->next;
-	// 	return (ast);
-	// }
 	ast->token = translate_token(*lexer);
-	//ici faire les checks de PIPE
 	if (ast->token == token_instruction && piping && is_pipe(*lexer))
 	{
 		ast->token = token_execute;
@@ -290,8 +269,6 @@ t_ast *next_ast(t_list **lexer, int piping)
 	{
 		ast->token = token_execute;
 		ast->content = create_ast_lst((*lexer)->next);
-		//*lexer = (*lexer)->next;
-		//return (ast);
 	}
 	else if (ast->token == token_instruction)
 		ast->content = ft_lstnew(from_lexer_to_instruction(*lexer));
@@ -300,24 +277,21 @@ t_ast *next_ast(t_list **lexer, int piping)
 	if (!ast->content)
 	{
 		handle_errors("parsing");
-		free(ast);
+		free_ast(ast);
 		return (NULL);
 	}
 	return (ast);
 }
 
-t_list *create_ast_lst(t_list *lexer)
+t_list	*create_ast_lst(t_list *lexer)
 {
 	t_list	*ast_lst;
 
 	ast_lst = NULL;
 	while (lexer)
 	{
-		//join_ast_list(&ast_lst, next_ast(&lexer, 1)); faire un joint ast qui fusionne deux ast si ils ont le meme token
 		ft_lstadd_back(&ast_lst, ft_lstnew(next_ast(&lexer, 1)));
 		scroll_lexer_to_next_token(&lexer);
 	}
 	return (ast_lst);
 }
-
-

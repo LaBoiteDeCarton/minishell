@@ -18,7 +18,6 @@ static void	redirect_error(void)
 	handle_errors("Pipe");
 	exit(258);
 }
-/* free des trucs apres exec_ast? */
 
 static void	child(t_list *content, int *pipe_fd, int fdin)
 {
@@ -35,6 +34,14 @@ static void	child(t_list *content, int *pipe_fd, int fdin)
 	msh_exit();
 }
 
+static void	close_pipe(int *pipe_fd)
+{
+	if (close(pipe_fd[0]) == -1)
+		handle_errors("close");
+	if (close(pipe_fd[1]) == -1)
+		handle_errors("close");
+}
+
 static void	fork_pipe(t_list *content, int fdin)
 {
 	int	status;
@@ -45,9 +52,9 @@ static void	fork_pipe(t_list *content, int fdin)
 		return (handle_errors("pipe"));
 	pid = fork();
 	if (pid == -1)
-	{
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
+	{	
+		close_pipe(pipe_fd);
+		g_cenv.exit_status = 128;
 		return (handle_errors("fork"));
 	}
 	if (pid == 0)

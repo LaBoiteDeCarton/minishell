@@ -122,7 +122,6 @@ bash-3.2$ (ls | grep file) || echo non && echo basta
 file_command
 basta
 
-ORDRE DU LEXER!!!! 
 bash-3.2$ echo test | ARG=42 && echo $ARG
 
 bash-3.2$ echo test | (ARG=42 && echo $ARG)

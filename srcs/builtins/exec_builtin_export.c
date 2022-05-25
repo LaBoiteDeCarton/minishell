@@ -85,9 +85,9 @@ void	exec_builtin_export(t_cmd node, int *fd)
 {
 	int	i;
 
-	if (*fd == -1)
-		*fd = dup(STDOUT_FILENO);
-	if (*fd == -1)
+	if (fd[1] == -1)
+		fd[1] = dup(STDOUT_FILENO);
+	if (fd[1] == -1)
 		return (handle_errors("exporte"));
 	g_cenv.exit_status = 0;
 	i = 1;

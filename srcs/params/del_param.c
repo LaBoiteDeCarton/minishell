@@ -1,39 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_functions.c                                   :+:      :+:    :+:   */
+/*   del_param.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dmercadi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/24 14:31:21 by dmercadi          #+#    #+#             */
-/*   Updated: 2022/05/24 14:31:23 by dmercadi         ###   ########.fr       */
+/*   Created: 2022/05/25 16:44:19 by dmercadi          #+#    #+#             */
+/*   Updated: 2022/05/25 16:44:20 by dmercadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_chartab(char **chartab)
+static t_list	*del_from_var(char *name, t_list *var)
 {
-	int	i;
+	t_list	*reste;
 
-	if (!chartab)
-		return ;
-	i = 0;
-	while (chartab[i])
-		free(chartab[i++]);
-	free(chartab);
+	if (!var)
+		return (NULL);
+	if (!ft_strncmp(name, ((t_var *)var->content)->name, ft_strlen(name) + 1))
+	{
+		reste = var->next;
+		ft_lstdelone(var, &clear_var);
+		return (del_from_var(name, reste));
+	}
+	var->next = del_from_var(name, var->next);
+	return (var);
 }
 
-void	clear_var(void *var)
+void	del_param(char *name)
 {
-	if (((t_var *)var)->name)
-		free(((t_var *)var)->name);
-	if (((t_var *)var)->value)
-		free(((t_var *)var)->value);
-	free((t_var *)var);
-}
-
-void	free_var(t_list *var)
-{
-	ft_lstclear(&var, &clear_var);
+	del_from_env(name);
+	g_cenv.var = del_from_var(name, g_cenv.var);
 }

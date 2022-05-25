@@ -214,12 +214,19 @@ char	**create_chartab_from_lst(t_list *lst)
 t_list	*expande_wildcard(t_list *lst_excmd)
 {
 	t_list	*lst_wildcarded;
+	t_list	*temp;
 
 	lst_wildcarded = NULL;
 	while (lst_excmd)
 	{
 		if (ft_strrchr((char *)lst_excmd->content, '*'))
-			ft_lstadd_back(&lst_wildcarded, get_dir_lst((char *)lst_excmd->content));
+		{
+			temp = get_dir_lst((char *)lst_excmd->content, NULL);
+			if (temp)
+				ft_lstadd_back(&lst_wildcarded, temp);
+			else
+				ft_lstadd_back(&lst_wildcarded, ft_lstnew(ft_strdup((char *)lst_excmd->content)));
+		}
 		else
 			ft_lstadd_back(&lst_wildcarded, ft_lstnew(ft_strdup((char *)lst_excmd->content)));
 		lst_excmd = lst_excmd->next;

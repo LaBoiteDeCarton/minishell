@@ -26,61 +26,127 @@ bash: line 1: : command not found$
 MSH ERROR OUTPUT :
 msh: : command not found$
 
+COMMAND: exit 1
+STDERR ERROR :
+BASH ERROR OUTPUT :
+MSH ERROR OUTPUT :
+msh: exit: exit: numeric argument required$
+
+COMMAND: exit 1
+EXIT_STATUS ERROR :
+msh:(255) bash:(1)
+
+COMMAND: exit 2147483647
+STDERR ERROR :
+BASH ERROR OUTPUT :
+MSH ERROR OUTPUT :
+msh: exit: exit: numeric argument required$
+
+COMMAND: exit 9223372036854775807
+STDERR ERROR :
+BASH ERROR OUTPUT :
+MSH ERROR OUTPUT :
+msh: exit: exit: numeric argument required$
+
 COMMAND: exit 9223372036854775808
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: 9223372036854775808: numeric argument required$
 MSH ERROR OUTPUT :
-msh: exit: 9223372036854775808: numeric argument required$
+msh: exit: exit: numeric argument required$
+
+COMMAND: exit -1
+STDERR ERROR :
+BASH ERROR OUTPUT :
+MSH ERROR OUTPUT :
+msh: exit: exit: numeric argument required$
+
+COMMAND: exit -2147483647
+STDERR ERROR :
+BASH ERROR OUTPUT :
+MSH ERROR OUTPUT :
+msh: exit: exit: numeric argument required$
+
+COMMAND: exit -2147483647
+EXIT_STATUS ERROR :
+msh:(255) bash:(1)
+
+COMMAND: exit -9223372036854775807
+STDERR ERROR :
+BASH ERROR OUTPUT :
+MSH ERROR OUTPUT :
+msh: exit: exit: numeric argument required$
+
+COMMAND: exit -9223372036854775807
+EXIT_STATUS ERROR :
+msh:(255) bash:(1)
 
 COMMAND: exit -92233720368547758078
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: -92233720368547758078: numeric argument required$
 MSH ERROR OUTPUT :
-msh: exit: -92233720368547758078: numeric argument required$
+msh: exit: exit: numeric argument required$
 
 COMMAND: exit 123 456
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: too many arguments$
 MSH ERROR OUTPUT :
-msh: exit: too many arguments$
+msh: exit: exit: numeric argument required$
+
+COMMAND: exit 123 456
+EXIT_STATUS ERROR :
+msh:(255) bash:(1)
 
 COMMAND: exit 123 tropcesttrop
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: too many arguments$
 MSH ERROR OUTPUT :
-msh: exit: too many arguments$
+msh: exit: exit: numeric argument required$
+
+COMMAND: exit 123 tropcesttrop
+EXIT_STATUS ERROR :
+msh:(255) bash:(1)
 
 COMMAND: exit pasbon
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: pasbon: numeric argument required$
 MSH ERROR OUTPUT :
-msh: exit: pasbon: numeric argument required$
+msh: exit: exit: numeric argument required$
 
 COMMAND: exit pasbon pas bon du tout
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: pasbon: numeric argument required$
 MSH ERROR OUTPUT :
-msh: exit: pasbon: numeric argument required$
+msh: exit: exit: numeric argument required$
 
 COMMAND: exit pas bon 123 456
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: pas: numeric argument required$
 MSH ERROR OUTPUT :
-msh: exit: pas: numeric argument required$
+msh: exit: exit: numeric argument required$
 
 COMMAND: exit 42sh
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: 42sh: numeric argument required$
 MSH ERROR OUTPUT :
-msh: exit: 42sh: numeric argument required$
+msh: exit: exit: numeric argument required$
+
+COMMAND: exit 15 && touch NEVER
+STDERR ERROR :
+BASH ERROR OUTPUT :
+MSH ERROR OUTPUT :
+msh: exit: exit: numeric argument required$
+
+COMMAND: exit 15 && touch NEVER
+EXIT_STATUS ERROR :
+msh:(255) bash:(15)
 
 COMMAND: VAR=BLABLA && $VAR=HAHA
 STDERR ERROR :
@@ -120,33 +186,21 @@ msh: nimp: command not found$
 COMMAND: (ls -l)
 STDOUT ERROR :
 BASH OUTPUT :
-total 24$
--rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 bash_err$
--rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 bash_res$
--rw-r--r--  1 dmercadi  2021_nice   185 May 24 19:16 filetest$
--rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 msh_err$
--rw-r--r--  1 dmercadi  2021_nice    59 May 24 19:16 msh_res$
--rw-r--r--  1 dmercadi  2021_nice  2845 May 24 19:16 test_script_ERR$
+total 32$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 25 14:29 bash_err$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 25 14:29 bash_res$
+-rw-r--r--  1 dmercadi  2021_nice   185 May 25 14:29 filetest$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 25 14:29 msh_err$
+-rw-r--r--  1 dmercadi  2021_nice    59 May 25 14:29 msh_res$
+-rw-r--r--  1 dmercadi  2021_nice  4117 May 25 14:29 test_script_ERR$
 MSH OUTPUT :
-total 24$
--rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 bash_err$
--rw-r--r--  1 dmercadi  2021_nice   386 May 24 19:16 bash_res$
--rw-r--r--  1 dmercadi  2021_nice   185 May 24 19:16 filetest$
--rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 msh_err$
--rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 msh_res$
--rw-r--r--  1 dmercadi  2021_nice  2845 May 24 19:16 test_script_ERR$
-
-COMMAND: (ls) -l
-STDOUT ERROR :
-BASH OUTPUT :
-MSH OUTPUT :
-total 24$
--rw-r--r--  1 dmercadi  2021_nice    78 May 24 19:16 bash_err$
--rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 bash_res$
--rw-r--r--  1 dmercadi  2021_nice   185 May 24 19:16 filetest$
--rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 msh_err$
--rw-r--r--  1 dmercadi  2021_nice     0 May 24 19:16 msh_res$
--rw-r--r--  1 dmercadi  2021_nice  3691 May 24 19:16 test_script_ERR$
+total 32$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 25 14:29 bash_err$
+-rw-r--r--  1 dmercadi  2021_nice   386 May 25 14:29 bash_res$
+-rw-r--r--  1 dmercadi  2021_nice   185 May 25 14:29 filetest$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 25 14:29 msh_err$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 25 14:29 msh_res$
+-rw-r--r--  1 dmercadi  2021_nice  4117 May 25 14:29 test_script_ERR$
 
 COMMAND: (ls) -l
 STDERR ERROR :
@@ -154,10 +208,7 @@ BASH ERROR OUTPUT :
 bash: line 1: syntax error near unexpected token `-l'$
 bash: line 1: `(ls) -l'$
 MSH ERROR OUTPUT :
-
-COMMAND: (ls) -l
-EXIT_STATUS ERROR :
-msh:(0) bash:(2)
+msh: syntax error near unexpected token `)'$
 
 COMMAND: ARG="echo salut" && "$ARG" toi
 STDERR ERROR :

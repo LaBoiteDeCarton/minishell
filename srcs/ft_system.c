@@ -35,7 +35,7 @@ void	ft_system(char *command)
 	t_list	*lexer;
 
 	lexer = create_lexer(command);
-	if (!lexer_is_valide(lexer))
+	if (lexer && !lexer_is_valide(lexer))
 	{
 		g_cenv.exit_status = 258;
 		ft_lstclear(&lexer, &free_lexer);
