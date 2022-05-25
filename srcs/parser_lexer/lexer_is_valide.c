@@ -17,6 +17,7 @@
 		0 - whatever
 		1 - a word
 		2 - not a token
+		3 - a token
 		not a scope etc..
 */
 
@@ -101,10 +102,15 @@ int	lexer_is_valide(t_list	*lst)
 		else if (((t_lxr *)ptr->content)->type == scope_close && !scope_count)
 			return (lexer_error(")"));
 		else if (((t_lxr *)ptr->content)->type == scope_close)
+		{
 			scope_count--;
+			should_be = 3;
+		}
 		else if (should_be == 1 && ((t_lxr *)ptr->content)->type != word)
 			return (lexer_error(get_str_lxr(((t_lxr *)ptr->content)->type)));
 		else if (should_be == 2 && is_token(((t_lxr *)ptr->content)->type))
+			return (0);
+		else if (should_be == 3 && !is_token(((t_lxr *)ptr->content)->type))
 			return (0);
 		if (((t_lxr *)ptr->content)->type == word
 			&& check_quote_parity(((t_lxr *)ptr->content)->content))

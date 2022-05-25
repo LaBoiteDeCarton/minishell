@@ -6,17 +6,17 @@ OBJS = ${SRCS:.c=.o}
 H_DIR = includes
 LFT = lib/libft
 #ifdef MACOS_CATALINA
-#	LIBFLAGS = -Llib/libft -lft -L/usr/local/opt/readline/lib -lreadline
+	LIBFLAGS = -Llib/libft -lft -L/usr/local/opt/readline/lib -lreadline
 #else
-	LIBFLAGS = -Llib/libft -lft -L${HOME}/.brew/opt/readline/lib -lreadline
+#	LIBFLAGS = -Llib/libft -lft -L${HOME}/.brew/opt/readline/lib -lreadline
 #endif
 
 #ifdef MACOS_CATALINA
-#	INCLUDEFLAGS = -I/usr/local/opt/readline/include -I${H_DIR}
+	INCLUDEFLAGS = -I/usr/local/opt/readline/include -I${H_DIR}
 #else
-	INCLUDEFLAGS = -I${HOME}/.brew/opt/readline/include -I${H_DIR}
+#	INCLUDEFLAGS = -I${HOME}/.brew/opt/readline/include -I${H_DIR}
 #endif
-FLAGS = -Wall -Wextra -Werror #-g -fsanitize=address
+FLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 
 .c.o:
 	gcc ${FLAGS} ${INCLUDEFLAGS} -c $< -o ${<:.c=.o}

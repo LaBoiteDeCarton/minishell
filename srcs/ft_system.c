@@ -20,11 +20,12 @@
 	Si le lexer n'est pas valide
 		la valeur de exit_status est 258 (il n'y a aucune execution)
 	Sinon
-		le lexer est traduit en Arbre de la syntaxe abstraite (AST)
-		on lance l'execution
+		le lexer est traduit en liste d'Arbre de la syntaxe abstraite (AST)
+		on lance l'execution de la liset d'AST
 */
 
 /*
+	To visualize the lexer and the AST, use this functions (need to be décommented)
 	printf_lexer(lexer);
 	printASTLIST(ast);
 */

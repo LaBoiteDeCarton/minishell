@@ -21,5 +21,6 @@ void	msh_exit(void)
 		ft_lstclear(&g_cenv.ast, &free_ast);
 	if (isatty(STDIN_FILENO))
 		ft_putstr_fd("exit\n", STDERR_FILENO);
+	system("leaks minishell");
 	exit(g_cenv.exit_status);
 }

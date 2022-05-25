@@ -197,7 +197,7 @@ char	**create_chartab_from_lst(t_list *lst)
 	i = 0;
 	while (lst)
 	{
-		chartab[i] = (char *)malloc(sizeof(char) * ft_strlen((char *)lst->content));
+		chartab[i] = (char *)malloc(sizeof(char) * (ft_strlen((char *)lst->content) + 1));
 		if (!chartab[i])
 		{
 			handle_errors("malloc");
@@ -241,9 +241,10 @@ void	expande_commande(t_cmd *node)
 		i++;
 	}
 	free_chartab(node->cmd_arg);
-	lst_wildcard = expande_wildcard(lst_excmd); //free
+	lst_wildcard = expande_wildcard(lst_excmd);
+	ft_lstclear(&lst_excmd, &free);
 	node->cmd_arg = create_chartab_from_lst(lst_wildcard);
-	ft_lstclear(&lst_excmd, &nothing);
+	ft_lstclear(&lst_wildcard, &free);
 	if (node->cmd_arg)
 		node->cmd_name = node->cmd_arg[0];
 	else

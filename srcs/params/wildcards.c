@@ -25,6 +25,8 @@ int	check_patern(char *pattern, char *str)
 	return (0);
 }
 
+//faire une boucle sur la liste de pattern constitué de ft_split du pttern avec '/'
+
 t_list	*get_dir_lst(char	*pattern)
 {
 	DIR				*dp;
@@ -44,6 +46,6 @@ t_list	*get_dir_lst(char	*pattern)
 	}
 	closedir(dp);
 	if (ft_lstsize(dir_lst) == 0)
-		return (ft_lstnew(pattern));
+		return (ft_lstnew(ft_strdup(pattern)));
 	return (dir_lst);
 }

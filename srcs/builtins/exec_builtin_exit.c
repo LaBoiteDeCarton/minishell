@@ -58,8 +58,8 @@ static int	ft_atoll(const char *str)
 
 void	exec_builtin_exit(t_cmd node, int *fd)
 {
-	(node.cmd_arg)++;
-	while (*node.cmd_arg)
+	(void)fd;
+	if (node.cmd_arg[1])
 	{
 		if (ft_strisll(*node.cmd_arg))
 			g_cenv.exit_status = ft_atoll(*node.cmd_arg);
@@ -69,19 +69,14 @@ void	exec_builtin_exit(t_cmd node, int *fd)
 			ft_putstr_fd(*node.cmd_arg, STDERR_FILENO);
 			ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
 			g_cenv.exit_status = 255;
-			break ;
+			msh_exit();
 		}
-		if (*(node.cmd_arg + 1))
+		if (node.cmd_arg[2])
 		{
 			ft_putstr_fd("msh: exit: too many arguments\n", STDERR_FILENO);
 			g_cenv.exit_status = 1;
 			return ;
 		}
-		break ;
 	}
-	if (fd[0] > 0)
-		close(fd[0]);
-	if (fd[1] > 0)
-		close(fd[1]);
 	msh_exit();
 }
