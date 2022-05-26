@@ -70,11 +70,13 @@ void	join_lst_dir(t_list	*lst, char *left)
 	}
 }
 
-t_list	*get_dir_file_lst(char *pattern, char *dir)
+t_list	*get_dir_and_file_lst(char *pattern, char *dir)
 {
 	DIR				*dp;
 	struct dirent	*dirp;
 	t_list			*dir_lst;
+	char			*temp;
+	char			*temp2;
 
 	if (!*pattern)
 		return (ft_lstnew(ft_strdup(dir)));
@@ -89,43 +91,99 @@ t_list	*get_dir_file_lst(char *pattern, char *dir)
 	while (dirp)
 	{
 		if (*(dirp->d_name) != '.' && check_patern(pattern, dirp->d_name))
-			ft_lstadd_back(&dir_lst, ft_lstnew(ft_strdup(dirp->d_name)));
+		{
+			if (dir)
+			{
+				temp = ft_strjoin(dir, "/");
+				temp2 = ft_strjoin(temp, dirp->d_name);
+				free(temp);
+			}
+			else
+				temp2 = ft_strdup(dirp->d_name);
+			ft_lstadd_back(&dir_lst, ft_lstnew(temp2));
+		}
 		dirp = readdir(dp);
 	}
 	closedir(dp);
-	join_lst_dir(dir_lst, dir);
 	return (dir_lst);
 }
 
 t_list	*get_dir_lst(char *pattern, char *dir)
 {
-	char			*next;
-	t_list			*lst_res;
+	char	*next;
+	t_list	*lst_match;
 	DIR				*dp;
 	struct dirent	*dirp;
+	char	*temp;
+	char	*temp2;
 
 	while (pattern && *pattern && *pattern == '/')
 		pattern++;
 	next = ft_strchr(pattern, '/');
 	if (!next)
-		return (get_dir_file_lst(pattern, dir));
+		return (get_dir_and_file_lst(pattern, dir));
 	*next = '\0';
 	if (dir)
-		dp = opendir(dir);
-	else
-		dp = opendir(g_cenv.tcwd);
+ 		dp = opendir(dir);
+ 	else
+ 		dp = opendir(g_cenv.tcwd);
 	if (!dp)
 		return (handle_wildcard_error(dir));
+	lst_match = NULL;
 	dirp = readdir(dp);
-	lst_res = NULL;
 	while (dirp)
 	{
 		if (dirp->d_type == DT_DIR && *(dirp->d_name) != '.'
 			&& check_patern(pattern, dirp->d_name))
- 			ft_lstadd_back(&lst_res, get_dir_lst(next + 1, dirp->d_name));
- 		dirp = readdir(dp);
+		{
+			if (dir)
+			{
+				temp = ft_strjoin(dir, "/");
+				temp2 = ft_strjoin(temp, dirp->d_name);
+				free(temp);
+			}
+			else
+				temp2 = ft_strdup(dirp->d_name);
+			ft_lstadd_back(&lst_match, get_dir_lst(next + 1, temp2));
+			free(temp2);
+		}
+		dirp = readdir(dp);
 	}
+	closedir(dp);
 	*next = '/';
-	join_lst_dir(lst_res, dir);
-	return (lst_res);
+	return (lst_match);
 }
+
+// t_list	*get_dir_lst(char *pattern, char *pattern_ptr, char *dir)
+// {
+// 	char			*next;
+// 	t_list			*lst_res;
+// 	DIR				*dp;
+// 	struct dirent	*dirp;
+
+// 	while (pattern && *pattern && *pattern == '/')
+// 		pattern++;
+// 	next = ft_strchr(pattern, '/');
+// 	if (!next)
+// 		return (get_dir_file_lst(pattern, pattern_ptr, dir));
+// 	*next = '\0';
+// 	if (dir)
+// 		dp = opendir(dir);
+// 	else
+// 		dp = opendir(g_cenv.tcwd);
+// 	if (!dp)
+// 		return (handle_wildcard_error(dir));
+// 	dirp = readdir(dp);
+// 	lst_res = NULL;
+// 	while (dirp)
+// 	{
+// 		if (dirp->d_type == DT_DIR && *(dirp->d_name) != '.'
+// 			&& check_patern(pattern, dirp->d_name))
+// 		{
+//  			ft_lstadd_back(&lst_res, get_dir_lst(pattern, dirp->d_name));
+// 		}
+//  		dirp = readdir(dp);
+// 	}
+// 	*next = '/';
+// 	return (lst_res);
+// }
