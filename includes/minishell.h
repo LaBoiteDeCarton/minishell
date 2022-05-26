@@ -26,8 +26,12 @@ t_mshenv				g_cenv;
 
 /* Minishell Env Structure :
 	- Pointeur vers l'env du programme
-	- Entier stockant la derniere valeur de sortie de la derniere commande effectuée
+	- Entier contenant la taille de env;
+	- Entier stockant la derniere valeur de sortie de la derniere commande
+		effectuée
 	- Liste de char * contenant les variables d'environnement
+	- Chaine de caractere de "The Current Work Directory"
+	- Liste d'arbre AST de la commande courante
 */
 struct s_mshenv
 {
@@ -45,27 +49,51 @@ struct s_var
 	char	*value;
 };
 
+/*
+	Msh core functions
+		ft_readline : like readline but checking tty of standart input
+		ft_system : like system(<char *: commande>) but handmade
+		msh_exit : like exit(<int: exit status>) but clearing every
+			malloc attribut
+*/
+char	*ft_readline(char *prompt_msg);
+void	ft_system(char *command);
+void	msh_exit(void);
+
+/*
+	Signal function changes the signal event behaviours
+*/
 void	init_signals(void);
 void	init_child_sig(void);
 void	init_heredoc_signal(void);
 void	init_father_sig(void);
-char	*ft_readline(char *prompt_msg);
-void	ft_system(char *command);
 
 /*
-	handle_error
-		Affiche dans la sortie d'erreur le message suivant :
-		msh: 'message personalisé': 'message contenu dans ERRNO'
+	Error handlers function
+		printing in the standart error output the folowing canvas :
+			"msh: <char>: <ERRNO translate>"	
 */
 void	handle_errors(char *msg_error);
+t_list	*handle_wildcard_error(char *dir);
+int		lexer_error(char *err);
+void	*handle_ast_error(t_ast *ast, t_cmd *cmd, char *str);
+void	*handle_expande_errors(char *msg_error);
 
+/*
+	Expande function.
+	Expand means changing the $VAR_NAME in string by it's value (following
+		rules) 
+*/
 size_t	var_name_size(char *name);
 char	*expande_char(char *str);
+int		expanded_char_size(char *str);
+char	*first_expand(char *str);
+int		fst_expanded_c_size(char *str);
 void	expande_commande(t_cmd *node);
-t_list	*get_dir_lst(char *pattern, char *dir);
+t_list	*get_wildacred_lst(char *pattern, char *dir);
 
 /* 
-	environnements functions
+	Environnement functions
 */
 void	set_env(char **env);
 void	add_to_env(char	*str);
@@ -75,10 +103,15 @@ void	del_param(char *name);
 void	del_from_env(char *str);
 char	*get_value(char *name);
 
+/*
+	Free functions
+		free_chartab make a deep free of a char**
+		free_var make a deep free of t_var
+		clear_var make a deep free of t_var list
+		
+*/
 void	free_chartab(char **chartab);
 void	free_var(t_list *var);
 void	clear_var(void *var);
-
-void	msh_exit(void);
 
 #endif

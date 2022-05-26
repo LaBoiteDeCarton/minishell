@@ -64,9 +64,9 @@ static void	fork_pipe(t_list *content, int fdin)
 	g_cenv.exit_status = 0;
 	if (content->next)
 		fork_pipe(content->next, pipe_fd[0]);
-	waitpid(pid, &status, 0);
 	if (close(pipe_fd[0]) == -1)
 		handle_errors("close");
+	waitpid(pid, &status, 0);
 	if (!content->next && WIFEXITED(status))
 		g_cenv.exit_status = WEXITSTATUS(status);
 }

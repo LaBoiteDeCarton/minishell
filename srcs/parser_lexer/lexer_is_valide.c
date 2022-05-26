@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "lexer.h"
+#include "minishell.h"
 
 /*
 	should_be :
@@ -18,13 +19,14 @@
 		1 - a word
 		2 - not a token
 		3 - a token
+		4 - not an open scope
 		not a scope etc..
 */
 
 static int	what_is_next(t_lxr_type type)
 {
 	if (type == word)
-		return (0);
+		return (4);
 	if (type == read_in || type == open_out || type == append | type == heredoc)
 		return (1);
 	if (type == sep_and || type == sep_or || type == sep_pipe)
@@ -33,19 +35,6 @@ static int	what_is_next(t_lxr_type type)
 		return (2);
 	if (type == scope_close)
 		return (3);
-	return (0);
-}
-
-static int	is_token(t_lxr_type type)
-{
-	return (type == sep_and || type == sep_or || type == sep_pipe);
-}
-
-static int	lexer_error(char *err)
-{
-	ft_putstr_fd("msh: syntax error near unexpected token `", STDERR_FILENO);
-	ft_putstr_fd(err, STDERR_FILENO);
-	ft_putendl_fd("'", STDERR_FILENO);
 	return (0);
 }
 
@@ -90,34 +79,41 @@ static int	check_quote_parity(char *str)
 	return (sq || dq);
 }
 
+static int	check(int should_be, t_list *lst)
+{
+	if (should_be == 1 && ((t_lxr *)lst->content)->type != word)
+		return (lexer_error(get_str_lxr(((t_lxr *)lst->content)->type)));
+	else if (should_be == 2 && is_token(lst))
+		return (lexer_error(get_str_lxr(((t_lxr *)lst->content)->type)));
+	else if (should_be == 3 && !is_token(lst))
+		return (lexer_error(")"));
+	else if (should_be == 4 && ((t_lxr *)lst->content)->type == scope_open)
+		return (lexer_error("("));
+	return (1);
+}
+
 int	lexer_is_valide(t_list	*lst)
 {
-	t_list	*ptr;	
 	int		should_be;
 	int		scope_count;
 
-	ptr = lst;
 	should_be = 2;
 	scope_count = 0;
-	while (ptr)
+	while (lst)
 	{
-		if (((t_lxr *)ptr->content)->type == scope_open)
+		if (((t_lxr *)lst->content)->type == scope_open)
 			scope_count++;
-		else if (((t_lxr *)ptr->content)->type == scope_close && !scope_count)
+		else if (((t_lxr *)lst->content)->type == scope_close && !scope_count)
 			return (lexer_error(")"));
-		else if (((t_lxr *)ptr->content)->type == scope_close)
+		else if (((t_lxr *)lst->content)->type == scope_close)
 			scope_count--;
-		else if (should_be == 1 && ((t_lxr *)ptr->content)->type != word)
-			return (lexer_error(get_str_lxr(((t_lxr *)ptr->content)->type)));
-		else if (should_be == 2 && is_token(((t_lxr *)ptr->content)->type))
-			return (lexer_error(get_str_lxr(((t_lxr *)ptr->content)->type)));
-		else if (should_be == 3 && !is_token(((t_lxr *)ptr->content)->type))
-			return (lexer_error(")"));
-		if (((t_lxr *)ptr->content)->type == word
-			&& check_quote_parity(((t_lxr *)ptr->content)->content))
+		if (!check(should_be, lst))
+			return (0);
+		if (((t_lxr *)lst->content)->type == word
+			&& check_quote_parity(((t_lxr *)lst->content)->content))
 			return (lexer_error("\"' or `'"));
-		should_be = what_is_next(((t_lxr *)ptr->content)->type);
-		ptr = ptr->next;
+		should_be = what_is_next(((t_lxr *)lst->content)->type);
+		lst = lst->next;
 	}
 	if (scope_count != 0 || should_be == 1 || should_be == 2)
 		return (lexer_error("newline"));

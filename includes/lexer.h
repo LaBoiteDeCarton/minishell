@@ -38,9 +38,26 @@ struct s_lxr
 	char		*content;
 };
 
-t_list	*create_lexer(char *str);
-void	printf_lexer(t_list	*lst);
-void	free_lexer(void *content);
-int		lexer_is_valide(t_list	*lst);
+/*
+	Function to create the lexer (token, char) list from the user command
+*/
+t_list		*create_lexer(char *str);
+
+/*
+	checking the validity of the user command
+*/
+int			lexer_is_valide(t_list	*lst);
+
+/*
+	useful function for lexer
+*/
+t_lxr_type	get_type(t_list *lexer);
+int			is_token(t_list *lst);
+int			is_redirection(t_list *lst);
+
+/*
+	lexer deep free function
+*/
+void		free_lexer(void *content);
 
 #endif

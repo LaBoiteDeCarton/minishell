@@ -26,127 +26,61 @@ bash: line 1: : command not found$
 MSH ERROR OUTPUT :
 msh: : command not found$
 
-COMMAND: exit 1
-STDERR ERROR :
-BASH ERROR OUTPUT :
-MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
-
-COMMAND: exit 1
-EXIT_STATUS ERROR :
-msh:(255) bash:(1)
-
-COMMAND: exit 2147483647
-STDERR ERROR :
-BASH ERROR OUTPUT :
-MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
-
-COMMAND: exit 9223372036854775807
-STDERR ERROR :
-BASH ERROR OUTPUT :
-MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
-
 COMMAND: exit 9223372036854775808
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: 9223372036854775808: numeric argument required$
 MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
-
-COMMAND: exit -1
-STDERR ERROR :
-BASH ERROR OUTPUT :
-MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
-
-COMMAND: exit -2147483647
-STDERR ERROR :
-BASH ERROR OUTPUT :
-MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
-
-COMMAND: exit -2147483647
-EXIT_STATUS ERROR :
-msh:(255) bash:(1)
-
-COMMAND: exit -9223372036854775807
-STDERR ERROR :
-BASH ERROR OUTPUT :
-MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
-
-COMMAND: exit -9223372036854775807
-EXIT_STATUS ERROR :
-msh:(255) bash:(1)
+msh: exit: 9223372036854775808: numeric argument required$
 
 COMMAND: exit -92233720368547758078
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: -92233720368547758078: numeric argument required$
 MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
+msh: exit: -92233720368547758078: numeric argument required$
 
 COMMAND: exit 123 456
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: too many arguments$
 MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
-
-COMMAND: exit 123 456
-EXIT_STATUS ERROR :
-msh:(255) bash:(1)
+msh: exit: too many arguments$
 
 COMMAND: exit 123 tropcesttrop
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: too many arguments$
 MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
-
-COMMAND: exit 123 tropcesttrop
-EXIT_STATUS ERROR :
-msh:(255) bash:(1)
+msh: exit: too many arguments$
 
 COMMAND: exit pasbon
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: pasbon: numeric argument required$
 MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
+msh: exit: pasbon: numeric argument required$
 
 COMMAND: exit pasbon pas bon du tout
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: pasbon: numeric argument required$
 MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
+msh: exit: pasbon: numeric argument required$
 
 COMMAND: exit pas bon 123 456
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: pas: numeric argument required$
 MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
+msh: exit: pas: numeric argument required$
 
 COMMAND: exit 42sh
 STDERR ERROR :
 BASH ERROR OUTPUT :
 bash: line 1: exit: 42sh: numeric argument required$
 MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
-
-COMMAND: exit 15 && touch NEVER
-STDERR ERROR :
-BASH ERROR OUTPUT :
-MSH ERROR OUTPUT :
-msh: exit: exit: numeric argument required$
-
-COMMAND: exit 15 && touch NEVER
-EXIT_STATUS ERROR :
-msh:(255) bash:(15)
+msh: exit: 42sh: numeric argument required$
 
 COMMAND: VAR=BLABLA && $VAR=HAHA
 STDERR ERROR :
@@ -186,21 +120,21 @@ msh: nimp: command not found$
 COMMAND: (ls -l)
 STDOUT ERROR :
 BASH OUTPUT :
-total 32$
--rw-r--r--  1 dmercadi  2021_nice     0 May 25 14:29 bash_err$
--rw-r--r--  1 dmercadi  2021_nice     0 May 25 14:29 bash_res$
--rw-r--r--  1 dmercadi  2021_nice   185 May 25 14:29 filetest$
--rw-r--r--  1 dmercadi  2021_nice     0 May 25 14:29 msh_err$
--rw-r--r--  1 dmercadi  2021_nice    59 May 25 14:29 msh_res$
--rw-r--r--  1 dmercadi  2021_nice  4117 May 25 14:29 test_script_ERR$
+total 24$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 26 15:39 bash_err$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 26 15:39 bash_res$
+-rw-r--r--  1 dmercadi  2021_nice   185 May 26 15:39 filetest$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 26 15:39 msh_err$
+-rw-r--r--  1 dmercadi  2021_nice    59 May 26 15:39 msh_res$
+-rw-r--r--  1 dmercadi  2021_nice  2845 May 26 15:39 test_script_ERR$
 MSH OUTPUT :
-total 32$
--rw-r--r--  1 dmercadi  2021_nice     0 May 25 14:29 bash_err$
--rw-r--r--  1 dmercadi  2021_nice   386 May 25 14:29 bash_res$
--rw-r--r--  1 dmercadi  2021_nice   185 May 25 14:29 filetest$
--rw-r--r--  1 dmercadi  2021_nice     0 May 25 14:29 msh_err$
--rw-r--r--  1 dmercadi  2021_nice     0 May 25 14:29 msh_res$
--rw-r--r--  1 dmercadi  2021_nice  4117 May 25 14:29 test_script_ERR$
+total 24$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 26 15:39 bash_err$
+-rw-r--r--  1 dmercadi  2021_nice   386 May 26 15:39 bash_res$
+-rw-r--r--  1 dmercadi  2021_nice   185 May 26 15:39 filetest$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 26 15:39 msh_err$
+-rw-r--r--  1 dmercadi  2021_nice     0 May 26 15:39 msh_res$
+-rw-r--r--  1 dmercadi  2021_nice  2845 May 26 15:39 test_script_ERR$
 
 COMMAND: (ls) -l
 STDERR ERROR :
@@ -471,4 +405,246 @@ bash: line 1: syntax error near unexpected token `|'$
 bash: line 1: `< | >'$
 MSH ERROR OUTPUT :
 msh: syntax error near unexpected token `|'$
+
+COMMAND: && echo nope
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `&&'$
+bash: line 1: `&& echo nope'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `&&'$
+
+COMMAND: || echo nope
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `||'$
+bash: line 1: `|| echo nope'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `||'$
+
+COMMAND: | echo nope
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `|'$
+bash: line 1: `| echo nope'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `|'$
+
+COMMAND: echo nope || && echo nope
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `&&'$
+bash: line 1: `echo nope || && echo nope'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `&&'$
+
+COMMAND: < && echo nope
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `&&'$
+bash: line 1: `< && echo nope'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `&&'$
+
+COMMAND: > && echo nope
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `&&'$
+bash: line 1: `> && echo nope'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `&&'$
+
+COMMAND: << && echo nope
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `&&'$
+bash: line 1: `<< && echo nope'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `&&'$
+
+COMMAND: >> && echo nope
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `&&'$
+bash: line 1: `>> && echo nope'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `&&'$
+
+COMMAND: <
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `newline'$
+bash: line 1: `<'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `newline'$
+
+COMMAND: >
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `newline'$
+bash: line 1: `>'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `newline'$
+
+COMMAND: <<
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `newline'$
+bash: line 1: `<<'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `newline'$
+
+COMMAND: >>
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `newline'$
+bash: line 1: `>>'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `newline'$
+
+COMMAND: (echo nope))
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `)'$
+bash: line 1: `(echo nope))'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `)'$
+
+COMMAND: ((echo nope)
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 3: syntax error: unexpected end of file$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `newline'$
+
+COMMAND: echo nope &&
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 2: syntax error: unexpected end of file$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `newline'$
+
+COMMAND: echo nope ||
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 2: syntax error: unexpected end of file$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `newline'$
+
+COMMAND: echo nope |
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 2: syntax error: unexpected end of file$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `newline'$
+
+COMMAND: echo nope >
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `newline'$
+bash: line 1: `echo nope >'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `newline'$
+
+COMMAND: echo nope <
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `newline'$
+bash: line 1: `echo nope <'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `newline'$
+
+COMMAND: echo nope <<
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `newline'$
+bash: line 1: `echo nope <<'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `newline'$
+
+COMMAND: echo nope >>
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `newline'$
+bash: line 1: `echo nope >>'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `newline'$
+
+COMMAND: echo nope < <
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `<'$
+bash: line 1: `echo nope < <'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `<'$
+
+COMMAND: echo nope > <
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `<'$
+bash: line 1: `echo nope > <'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `<'$
+
+COMMAND: echo nope << <
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `<'$
+bash: line 1: `echo nope << <'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `<'$
+
+COMMAND: echo nope >> <
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `<'$
+bash: line 1: `echo nope >> <'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `<'$
+
+COMMAND: echo nope <file <
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `newline'$
+bash: line 1: `echo nope <file <'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `newline'$
+
+COMMAND: (echo) nope
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `nope'$
+bash: line 1: `(echo) nope'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `)'$
+
+COMMAND: (echo nope &&) echo nope
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `)'$
+bash: line 1: `(echo nope &&) echo nope'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `)'$
+
+COMMAND: echo nope ( echo nope && echo nope)
+STDERR ERROR :
+BASH ERROR OUTPUT :
+bash: line 1: syntax error near unexpected token `('$
+bash: line 1: `echo nope ( echo nope && echo nope)'$
+MSH ERROR OUTPUT :
+msh: syntax error near unexpected token `('$
+
+COMMAND: cd ../.. && echo */*
+STDOUT ERROR :
+BASH OUTPUT :
+includes/ast.h includes/builtins.h includes/lexer.h includes/libft.h includes/minishell.h lib/libft minishell-tester/-rf minishell-tester/; minishell-tester/README.md minishell-tester/cd minishell-tester/exit minishell-tester/minishell minishell-tester/pwd minishell-tester/rm minishell-tester/test.sh myMSHtester/SpaceDir myMSHtester/file_command myMSHtester/filecmp myMSHtester/test_script.sh myMSHtester/test_script_ERR srcs/builtins srcs/free_functions.c srcs/free_functions.o srcs/ft_exec_ast srcs/ft_readline.c srcs/ft_readline.o srcs/ft_system.c srcs/ft_system.o srcs/handle_errors.c srcs/handle_errors.o srcs/main.c srcs/main.o srcs/msh_exit.c srcs/msh_exit.o srcs/params srcs/parser_lexer srcs/signals trash/DIRTE trash/file.txt trash/file1 trash/file2 trash/file2.txt trash/file3 trash/file3.txt trash/file_command trash/filememo.txt trash/filememosave.txt trash/filenew trash/filesave trash/get_prompt.c trash/parse_line.c trash/print_ast_lexer.c trash/print_params.c$
+MSH OUTPUT :
+includes/ast.h includes/builtins.h includes/lexer.h includes/libft.h includes/minishell.h lib/libft minishell-tester/-rf minishell-tester/; minishell-tester/cd minishell-tester/exit minishell-tester/minishell minishell-tester/pwd minishell-tester/README.md minishell-tester/rm minishell-tester/test.sh myMSHtester/file_command myMSHtester/filecmp myMSHtester/SpaceDir myMSHtester/test_script.sh myMSHtester/test_script_ERR srcs/builtins srcs/free_functions.c srcs/free_functions.o srcs/ft_exec_ast srcs/ft_readline.c srcs/ft_readline.o srcs/ft_system.c srcs/ft_system.o srcs/handle_errors.c srcs/handle_errors.o srcs/main.c srcs/main.o srcs/msh_exit.c srcs/msh_exit.o srcs/params srcs/parser_lexer srcs/signals trash/DIRTE trash/file.txt trash/file1 trash/file2 trash/file2.txt trash/file3 trash/file3.txt trash/file_command trash/filememo.txt trash/filememosave.txt trash/filenew trash/filesave trash/get_prompt.c trash/parse_line.c trash/print_ast_lexer.c trash/print_params.c$
+
+COMMAND: cd ../.. && echo */*/*
+STDOUT ERROR :
+BASH OUTPUT :
+lib/libft/Makefile lib/libft/README.md lib/libft/ft_atoi.c lib/libft/ft_atoi.o lib/libft/ft_bzero.c lib/libft/ft_bzero.o lib/libft/ft_calloc.c lib/libft/ft_calloc.o lib/libft/ft_isalnum.c lib/libft/ft_isalnum.o lib/libft/ft_isalpha.c lib/libft/ft_isalpha.o lib/libft/ft_isascii.c lib/libft/ft_isascii.o lib/libft/ft_isdigit.c lib/libft/ft_isdigit.o lib/libft/ft_islower.c lib/libft/ft_islower.o lib/libft/ft_isprint.c lib/libft/ft_isprint.o lib/libft/ft_isupper.c lib/libft/ft_isupper.o lib/libft/ft_itoa.c lib/libft/ft_itoa.o lib/libft/ft_lst1.c lib/libft/ft_lst1.o lib/libft/ft_lst2.c lib/libft/ft_lst2.o lib/libft/ft_memccpy.c lib/libft/ft_memccpy.o lib/libft/ft_memchr.c lib/libft/ft_memchr.o lib/libft/ft_memcmp.c lib/libft/ft_memcmp.o lib/libft/ft_memcpy.c lib/libft/ft_memcpy.o lib/libft/ft_memmove.c lib/libft/ft_memmove.o lib/libft/ft_memset.c lib/libft/ft_memset.o lib/libft/ft_putchar_fd.c lib/libft/ft_putchar_fd.o lib/libft/ft_putendl_fd.c lib/libft/ft_putendl_fd.o lib/libft/ft_putnbr_fd.c lib/libft/ft_putnbr_fd.o lib/libft/ft_putstr_fd.c lib/libft/ft_putstr_fd.o lib/libft/ft_split.c lib/libft/ft_split.o lib/libft/ft_strchr.c lib/libft/ft_strchr.o lib/libft/ft_strdup.c lib/libft/ft_strdup.o lib/libft/ft_strisdigit.c lib/libft/ft_strisdigit.o lib/libft/ft_strjoin.c lib/libft/ft_strjoin.o lib/libft/ft_strlcat.c lib/libft/ft_strlcat.o lib/libft/ft_strlcpy.c lib/libft/ft_strlcpy.o lib/libft/ft_strlen.c lib/libft/ft_strlen.o lib/libft/ft_strmapi.c lib/libft/ft_strmapi.o lib/libft/ft_strncmp.c lib/libft/ft_strncmp.o lib/libft/ft_strnstr.c lib/libft/ft_strnstr.o lib/libft/ft_strrchr.c lib/libft/ft_strrchr.o lib/libft/ft_strtrim.c lib/libft/ft_strtrim.o lib/libft/ft_substr.c lib/libft/ft_substr.o lib/libft/ft_tolower.c lib/libft/ft_tolower.o lib/libft/ft_toupper.c lib/libft/ft_toupper.o lib/libft/get_next_line.c lib/libft/get_next_line.o lib/libft/libft.a lib/libft/libft.h lib/libft/nothing.c lib/libft/nothing.o myMSHtester/SpaceDir/bash_err myMSHtester/SpaceDir/bash_res myMSHtester/SpaceDir/file myMSHtester/SpaceDir/msh_err myMSHtester/SpaceDir/msh_res myMSHtester/SpaceDir/noaccess myMSHtester/SpaceDir/test_script_ERR srcs/builtins/exec_builtin.c srcs/builtins/exec_builtin.o srcs/builtins/exec_builtin_cd.c srcs/builtins/exec_builtin_cd.o srcs/builtins/exec_builtin_echo.c srcs/builtins/exec_builtin_echo.o srcs/builtins/exec_builtin_env.c srcs/builtins/exec_builtin_env.o srcs/builtins/exec_builtin_exit.c srcs/builtins/exec_builtin_exit.o srcs/builtins/exec_builtin_export.c srcs/builtins/exec_builtin_export.o srcs/builtins/exec_builtin_pwd.c srcs/builtins/exec_builtin_pwd.o srcs/builtins/exec_builtin_unset.c srcs/builtins/exec_builtin_unset.o srcs/builtins/get_builtin.c srcs/builtins/get_builtin.o srcs/ft_exec_ast/exec_and.c srcs/ft_exec_ast/exec_and.o srcs/ft_exec_ast/exec_ast.c srcs/ft_exec_ast/exec_ast.o srcs/ft_exec_ast/exec_ast_lst.c srcs/ft_exec_ast/exec_ast_lst.o srcs/ft_exec_ast/exec_cmd.c srcs/ft_exec_ast/exec_cmd.o srcs/ft_exec_ast/exec_instruction.c srcs/ft_exec_ast/exec_instruction.o srcs/ft_exec_ast/exec_or.c srcs/ft_exec_ast/exec_or.o srcs/ft_exec_ast/exec_pipe.c srcs/ft_exec_ast/exec_pipe.o srcs/ft_exec_ast/find_path.c srcs/ft_exec_ast/find_path.o srcs/ft_exec_ast/redirect.c srcs/ft_exec_ast/redirect.o srcs/params/add_params.c srcs/params/add_params.o srcs/params/del_param.c srcs/params/del_param.o srcs/params/env.c srcs/params/env.o srcs/params/expande_char.c srcs/params/expande_char.o srcs/params/expande_commande.c srcs/params/expande_commande.o srcs/params/get_value.c srcs/params/get_value.o srcs/params/is_var_attribution.c srcs/params/is_var_attribution.o srcs/params/wildcards.c srcs/params/wildcards.o srcs/parser_lexer/ast_utils.c srcs/parser_lexer/ast_utils.o srcs/parser_lexer/create_ast.c srcs/parser_lexer/create_ast.o srcs/parser_lexer/create_ast_instruction.c srcs/parser_lexer/create_ast_instruction.o srcs/parser_lexer/create_ast_pipe.c srcs/parser_lexer/create_ast_pipe.o srcs/parser_lexer/create_lexer.c srcs/parser_lexer/create_lexer.o srcs/parser_lexer/free_ast.c srcs/parser_lexer/free_ast.o srcs/parser_lexer/free_lexer.c srcs/parser_lexer/free_lexer.o srcs/parser_lexer/get_heredoc.c srcs/parser_lexer/get_heredoc.o srcs/parser_lexer/lexer_is_valide.c srcs/parser_lexer/lexer_is_valide.o srcs/parser_lexer/lexer_utils.c srcs/parser_lexer/lexer_utils.o srcs/signals/init_child_sig.c srcs/signals/init_child_sig.o srcs/signals/init_father_sig.c srcs/signals/init_father_sig.o srcs/signals/init_heredoc_signal.c srcs/signals/init_heredoc_signal.o srcs/signals/init_signals.c srcs/signals/init_signals.o$
+MSH OUTPUT :
+lib/libft/ft_atoi.c lib/libft/ft_atoi.o lib/libft/ft_bzero.c lib/libft/ft_bzero.o lib/libft/ft_calloc.c lib/libft/ft_calloc.o lib/libft/ft_isalnum.c lib/libft/ft_isalnum.o lib/libft/ft_isalpha.c lib/libft/ft_isalpha.o lib/libft/ft_isascii.c lib/libft/ft_isascii.o lib/libft/ft_isdigit.c lib/libft/ft_isdigit.o lib/libft/ft_islower.c lib/libft/ft_islower.o lib/libft/ft_isprint.c lib/libft/ft_isprint.o lib/libft/ft_isupper.c lib/libft/ft_isupper.o lib/libft/ft_itoa.c lib/libft/ft_itoa.o lib/libft/ft_lst1.c lib/libft/ft_lst1.o lib/libft/ft_lst2.c lib/libft/ft_lst2.o lib/libft/ft_memccpy.c lib/libft/ft_memccpy.o lib/libft/ft_memchr.c lib/libft/ft_memchr.o lib/libft/ft_memcmp.c lib/libft/ft_memcmp.o lib/libft/ft_memcpy.c lib/libft/ft_memcpy.o lib/libft/ft_memmove.c lib/libft/ft_memmove.o lib/libft/ft_memset.c lib/libft/ft_memset.o lib/libft/ft_putchar_fd.c lib/libft/ft_putchar_fd.o lib/libft/ft_putendl_fd.c lib/libft/ft_putendl_fd.o lib/libft/ft_putnbr_fd.c lib/libft/ft_putnbr_fd.o lib/libft/ft_putstr_fd.c lib/libft/ft_putstr_fd.o lib/libft/ft_split.c lib/libft/ft_split.o lib/libft/ft_strchr.c lib/libft/ft_strchr.o lib/libft/ft_strdup.c lib/libft/ft_strdup.o lib/libft/ft_strisdigit.c lib/libft/ft_strisdigit.o lib/libft/ft_strjoin.c lib/libft/ft_strjoin.o lib/libft/ft_strlcat.c lib/libft/ft_strlcat.o lib/libft/ft_strlcpy.c lib/libft/ft_strlcpy.o lib/libft/ft_strlen.c lib/libft/ft_strlen.o lib/libft/ft_strmapi.c lib/libft/ft_strmapi.o lib/libft/ft_strncmp.c lib/libft/ft_strncmp.o lib/libft/ft_strnstr.c lib/libft/ft_strnstr.o lib/libft/ft_strrchr.c lib/libft/ft_strrchr.o lib/libft/ft_strtrim.c lib/libft/ft_strtrim.o lib/libft/ft_substr.c lib/libft/ft_substr.o lib/libft/ft_tolower.c lib/libft/ft_tolower.o lib/libft/ft_toupper.c lib/libft/ft_toupper.o lib/libft/get_next_line.c lib/libft/get_next_line.o lib/libft/libft.a lib/libft/libft.h lib/libft/Makefile lib/libft/nothing.c lib/libft/nothing.o lib/libft/README.md myMSHtester/SpaceDir/bash_err myMSHtester/SpaceDir/bash_res myMSHtester/SpaceDir/file myMSHtester/SpaceDir/msh_err myMSHtester/SpaceDir/msh_res myMSHtester/SpaceDir/noaccess myMSHtester/SpaceDir/test_script_ERR srcs/builtins/exec_builtin.c srcs/builtins/exec_builtin.o srcs/builtins/exec_builtin_cd.c srcs/builtins/exec_builtin_cd.o srcs/builtins/exec_builtin_echo.c srcs/builtins/exec_builtin_echo.o srcs/builtins/exec_builtin_env.c srcs/builtins/exec_builtin_env.o srcs/builtins/exec_builtin_exit.c srcs/builtins/exec_builtin_exit.o srcs/builtins/exec_builtin_export.c srcs/builtins/exec_builtin_export.o srcs/builtins/exec_builtin_pwd.c srcs/builtins/exec_builtin_pwd.o srcs/builtins/exec_builtin_unset.c srcs/builtins/exec_builtin_unset.o srcs/builtins/get_builtin.c srcs/builtins/get_builtin.o srcs/ft_exec_ast/exec_and.c srcs/ft_exec_ast/exec_and.o srcs/ft_exec_ast/exec_ast.c srcs/ft_exec_ast/exec_ast.o srcs/ft_exec_ast/exec_ast_lst.c srcs/ft_exec_ast/exec_ast_lst.o srcs/ft_exec_ast/exec_cmd.c srcs/ft_exec_ast/exec_cmd.o srcs/ft_exec_ast/exec_instruction.c srcs/ft_exec_ast/exec_instruction.o srcs/ft_exec_ast/exec_or.c srcs/ft_exec_ast/exec_or.o srcs/ft_exec_ast/exec_pipe.c srcs/ft_exec_ast/exec_pipe.o srcs/ft_exec_ast/find_path.c srcs/ft_exec_ast/find_path.o srcs/ft_exec_ast/redirect.c srcs/ft_exec_ast/redirect.o srcs/params/add_params.c srcs/params/add_params.o srcs/params/del_param.c srcs/params/del_param.o srcs/params/env.c srcs/params/env.o srcs/params/expande_char.c srcs/params/expande_char.o srcs/params/expande_commande.c srcs/params/expande_commande.o srcs/params/get_value.c srcs/params/get_value.o srcs/params/is_var_attribution.c srcs/params/is_var_attribution.o srcs/params/wildcards.c srcs/params/wildcards.o srcs/parser_lexer/ast_utils.c srcs/parser_lexer/ast_utils.o srcs/parser_lexer/create_ast.c srcs/parser_lexer/create_ast.o srcs/parser_lexer/create_ast_instruction.c srcs/parser_lexer/create_ast_instruction.o srcs/parser_lexer/create_ast_pipe.c srcs/parser_lexer/create_ast_pipe.o srcs/parser_lexer/create_lexer.c srcs/parser_lexer/create_lexer.o srcs/parser_lexer/free_ast.c srcs/parser_lexer/free_ast.o srcs/parser_lexer/free_lexer.c srcs/parser_lexer/free_lexer.o srcs/parser_lexer/get_heredoc.c srcs/parser_lexer/get_heredoc.o srcs/parser_lexer/lexer_is_valide.c srcs/parser_lexer/lexer_is_valide.o srcs/parser_lexer/lexer_utils.c srcs/parser_lexer/lexer_utils.o srcs/signals/init_child_sig.c srcs/signals/init_child_sig.o srcs/signals/init_father_sig.c srcs/signals/init_father_sig.o srcs/signals/init_heredoc_signal.c srcs/signals/init_heredoc_signal.o srcs/signals/init_signals.c srcs/signals/init_signals.o$
 

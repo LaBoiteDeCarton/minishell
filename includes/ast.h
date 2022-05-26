@@ -70,28 +70,36 @@ struct s_redirect
 	char			*pathfile;
 };
 
-t_ast	*from_lexer_to_ast(t_list *lst);
-t_list	*create_ast_lst(t_list *lexer);
+/*
+	Functions used to create the AST tree
+*/
+t_list			*create_ast_lst(t_list *lexer);
+t_ast			*next_ast(t_list **lexer, int piping);
+t_ast			*from_lexer_to_ast(t_list *lst);
+t_ast			*from_lexer_to_pipe(t_list *lexer);
+t_instruction	*from_lexer_to_instruction(t_list *lexer);
+t_redirect_type	get_red(t_list *lst);
+int				get_heredoc(char *limiter);
+t_token			translate_token(t_list *lexer);
 
-void	exec_ast_lst(t_list *ast_lst);
-void	exec_ast(t_ast *ast);
-void	exec_cmd(t_cmd *node, int *fd);
-char	*find_path(char *f);
-void	exec_and(t_ast *node);
-void	exec_or(t_ast *node);
-int		redirect(t_redirect redirection, int *fd);
-void	exec_instruction(t_instruction *node);
-void	exec_pipe(t_ast *node);
+/*
+	Function used to Execute the AST tree recursively
+*/
+void			exec_ast_lst(t_list *ast_lst);
+void			exec_ast(t_ast *ast);
+void			exec_and(t_ast *node);
+void			exec_or(t_ast *node);
+void			exec_pipe(t_ast *node);
+void			exec_instruction(t_instruction *node);
+int				redirect(t_redirect redirection, int *fd);
+void			exec_cmd(t_cmd *node, int *fd);
+char			*find_path(char *f);
+int				cmd_is_var_attribution(t_cmd *node);
+int				char_is_var_attribution(char *str);
 
-void	printASTLIST(t_list *ast);
-void	printAST(t_ast *ast, int prof);
-
-int		cmd_is_var_attribution(t_cmd *node);
-int		char_is_var_attribution(char *str);
-void	print_params(void);
-int		get_heredoc(char *limiter);
-
-void	free_ast(void *ast);
-t_ast	*next_ast(t_list **lexer, int piping);
+/*
+	AST recursive free function
+*/
+void			free_ast(void *ast);
 
 #endif

@@ -37,6 +37,4 @@ void		exec_builtin_export(t_cmd node, int *fd);
 void		exec_builtin_unset(t_cmd node, int *fd);
 void		exec_builtin_exit(t_cmd node, int *fd);
 
-//char		*ft_getcwd();
-
 #endif

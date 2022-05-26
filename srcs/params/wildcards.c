@@ -13,7 +13,7 @@
 #include "minishell.h"
 #include "dirent.h"
 
-int	check_patern(char *pattern, char *str)
+static int	check_patern(char *pattern, char *str)
 {
 	while (*pattern && *pattern != '*')
 	{
@@ -37,49 +37,30 @@ int	check_patern(char *pattern, char *str)
 	return (0);
 }
 
-/*faire une boucle sur la liste de pattern constitué de ft_split 
-du pttern avec '/' */
-
-/*
-	on split le pattern en /
-	si il existe lelement suivant on check uniquement les paternes qui sont
-	des dossiers
-		on check dans la liste des dossier le pattern suivant a linterieure
-	si cest le dernier ellement on check le pattern de tout
-*/
-
-static t_list	*handle_wildcard_error(char *dir)
+static char	*join_dir(char *left, char *right)
 {
-	handle_errors(dir);
-	return (NULL);
-}
+	char	*temp1;
+	char	*temp2;
 
-void	join_lst_dir(t_list	*lst, char *left)
-{
-	char *temp1;
-	char *temp2;
-
-	while (lst && left)
+	if (left)
 	{
-		temp1 = ft_strjoin(left, "/");
-		temp2 = ft_strjoin(temp1, (char *)lst->content);
-		free((char *)lst->content);
+		temp1 = ft_strjoin(left, right);
+		temp2 = ft_strjoin(temp1, "/");
 		free(temp1);
-		lst->content = temp2;
-		lst = lst->next;
 	}
+	else
+		temp2 = ft_strjoin(right, "/");
+	return (temp2);
 }
 
-t_list	*get_dir_and_file_lst(char *pattern, char *dir)
+static t_list	*get_dir_and_file_lst(char *pattern, char *dir)
 {
 	DIR				*dp;
 	struct dirent	*dirp;
 	t_list			*dir_lst;
-	char			*temp;
-	char			*temp2;
 
 	if (!*pattern)
-		return (ft_lstnew(ft_strdup(dir)));
+		return (ft_lstnew(dir));
 	if (dir)
 		dp = opendir(dir);
 	else
@@ -91,42 +72,25 @@ t_list	*get_dir_and_file_lst(char *pattern, char *dir)
 	while (dirp)
 	{
 		if (*(dirp->d_name) != '.' && check_patern(pattern, dirp->d_name))
-		{
-			if (dir)
-			{
-				temp = ft_strjoin(dir, "/");
-				temp2 = ft_strjoin(temp, dirp->d_name);
-				free(temp);
-			}
-			else
-				temp2 = ft_strdup(dirp->d_name);
-			ft_lstadd_back(&dir_lst, ft_lstnew(temp2));
-		}
+			ft_lstadd_back(&dir_lst, ft_lstnew(ft_strjoin(dir, dirp->d_name)));
 		dirp = readdir(dp);
 	}
 	closedir(dp);
+	if (dir)
+		free(dir);
 	return (dir_lst);
 }
 
-t_list	*get_dir_lst(char *pattern, char *dir)
+static t_list	*get_dir_lst(char *pattern, char *next, char *dir)
 {
-	char	*next;
-	t_list	*lst_match;
 	DIR				*dp;
 	struct dirent	*dirp;
-	char	*temp;
-	char	*temp2;
+	t_list			*lst_match;
 
-	while (pattern && *pattern && *pattern == '/')
-		pattern++;
-	next = ft_strchr(pattern, '/');
-	if (!next)
-		return (get_dir_and_file_lst(pattern, dir));
-	*next = '\0';
 	if (dir)
- 		dp = opendir(dir);
- 	else
- 		dp = opendir(g_cenv.tcwd);
+		dp = opendir(dir);
+	else
+		dp = opendir(g_cenv.tcwd);
 	if (!dp)
 		return (handle_wildcard_error(dir));
 	lst_match = NULL;
@@ -135,55 +99,28 @@ t_list	*get_dir_lst(char *pattern, char *dir)
 	{
 		if (dirp->d_type == DT_DIR && *(dirp->d_name) != '.'
 			&& check_patern(pattern, dirp->d_name))
-		{
-			if (dir)
-			{
-				temp = ft_strjoin(dir, "/");
-				temp2 = ft_strjoin(temp, dirp->d_name);
-				free(temp);
-			}
-			else
-				temp2 = ft_strdup(dirp->d_name);
-			ft_lstadd_back(&lst_match, get_dir_lst(next + 1, temp2));
-			free(temp2);
-		}
+			ft_lstadd_back(&lst_match,
+				get_wildacred_lst(next + 1, join_dir(dir, dirp->d_name)));
 		dirp = readdir(dp);
 	}
 	closedir(dp);
-	*next = '/';
+	if (dir)
+		free(dir);
 	return (lst_match);
 }
 
-// t_list	*get_dir_lst(char *pattern, char *pattern_ptr, char *dir)
-// {
-// 	char			*next;
-// 	t_list			*lst_res;
-// 	DIR				*dp;
-// 	struct dirent	*dirp;
+t_list	*get_wildacred_lst(char *pattern, char *dir)
+{
+	char			*next;
+	t_list			*lst_match;
 
-// 	while (pattern && *pattern && *pattern == '/')
-// 		pattern++;
-// 	next = ft_strchr(pattern, '/');
-// 	if (!next)
-// 		return (get_dir_file_lst(pattern, pattern_ptr, dir));
-// 	*next = '\0';
-// 	if (dir)
-// 		dp = opendir(dir);
-// 	else
-// 		dp = opendir(g_cenv.tcwd);
-// 	if (!dp)
-// 		return (handle_wildcard_error(dir));
-// 	dirp = readdir(dp);
-// 	lst_res = NULL;
-// 	while (dirp)
-// 	{
-// 		if (dirp->d_type == DT_DIR && *(dirp->d_name) != '.'
-// 			&& check_patern(pattern, dirp->d_name))
-// 		{
-//  			ft_lstadd_back(&lst_res, get_dir_lst(pattern, dirp->d_name));
-// 		}
-//  		dirp = readdir(dp);
-// 	}
-// 	*next = '/';
-// 	return (lst_res);
-// }
+	while (pattern && *pattern && *pattern == '/')
+		pattern++;
+	next = ft_strchr(pattern, '/');
+	if (!next)
+		return (get_dir_and_file_lst(pattern, dir));
+	*next = '\0';
+	lst_match = get_dir_lst(pattern, next, dir);
+	*next = '/';
+	return (lst_match);
+}

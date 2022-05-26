@@ -13,102 +13,6 @@
 #include "minishell.h"
 #include "ast.h"
 
-static int	itoasize(int n)
-{
-	int	size;
-
-	if (n < 0)
-		size = 2;
-	else
-		size = 1;
-	while (n / 10)
-	{
-		n /= 10;
-		size++;
-	}
-	return (size);
-}
-
-static int	fst_expanded_c_size(char *str)
-{
-	int		expanded_size;
-	int		dquote_open;
-	int		squote_open;
-
-	expanded_size = 0;
-	dquote_open = 0;
-	squote_open = 0;
-	while (*str)
-	{
-		if (*str == '\"' && !squote_open)
-			dquote_open = (dquote_open + 1) % 2;
-		if (*str == '\'' && !dquote_open)
-			squote_open = (squote_open + 1) % 2;
-		if (!squote_open && !ft_strncmp(str, "$?", 2))
-		{
-			expanded_size += itoasize(g_cenv.exit_status);
-			str++;
-		}
-		else if (*str == '$' && !squote_open)
-		{
-			expanded_size += ft_strlen(get_value(str + 1));
-			str += var_name_size(str + 1);
-		}
-		else
-			expanded_size++;
-		str++;
-	}
-	return (expanded_size + 1);
-}
-
-char	*first_expand(char *str)
-{
-	char	*expanded_char;
-	int		i;
-	int		dquote_open;
-	int		squote_open;
-	char	*itoachar;
-
-	dquote_open = 0;
-	squote_open = 0;
-	expanded_char = (char *)malloc(sizeof(char) * fst_expanded_c_size(str));
-	if (!expanded_char)
-	{
-		handle_errors("expande failed: ");
-		return (NULL);
-	}
-	i = 0;
-	while (*str)
-	{
-		if (*str == '\"' && !squote_open)
-			dquote_open = (dquote_open + 1) % 2;
-		if (*str == '\'' && !dquote_open)
-			squote_open = (squote_open + 1) % 2;
-		if (!squote_open && !ft_strncmp(str, "$?", 2))
-		{
-			str++;
-			itoachar = get_value(str);
-			ft_memcpy(expanded_char + i, itoachar, ft_strlen(itoachar));
-			i += ft_strlen(itoachar);
-			free(itoachar);
-		}
-		else if (*str == '$' && !squote_open)
-		{
-			str++;
-			ft_memcpy(expanded_char + i, get_value(str), ft_strlen(get_value(str)));
-			i += ft_strlen(get_value(str));
-			str += var_name_size(str) - 1;
-		}
-		else
-		{
-			expanded_char[i] = *str;
-			i++;
-		}
-		str++;
-	}
-	expanded_char[i] = '\0';
-	return (expanded_char);
-}
 
 void	ft_copy_without_quotes(char *dst, char *src, size_t size)
 {
@@ -190,10 +94,7 @@ char	**create_chartab_from_lst(t_list *lst)
 
 	chartab = (char **)malloc(sizeof(char *) * (ft_lstsize(lst) + 1));
 	if (!chartab)
-	{
-		handle_errors("malloc");
-		return (NULL);
-	}
+		return (handle_expande_errors("expande failed: "));
 	i = 0;
 	while (lst)
 	{
@@ -221,7 +122,7 @@ t_list	*expande_wildcard(t_list *lst_excmd)
 	{
 		if (ft_strrchr((char *)lst_excmd->content, '*'))
 		{
-			temp = get_dir_lst((char *)lst_excmd->content, NULL);
+			temp = get_wildacred_lst((char *)lst_excmd->content, NULL);
 			if (temp)
 				ft_lstadd_back(&lst_wildcarded, temp);
 			else
