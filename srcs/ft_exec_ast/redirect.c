@@ -34,6 +34,7 @@ static int	set_stdoutappend(char *path, int *fd)
 		ft_putstr_fd("msh: ", STDERR_FILENO);
 		ft_putstr_fd(path, STDERR_FILENO);
 		ft_putendl_fd(": ambigious redirect", STDERR_FILENO);
+		free(expanded_path);
 		return (0);
 	}
 	file_fd = open(expanded_path, O_WRONLY | O_CREAT | O_APPEND, 0777);
@@ -61,6 +62,7 @@ static int	set_stdout(char *path, int *fd)
 		ft_putstr_fd("msh: ", STDERR_FILENO);
 		ft_putstr_fd(path, STDERR_FILENO);
 		ft_putendl_fd(": ambigious redirect", STDERR_FILENO);
+		free(expanded_path);
 		return (0);
 	}
 	file_fd = open(expanded_path, O_WRONLY | O_CREAT | O_TRUNC, 0777);
@@ -88,6 +90,7 @@ static int	set_stdin(char *path, int *fd)
 		ft_putstr_fd("msh: ", STDERR_FILENO);
 		ft_putstr_fd(path, STDERR_FILENO);
 		ft_putendl_fd(": ambigious redirect", STDERR_FILENO);
+		free(expanded_path);
 		return (0);
 	}
 	file_fd = open(expanded_path, O_RDONLY);
