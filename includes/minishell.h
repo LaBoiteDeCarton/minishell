@@ -86,9 +86,9 @@ void	*handle_expande_errors(char *msg_error);
 */
 size_t	var_name_size(char *name);
 char	*expande_char(char *str);
-int		expanded_char_size(char *str);
 char	*first_expand(char *str);
 int		fst_expanded_c_size(char *str);
+void	ft_copy_without_quotes(char *dst, char *src);
 void	expande_commande(t_cmd *node);
 t_list	*get_wildacred_lst(char *pattern, char *dir);
 

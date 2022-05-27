@@ -13,42 +13,35 @@
 #include "minishell.h"
 #include "ast.h"
 
-
-void	ft_copy_without_quotes(char *dst, char *src, size_t size)
+static int	new_char_size(char *str)
 {
-	int	i;
-	int	dquote;
-	int	squote;
+	size_t	n_c_size;
+	int		squote;
+	int		dquote;
 
-	i = 0;
-	dquote = 0;
+	n_c_size = 0;
 	squote = 0;
-	while (size)
+	dquote = 0;
+	while (*str)
 	{
-		if (*src == '\"' && !squote)
+		if (!dquote && !squote && *str == ' ')
+			break ;
+		if (*str == '\"' && !squote)
 			dquote = (dquote + 1) % 2;
-		else if (*src == '\'' && !dquote)
+		if (*str == '\'' && !dquote)
 			squote = (squote + 1) % 2;
-		else
-		{
-			dst[i] = *src;
-			i++;
-		}
-		size--;
-		src++;
+		n_c_size++;
+		str++;
 	}
-	dst[i] = '\0';
+	return (n_c_size);
 }
 
-t_list	*lst_expande_char(char	*str)
+static t_list	*lst_expande_char(char	*str)
 {
 	t_list	*lst_res;
 	char	*expanded_char;
-	char	*new_char;
-	size_t	n_c_size;
+	int		n_c_size;
 	int		i;
-	int		squote;
-	int		dquote;
 
 	lst_res = NULL;
 	expanded_char = first_expand(str);
@@ -59,27 +52,9 @@ t_list	*lst_expande_char(char	*str)
 			i++;
 		else
 		{
-			n_c_size = 0;
-			squote = 0;
-			dquote = 0;
-			while (expanded_char[i + n_c_size])
-			{
-				if (!dquote && !squote && expanded_char[i + n_c_size] == ' ')
-					break ;
-				if (expanded_char[i + n_c_size] == '\"' && !squote)
-					dquote = (dquote + 1) % 2;
-				if (expanded_char[i + n_c_size] == '\'' && !dquote)
-					squote = (squote + 1) % 2;
-				n_c_size++;
-			}
-			new_char = (char *)malloc(sizeof(char) * n_c_size + 1);
-			if (!new_char)
-			{
-				handle_errors("expande error");
-				break ;
-			}
-			ft_strlcpy(new_char, expanded_char + i, n_c_size + 1);
-			ft_lstadd_back(&lst_res, ft_lstnew(new_char));
+			n_c_size = new_char_size(expanded_char + i);
+			ft_lstadd_back(&lst_res,
+				ft_lstnew(ft_substr(expanded_char, i, n_c_size)));
 			i += n_c_size;
 		}
 	}
@@ -87,24 +62,25 @@ t_list	*lst_expande_char(char	*str)
 	return (lst_res);
 }
 
-char	**create_chartab_from_lst(t_list *lst)
+static char	**create_chartab_from_lst(t_list *lst)
 {
 	char	**chartab;
 	int		i;
 
 	chartab = (char **)malloc(sizeof(char *) * (ft_lstsize(lst) + 1));
 	if (!chartab)
-		return (handle_expande_errors("expande failed: "));
+		return (handle_expande_errors("expande failed"));
 	i = 0;
 	while (lst)
 	{
-		chartab[i] = (char *)malloc(sizeof(char) * (ft_strlen((char *)lst->content) + 1));
+		chartab[i] = (char *)malloc(sizeof(char)
+				* (ft_strlen((char *)lst->content) + 1));
 		if (!chartab[i])
 		{
-			handle_errors("malloc");
+			handle_errors("expande failed");
 			break ;
 		}
-		ft_copy_without_quotes(chartab[i], (char *)lst->content, ft_strlen((char *)lst->content));
+		ft_copy_without_quotes(chartab[i], (char *)lst->content);
 		lst = lst->next;
 		i++;
 	}
@@ -112,7 +88,7 @@ char	**create_chartab_from_lst(t_list *lst)
 	return (chartab);
 }
 
-t_list	*expande_wildcard(t_list *lst_excmd)
+static t_list	*expande_wildcard(t_list *lst_excmd)
 {
 	t_list	*lst_wildcarded;
 	t_list	*temp;
@@ -126,10 +102,12 @@ t_list	*expande_wildcard(t_list *lst_excmd)
 			if (temp)
 				ft_lstadd_back(&lst_wildcarded, temp);
 			else
-				ft_lstadd_back(&lst_wildcarded, ft_lstnew(ft_strdup((char *)lst_excmd->content)));
+				ft_lstadd_back(&lst_wildcarded,
+					ft_lstnew(ft_strdup((char *)lst_excmd->content)));
 		}
 		else
-			ft_lstadd_back(&lst_wildcarded, ft_lstnew(ft_strdup((char *)lst_excmd->content)));
+			ft_lstadd_back(&lst_wildcarded,
+				ft_lstnew(ft_strdup((char *)lst_excmd->content)));
 		lst_excmd = lst_excmd->next;
 	}
 	return (lst_wildcarded);

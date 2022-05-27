@@ -170,8 +170,8 @@ exec_test "cat filetest nexistepas"
 exec_test "cat -e filetest"
 exec_test "l\"s\""
 exec_test "(ls)"
-exec_test "(ls -l)"
-exec_test "(ls) -l"
+exec_test "(ls -a)"
+exec_test "(ls) -a"
 exec_test "'l'\"s\""
 exec_test "ARG=ls && \$ARG"
 exec_test "ARG=-a && ls \$ARG"
@@ -362,12 +362,13 @@ exec_test "cd ../.. && echo */****/*.c"
 exec_test "cd ../.. && echo */*l*/*b***in.c"
 exec_test "cd ../.. && ARG=s && echo *\$ARG"
 
+#TEST ||
+
+
+#END of testing, clearing spaceDir
 chmod 777 noaccess
 rm noaccess
 cd ..
 cp SpaceDir/test_script_ERR test_script_ERR
 rm -rf SpaceDir
-
-#TEST ||
-
 exit

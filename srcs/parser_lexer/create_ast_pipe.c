@@ -36,9 +36,16 @@ static int	is_pipe(t_list *lexer)
 
 static void	scroll_lexer_to_next_pipe(t_list **lexer)
 {
+	int	scope_count;
+
+	scope_count = 0;
 	while (*lexer)
 	{
-		if (is_token(*lexer) && get_type(*lexer) == sep_pipe)
+		if (get_type(*lexer) == scope_open)
+			scope_count++;
+		if (get_type(*lexer) == scope_close)
+			scope_count--;
+		if (!scope_count && is_token(*lexer) && get_type(*lexer) == sep_pipe)
 		{
 			*lexer = (*lexer)->next;
 			break ;

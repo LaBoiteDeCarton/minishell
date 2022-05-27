@@ -49,7 +49,7 @@ size_t	var_name_size(char *name)
 	if (name[name_size] && ft_isdigit(name[name_size]))
 		return (1);
 	while (name[name_size] && ft_isalnum(name[name_size]))
-			name_size++;
+		name_size++;
 	return (name_size);
 }
 

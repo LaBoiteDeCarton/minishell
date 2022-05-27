@@ -16,35 +16,44 @@ static void	expande_variable(char *dst, int *start, char **str)
 {
 	char	*itoachar;
 
-	if (!ft_strncmp(*str, "$?", 2))
+	(*str)++;
+	if (**str == '?')
 	{
-		(*str)++;
 		itoachar = get_value(*str);
 		ft_memcpy(dst + *start, itoachar, ft_strlen(itoachar));
-		*start += ft_strlen(itoachar) - 1;
+		*start += ft_strlen(itoachar);
 		free(itoachar);
-	}
-	else if (**str == '$')
-	{
 		(*str)++;
+	}
+	else
+	{
 		ft_memcpy(dst + *start, get_value(*str), ft_strlen(get_value(*str)));
-		*start += ft_strlen(get_value(*str)) - 1;
-		*str += var_name_size(*str) - 1;
+		*start += ft_strlen(get_value(*str));
+		*str += var_name_size(*str);
 	}
 }
 
 static void	expande_dquote_char(char *dst, int *start, char **str)
 {
-	char	*itoachar;
-
+	dst[*start] = **str;
+	(*str)++;
+	(*start)++;
 	while (**str && **str != '"')
 	{
 		if (**str == '$')
 			expande_variable(dst, start, str);
 		else
+		{
 			dst[*start] = **str;
-		(*start)++;
+			(*start)++;
+			(*str)++;
+		}
+	}
+	if (**str)
+	{
+		dst[*start] = **str;
 		(*str)++;
+		(*start)++;
 	}
 }
 
@@ -59,9 +68,14 @@ static void	expande_squote_char(char *dst, int *start, char **str)
 		(*start)++;
 		(*str)++;
 	}
+	if (**str)
+	{
+		dst[*start] = **str;
+		(*str)++;
+		(*start)++;
+	}
 }
 
-#include <stdio.h>
 char	*first_expand(char *str)
 {
 	char	*expanded_char;
@@ -69,25 +83,23 @@ char	*first_expand(char *str)
 
 	expanded_char = (char *)malloc(sizeof(char) * fst_expanded_c_size(str));
 	if (!expanded_char)
-		return (handle_expande_errors("expande failed: "));
+		return (handle_expande_errors("expande failed"));
 	i = 0;
 	while (*str)
 	{
 		if (*str == '\"')
-		{
-			expanded_char[i++] = *str;
-			str++;
 			expande_dquote_char(expanded_char, &i, &str);
-		}
 		else if (*str == '\'')
 			expande_squote_char(expanded_char, &i, &str);
-		if (*str == '$')
+		else if (*str == '$')
 			expande_variable(expanded_char, &i, &str);
 		else
+		{
 			expanded_char[i] = *str;
-		str++;
+			i++;
+			str++;
+		}
 	}
 	expanded_char[i] = '\0';
-	printf("expanded char = %s\n", expanded_char);
 	return (expanded_char);
 }

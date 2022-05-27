@@ -13,33 +13,39 @@
 #include "ast.h"
 #include "minishell.h"
 
-static void	redirect_error(void)
+static void	redirect_error(char *str)
 {
-	handle_errors("Pipe");
+	handle_errors(str);
 	exit(258);
 }
 
 static void	child(t_list *content, int *pipe_fd, int fdin)
 {
 	if (close(pipe_fd[0]) == -1)
-		redirect_error();
-	if ((fdin != STDIN_FILENO && (dup2(fdin, STDIN_FILENO) == -1))
-		|| close(fdin) == -1)
-		redirect_error();
+		redirect_error("Pipe: close");
+	if (dup2(fdin, STDIN_FILENO) == -1)
+		redirect_error("Pipe: dup2");
+	if (fdin != STDIN_FILENO && close(fdin) == -1)
+		redirect_error("Pipe: close");
 	if (content->next && dup2(pipe_fd[1], STDOUT_FILENO) == -1)
-		redirect_error();
+		redirect_error("Pipe: dup2");
 	if (close(pipe_fd[1]) == -1)
-		redirect_error();
+		redirect_error("Pipe: close");
 	exec_ast((t_ast *)content->content);
-	msh_exit();
+	free_chartab(g_cenv.env);
+	free_var(g_cenv.var);
+	rl_clear_history();
+	if (g_cenv.ast)
+		ft_lstclear(&g_cenv.ast, &free_ast);
+	exit(g_cenv.exit_status);
 }
 
 static void	close_pipe(int *pipe_fd)
 {
 	if (close(pipe_fd[0]) == -1)
-		handle_errors("close");
+		handle_errors("pipe: close");
 	if (close(pipe_fd[1]) == -1)
-		handle_errors("close");
+		handle_errors("pipe: close");
 }
 
 static void	fork_pipe(t_list *content, int fdin)
