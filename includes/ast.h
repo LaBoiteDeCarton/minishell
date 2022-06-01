@@ -102,7 +102,4 @@ int				char_is_var_attribution(char *str);
 */
 void			free_ast(void *ast);
 
-
-void printASTLIST(t_list *ast);
-
 #endif
